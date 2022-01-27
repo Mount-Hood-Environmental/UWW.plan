@@ -24,10 +24,12 @@ institute:
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   bookdown::html_document2:
-    theme: journal
+    theme: flatly
     toc: yes
     toc_depth: 2
-    toc_float: yes
+    toc_float:
+      collapsed: yes
+      smooth_scroll: yes
     number_sections: yes
     fig_caption: yes
     fig_height: 7
@@ -41,7 +43,15 @@ bibliography:
   - AckermanLibrary.bib
 ---
 
-```{r setup, echo = FALSE}
+<!-- the following inserts MHE logo into header -->
+<script>
+   $(document).ready(function() {
+     $head = $('#header');
+     $head.prepend('<img src=\"logo.jpg\" style=\"float: right;width: 150px;\"/>')
+   });
+</script>
+
+```{r setup, echo = FALSE, message = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   warning = FALSE,
@@ -70,5 +80,31 @@ library(nngeo)
 \newpage
 
 # Introduction
-  
+
+# Methods
+```{r load-data}
+load(here("analysis/data/derived_data/qrf_extrapolations.rda"))
+
+```
+
+## Required Capacity
+
+## Available Capacity
+
+## Capacity Limitations
+
+# Results
+
+## Required Capacity
+
+## Available Capacity
+
+## Capacity Limitations
+
+# Inference and Discussion
+
+# References
+<!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
+<div id="refs"></div>
+
       
