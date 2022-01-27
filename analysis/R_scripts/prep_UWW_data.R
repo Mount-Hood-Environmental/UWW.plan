@@ -145,6 +145,20 @@ ctuir_rch_sf = st_read(here("analysis/data/raw_data/stream_network/CTUIRStillwat
 
 ggplot(ctuir_rch_sf) + geom_sf()
 
+# read in UWW base referencing geodatabase
+ww_gdb_filepath = here("analysis/data/raw_data/stream_network/UWW_base_referencing.gdb")
+ww_gdb_layers = ogrListLayers(ww_gdb_filepath)
+
+# extract UWW_streams_24k layer from geodatabase
+ww_base_ref_streams_24k  = readOGR(dsn = ww_gdb_filepath,
+                                   layer = "UWW_streams_24k") %>%
+  st_as_sf() %>%
+  st_transform(ww_crs)
+
+ggplot(ww_base_ref_streams_24k) + geom_sf()
+
+# Thankfully, the base reference streams and our rch_200 appear to be the same linear networks!!!
+
 #-----------------------------------------------------------------
 # save data for this repository
 save(ww_sum_sf,
@@ -152,6 +166,7 @@ save(ww_sum_sf,
      ww_redd_sf,
      ww_huc_sf,
      ww_rch_sf,
+     ww_base_ref_streams_24k,
      file = "analysis/data/derived_data/qrf_extrapolations.rda")
 
 #-----------------------------------------------------------------
@@ -170,6 +185,9 @@ st_write(ww_rch_sf,
          append = F)
 st_write(ww_huc_sf,
          dsn = "analysis/data/derived_data/ww_huc_bndry.gpkg",
+         append = F)
+st_write(ww_base_ref_streams_24k,
+         dsn = "analysis/data/derived_data/ww_base_ref_streams.gpkg",
          append = F)
 
 #-----------------------------------------------------------------
