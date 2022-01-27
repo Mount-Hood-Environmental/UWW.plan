@@ -82,14 +82,111 @@ library(nngeo)
 # Introduction
 
 # Methods
+
 ```{r load-data}
-load(here("analysis/data/derived_data/qrf_extrapolations.rda"))
+# Upper Walla Walla QRF extrapolations
+load(here("analysis/data/derived_data/uww_qrf_extrapolations.rda"))
+
+# Project area polygons and 200m layer (with habitat attributes) within project area
+load(here("analysis/data/derived_data/uww_spatial.rda"))
+
+# convert sf objects to tibbles
+uww_sum_df = uww_sum_sf %>%
+  st_drop_geometry() %>%
+  as_tibble()
+
+uww_win_df = uww_win_sf %>%
+  st_drop_geometry() %>%
+  as_tibble()
+
+uww_redd_df = uww_redd_sf %>%
+  st_drop_geometry() %>%
+  as_tibble()
 
 ```
 
 ## Required Capacity
 
 ## Available Capacity
+
+```{r calc-chnk-capacity}
+source(here("R/calc_watershed_cap.R"))
+
+# Chinook salmon, summer parr
+chnk_sum_cap = calc_watershed_cap(uww_huc_sf,
+                                  uww_sum_sf,
+                                  capacity_name = "chnk_per_m",
+                                  capacity_se_name = "chnk_per_m_se",
+                                  by_stream = T)
+
+# Chinook salmon, winter presmolt
+chnk_win_cap = calc_watershed_cap(uww_huc_sf,
+                                  uww_win_sf,
+                                  capacity_name = "chnk_per_m",
+                                  capacity_se_name = "chnk_per_m_se",
+                                  by_stream = T)
+
+# Chinook salmon, redds
+chnk_redd_cap = calc_watershed_cap(uww_huc_sf,
+                                   uww_redd_sf,
+                                   capacity_name = "chnk_per_m",
+                                   capacity_se_name = "chnk_per_m_se",
+                                   by_stream = T)
+
+```
+
+```{r calc-sthd-capacity}
+# steelhead, summer parr
+sthd_sum_cap = calc_watershed_cap(uww_huc_sf,
+                                  uww_sum_sf,
+                                  capacity_name = "sthd_per_m",
+                                  capacity_se_name = "sthd_per_m_se",
+                                  by_stream = T)
+
+# steelhead, winter presmolt
+sthd_win_cap = calc_watershed_cap(uww_huc_sf,
+                                  uww_win_sf,
+                                  capacity_name = "sthd_per_m",
+                                  capacity_se_name = "sthd_per_m_se",
+                                  by_stream = T)
+
+# steelhead, redds
+sthd_redd_cap = calc_watershed_cap(uww_huc_sf,
+                                   uww_redd_sf,
+                                   capacity_name = "sthd_per_m",
+                                   capacity_se_name = "sthd_per_m_se",
+                                   by_stream = T)
+
+```
+
+```{r compile-capacity}
+cap_tot = list(chnk_sum = chnk_sum_cap,
+               chnk_win = chnk_win_cap,
+               chnk_redd = chnk_redd_cap,
+               sthd_sum = sthd_sum_cap,
+               sthd_win = sthd_win_cap,
+               sthd_redd = sthd_redd_cap) %>%
+  map_df(.id = "type",
+        .f = function(x) {
+          x %>%
+            filter(StreamName == "Total")
+        }) %>%
+  mutate(Species = str_split(type, "_", simplify = T)[ ,1],
+         LifeStage = str_split(type, "_", simplify = T)[ ,2]) %>%
+  mutate(Species = recode(Species,
+                          "chnk" = "Chinook",
+                          "sthd" = "Steelhead"),
+         LifeStage = recode(LifeStage,
+                            "sum" = "Summer Parr",
+                            "win" = "Winter Presmolt",
+                            "redd" = "Redds")) %>%
+  select(Species,
+         LifeStage,
+         everything(),
+         -StreamName,
+         -type)
+
+```
 
 ## Capacity Limitations
 
