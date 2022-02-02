@@ -24,7 +24,7 @@ institute:
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   bookdown::html_document2:
-    theme: flatly
+    theme: yeti
     toc: yes
     toc_depth: 2
     toc_float:
@@ -33,7 +33,6 @@ output:
     number_sections: yes
     fig_caption: yes
     fig_height: 7
-    fig_width: 7
     pandoc_args:
     - --lua-filter=../templates/scholarly-metadata.lua
     - --lua-filter=../templates/author-info-blocks.lua
@@ -67,6 +66,10 @@ knitr::opts_chunk$set(
 ```{r load-libraries}
 # run this if running chunks directly
 
+# for formatting
+library(kableExtra)
+library(ggpubr)
+
 # for analysis
 library(sf)
 library(here)
@@ -74,6 +77,9 @@ library(tidyverse)
 library(magrittr)
 library(ggmap)
 library(nngeo)
+
+theme_set(theme_pubr(x.text.angle = 45,
+                     base_size = 7))
 
 ```
 
@@ -106,6 +112,47 @@ uww_redd_df = uww_redd_sf %>%
 ```
 
 ## Required Capacity
+
+```{r get-params}
+params = read_csv(here("analysis/data/raw_data/LifeHistoryParameters.csv"))
+
+rec_goals = tibble(Species = c("Chinook", "Steelhead"),
+                   Scenario = "Unknown",
+                   Escapement = c(3000, 3400)) %>%
+  inner_join(params %>%
+               mutate(Parameter = recode(Parameter,
+                                         "Female Ratio" = "prop_fem",
+                                         "Redds/Female" = "redd_per_fem",
+                                         "Fecundity" = "fecund",
+                                         "Egg:Parr" = "egg_to_parr",
+                                         "Parr:Presmolt" = "parr_to_presmolt")) %>%
+               pivot_wider(id_cols = "Species",
+                           names_from = "Parameter",
+                           values_from = "Value")) %>%
+  mutate(`Female Escapement` = Escapement * prop_fem,
+         Redds = `Female Escapement` * redd_per_fem,
+         Eggs = Redds * fecund,
+         Parr = Eggs * egg_to_parr,
+         Presmolts = Parr * parr_to_presmolt) %>%
+  select(-c(prop_fem:parr_to_presmolt)) %>%
+  pivot_longer(cols = c(Escapement, `Female Escapement`:Presmolts),
+               names_to = "Life_Stage",
+               values_to = "Abundance")
+
+
+```
+
+```{r param-tab}
+params %>%
+  kable(booktabs = T,
+        digits = 3,
+        format.args = list(big.mark = ",",
+                           drop0trailing = T),
+        caption = "Life history parameters for the generalized capacity model.") %>%
+  kable_styling(full_width = F,
+                position = "center")
+
+```
 
 ## Available Capacity
 
@@ -160,12 +207,12 @@ sthd_redd_cap = calc_watershed_cap(uww_huc_sf,
 ```
 
 ```{r compile-capacity}
-cap_tot = list(chnk_sum = chnk_sum_cap,
-               chnk_win = chnk_win_cap,
-               chnk_redd = chnk_redd_cap,
-               sthd_sum = sthd_sum_cap,
-               sthd_win = sthd_win_cap,
-               sthd_redd = sthd_redd_cap) %>%
+cap_totals = list(chnk_sum = chnk_sum_cap,
+                  chnk_win = chnk_win_cap,
+                  chnk_redd = chnk_redd_cap,
+                  sthd_sum = sthd_sum_cap,
+                  sthd_win = sthd_win_cap,
+                  sthd_redd = sthd_redd_cap) %>%
   map_df(.id = "type",
         .f = function(x) {
           x %>%
@@ -196,7 +243,192 @@ cap_tot = list(chnk_sum = chnk_sum_cap,
 
 ## Available Capacity
 
+```{r cap-table}
+cap_totals %>%
+  mutate(avg_cap_per_m = tot_cap / tot_length) %>%
+  mutate(tot_length_km = tot_length / 1000) %>%
+  rename(`n Reaches` = n_rchs,
+         `Stream Length (km)` = tot_length_km,
+         Capacity = tot_cap,
+         SE = tot_cap_se,
+         `Avg. Capacity / m` = avg_cap_per_m) %>%
+  select(Species,
+         LifeStage,
+         `n Reaches`,
+         `Stream Length (km)`,
+         Capacity,
+         SE,
+         `Avg. Capacity / m`) %>%
+  kable(booktabs = T,
+        digits = c(0, 0, 1, 0, 0, 0, 3),
+        format.args = list(big.mark = ","),
+        caption = "Estimates of current available watershed capacity by species and life-stage.") %>%
+  kable_styling()
+
+```
+
+```{r create-chnk-maps}
+# pick a background river color
+river_color = "lightskyblue1"
+
+# chinook summer parr
+chnk_sum_map = uww_sum_sf %>%
+  ggplot() +
+  geom_sf(data = uww_huc_sf %>%
+            st_union() %>%
+            nngeo::st_remove_holes(),
+          fill = NA,
+          color = "gray50") +
+  geom_sf(color = river_color) +
+  geom_sf(data = uww_sum_sf %>%
+            filter(chnk),
+          aes(color = chnk_per_m2),
+          size = 1) +
+  scale_color_viridis_c(direction = -1) +
+  #theme_bw() +
+  theme(legend.position = "bottom") +
+  labs(title = "Chinook Salmon",
+       color = expression(`Summer Parr` / m^2))
+
+# chinook winter presmolts
+chnk_win_map = uww_win_sf %>%
+  ggplot() +
+  geom_sf(data = uww_huc_sf %>%
+            st_union() %>%
+            nngeo::st_remove_holes(),
+          fill = NA,
+          color = "gray50") +
+  geom_sf(color = river_color) +
+  geom_sf(data = uww_win_sf %>%
+            filter(chnk),
+          aes(color = chnk_per_m2),
+          size = 1) +
+  scale_color_viridis_c(direction = -1) +
+  #theme_bw() +
+  theme(legend.position = "bottom") +
+  labs(title = "Chinook Salmon",
+       color = expression(`Winter Presmolts` / m^2))
+
+# chinook redds
+chnk_redd_map = uww_redd_sf %>%
+  ggplot() +
+  geom_sf(data = uww_huc_sf %>%
+            st_union() %>%
+            nngeo::st_remove_holes(),
+          fill = NA,
+          color = "gray50") +
+  geom_sf(color = river_color) +
+  geom_sf(data = uww_redd_sf %>%
+            filter(chnk) %>%
+            mutate(chnk_per_km = chnk_per_m * 1000),
+          aes(color = chnk_per_km),
+          size = 1) +
+  scale_color_viridis_c(direction = -1) +
+  #theme_bw() +
+  theme(legend.position = "bottom") +
+  labs(title = "Chinook Salmon",
+       color = expression(Redds / km))
+    
+
+```
+
+```{r create-sthd-maps}
+# steelhead summer juveniles
+sthd_sum_map = uww_sum_sf %>%
+  ggplot() +
+  geom_sf(data = uww_huc_sf %>%
+            st_union() %>%
+            nngeo::st_remove_holes(),
+          fill = NA,
+          color = "gray50") +
+  geom_sf(color = river_color) +
+  geom_sf(data = uww_sum_sf %>%
+            filter(sthd),
+          aes(color = sthd_per_m2),
+          size = 1) +
+  scale_color_viridis_c(direction = -1) +
+  #theme_bw() +
+  theme(legend.position = "bottom") +
+  labs(title = "Steelhead",
+       color = expression(`Summer Juveniles` / m^2))
+
+# steelhead winter juveniles
+sthd_win_map = uww_win_sf %>%
+  ggplot() +
+  geom_sf(data = uww_huc_sf %>%
+            st_union() %>%
+            nngeo::st_remove_holes(),
+          fill = NA,
+          color = "gray50") +
+  geom_sf(color = river_color) +
+  geom_sf(data = uww_win_sf %>%
+            filter(sthd),
+          aes(color = sthd_per_m2),
+          size = 1) +
+  scale_color_viridis_c(direction = -1) +
+  #theme_bw() +
+  theme(legend.position = "bottom") +
+  labs(title = "Steelhead",
+       color = expression(`Winter Juveniles` / m^2))
+
+# steelhead redds
+sthd_redd_map = uww_redd_sf %>%
+  ggplot() +
+  geom_sf(data = uww_huc_sf %>%
+            st_union() %>%
+            nngeo::st_remove_holes(),
+          fill = NA,
+          color = "gray50") +
+  geom_sf(color = river_color) +
+  geom_sf(data = uww_redd_sf %>%
+            filter(sthd) %>%
+            mutate(sthd_per_km = sthd_per_m * 1000),
+          aes(color = sthd_per_km),
+          size = 1) +
+  scale_color_viridis_c(direction = -1) +
+  #theme_bw() +
+  theme(legend.position = "bottom") +
+  labs(title = "Steelhead",
+       color = expression(Redds / km))
+
+```
+
+```{r chnk-map, fig.cap = "tmp"}
+ggarrange(chnk_sum_map,
+          chnk_win_map,
+          chnk_redd_map,
+          nrow = 1)
+
+```
+
+```{r sthd-map, fig.cap = "tmp"}
+ggarrange(sthd_sum_map,
+          sthd_win_map,
+          sthd_redd_map,
+          nrow = 1)
+
+```
+
 ## Capacity Limitations
+
+```{r cap-limits}
+# rec_goals %>%
+#   left_join(cap_tot %>%
+#               rename(Lifestage = LifeStage) %>%
+#               mutate(Lifestage = recode(Lifestage,
+#                                         "Summer" = "Parr",
+#                                         "Winter" = "Presmolt")) %>%
+#               select(-n_rchs,
+#                      -tot_length)) %>%
+#   mutate(deficit = Abundance - tot_cap,
+#          rel_def = deficit / tot_cap) %>%
+#   kable(booktabs = T,
+#         digits = c(rep(0, 5), 1, 0, 3),
+#         caption = "Capacity deficits and relative deficits based on recovery goals.",
+#         format.args = list(big.mark = ',')) %>%
+#   kable_styling()
+
+```
 
 # Inference and Discussion
 
