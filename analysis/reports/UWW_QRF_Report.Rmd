@@ -154,6 +154,14 @@ params %>%
 
 ## Available Capacity
 
+Capacity estimates were generated following the quantile random forest (QRF) framework outlined in @See2021. The method involves fitting a QRF model to paired fish and habitat data across hundreds of sites in seven watersheds within the Columbia River Basin. With  hat model, we predicted fish density at all sites with detailed habitat information. The random forest model produces a distribution of predictions, one for each tree in the forest, and we chose the 90th quantile of that distribution as a proxy for carrying capacity.
+
+### Extrapolation
+
+Although we have hundreds of sites across the Columbia River basin with detailed habitat data, and therefore QRF predictions of capacity at those sites, that really only covers a small percentage of the anadromous zone, even within watersheds with those sites. And many watersheds contain no sites whatsoever. Therefore, to extrapolate our capacity predictions to the areas between these sites, we used a [stream layer](https://www.nwfsc.noaa.gov/research/datatech/data/col_basin_hist_project/index.cfm) available from NOAA fisheries. This layer consists of a polyline shapefile divided into 200m reaches with various attributes attached to each reach. We refer to these as globally available attributes (GAAs) because they are associated with every reach across all watersheds in the Colubia River Basin. The line file is based on the [National Hydrography Dataset High Resolution](https://www.usgs.gov/core-science-systems/ngp/national-hydrography/nhdplus-high-resolution) (NHDPlus HR) dataset, which has a high resolution, 1:24,000.
+
+We determined which reach was closest to each site with predicted capacity, and then fit a different random forest model using the predicted capacity (in either linear or areal density) as the response, and various GAAs as the covariates. The nature of the random forest models allows for non-linear associations between capacity and some GAAs, while also preventing the extrapolation from growing beyond the largest predicted capacities in our initial dataset. We calculated the standard error of our predictions by the standard deviation of the random forest predicted distribution at each reach. The capacity of each 200m reach is calculated by multiplying the predicted fish/m capacity by the length of that reach. To determine the total capacity for a specified region, the capacities of each reach within that region are summed.
+
 ```{r calc-chnk-capacity}
 source(here("R/calc_watershed_cap.R"))
 
@@ -240,6 +248,8 @@ cap_totals = list(chnk_sum = chnk_sum_cap,
 ## Required Capacity
 
 ## Available Capacity
+
+Estimates of total capacity by each life-stage and species in the watershed are showin in Table \@ref(tab:cap-tab). Maps of the capacity extrapolations are shown in Figures \@ref(fig:chnk-maps) and \@ref(fig:sthd-maps).
 
 ```{r cap-table}
 cap_totals %>%

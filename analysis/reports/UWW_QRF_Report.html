@@ -456,6 +456,12 @@ McHugh et al. (2017)
 </div>
 <div id="available-capacity" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Available Capacity</h2>
+<p>Capacity estimates were generated following the quantile random forest (QRF) framework outlined in <span class="citation">See et al. (2021)</span>. The method involves fitting a QRF model to paired fish and habitat data across hundreds of sites in seven watersheds within the Columbia River Basin. With hat model, we predicted fish density at all sites with detailed habitat information. The random forest model produces a distribution of predictions, one for each tree in the forest, and we chose the 90th quantile of that distribution as a proxy for carrying capacity.</p>
+<div id="extrapolation" class="section level3" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> Extrapolation</h3>
+<p>Although we have hundreds of sites across the Columbia River basin with detailed habitat data, and therefore QRF predictions of capacity at those sites, that really only covers a small percentage of the anadromous zone, even within watersheds with those sites. And many watersheds contain no sites whatsoever. Therefore, to extrapolate our capacity predictions to the areas between these sites, we used a <a href="https://www.nwfsc.noaa.gov/research/datatech/data/col_basin_hist_project/index.cfm">stream layer</a> available from NOAA fisheries. This layer consists of a polyline shapefile divided into 200m reaches with various attributes attached to each reach. We refer to these as globally available attributes (GAAs) because they are associated with every reach across all watersheds in the Colubia River Basin. The line file is based on the <a href="https://www.usgs.gov/core-science-systems/ngp/national-hydrography/nhdplus-high-resolution">National Hydrography Dataset High Resolution</a> (NHDPlus HR) dataset, which has a high resolution, 1:24,000.</p>
+<p>We determined which reach was closest to each site with predicted capacity, and then fit a different random forest model using the predicted capacity (in either linear or areal density) as the response, and various GAAs as the covariates. The nature of the random forest models allows for non-linear associations between capacity and some GAAs, while also preventing the extrapolation from growing beyond the largest predicted capacities in our initial dataset. We calculated the standard error of our predictions by the standard deviation of the random forest predicted distribution at each reach. The capacity of each 200m reach is calculated by multiplying the predicted fish/m capacity by the length of that reach. To determine the total capacity for a specified region, the capacities of each reach within that region are summed.</p>
+</div>
 </div>
 <div id="capacity-limitations" class="section level2" number="2.3">
 <h2><span class="header-section-number">2.3</span> Capacity Limitations</h2>
@@ -468,6 +474,7 @@ McHugh et al. (2017)
 </div>
 <div id="available-capacity-1" class="section level2" number="3.2">
 <h2><span class="header-section-number">3.2</span> Available Capacity</h2>
+<p>Estimates of total capacity by each life-stage and species in the watershed are showin in Table <a href="#tab:cap-tab"><strong>??</strong></a>. Maps of the capacity extrapolations are shown in Figures <a href="#fig:chnk-maps"><strong>??</strong></a> and <a href="#fig:sthd-maps"><strong>??</strong></a>.</p>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:cap-table">Table 3.1: </span>Estimates of current available watershed capacity by species and life-stage.
@@ -1008,8 +1015,10 @@ Winter Juveniles
 <div id="references" class="section level1" number="5">
 <h1><span class="header-section-number">5</span> References</h1>
 <!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
-<div id="refs">
-
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-See2021" class="csl-entry">
+See, K. E., M. W. Ackerman, R. A. Carmichael, S. L. Hoffmann, and C. Beasley. 2021. Estimating carrying capacity for juvenile salmon using quantile random forest models. Ecosphere 12(3).
+</div>
 </div>
 </div>
 
