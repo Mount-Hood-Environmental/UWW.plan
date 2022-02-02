@@ -31,8 +31,6 @@ output:
       collapsed: yes
       smooth_scroll: yes
     number_sections: yes
-    fig_caption: yes
-    fig_height: 7
     pandoc_args:
     - --lua-filter=../templates/scholarly-metadata.lua
     - --lua-filter=../templates/author-info-blocks.lua
@@ -79,7 +77,7 @@ library(ggmap)
 library(nngeo)
 
 theme_set(theme_pubr(x.text.angle = 45,
-                     base_size = 7))
+                     base_size = 8))
 
 ```
 
@@ -132,11 +130,11 @@ rec_goals = tibble(Species = c("Chinook", "Steelhead"),
   mutate(`Female Escapement` = Escapement * prop_fem,
          Redds = `Female Escapement` * redd_per_fem,
          Eggs = Redds * fecund,
-         Parr = Eggs * egg_to_parr,
-         Presmolts = Parr * parr_to_presmolt) %>%
+         `Summer Juveniles` = Eggs * egg_to_parr,
+         `Winter Juveniles` = `Summer Juveniles` * parr_to_presmolt) %>%
   select(-c(prop_fem:parr_to_presmolt)) %>%
-  pivot_longer(cols = c(Escapement, `Female Escapement`:Presmolts),
-               names_to = "Life_Stage",
+  pivot_longer(cols = c(Escapement, `Female Escapement`:`Winter Juveniles`),
+               names_to = "LifeStage",
                values_to = "Abundance")
 
 
@@ -224,8 +222,8 @@ cap_totals = list(chnk_sum = chnk_sum_cap,
                           "chnk" = "Chinook",
                           "sthd" = "Steelhead"),
          LifeStage = recode(LifeStage,
-                            "sum" = "Summer Parr",
-                            "win" = "Winter Presmolt",
+                            "sum" = "Summer Juveniles",
+                            "win" = "Winter Juveniles",
                             "redd" = "Redds")) %>%
   select(Species,
          LifeStage,
@@ -288,7 +286,7 @@ chnk_sum_map = uww_sum_sf %>%
   #theme_bw() +
   theme(legend.position = "bottom") +
   labs(title = "Chinook Salmon",
-       color = expression(`Summer Parr` / m^2))
+       color = expression(`Summer Juv` / m^2))
 
 # chinook winter presmolts
 chnk_win_map = uww_win_sf %>%
@@ -307,7 +305,7 @@ chnk_win_map = uww_win_sf %>%
   #theme_bw() +
   theme(legend.position = "bottom") +
   labs(title = "Chinook Salmon",
-       color = expression(`Winter Presmolts` / m^2))
+       color = expression(`Winter Juv` / m^2))
 
 # chinook redds
 chnk_redd_map = uww_redd_sf %>%
@@ -350,7 +348,7 @@ sthd_sum_map = uww_sum_sf %>%
   #theme_bw() +
   theme(legend.position = "bottom") +
   labs(title = "Steelhead",
-       color = expression(`Summer Juveniles` / m^2))
+       color = expression(`Summer Juv` / m^2))
 
 # steelhead winter juveniles
 sthd_win_map = uww_win_sf %>%
@@ -369,7 +367,7 @@ sthd_win_map = uww_win_sf %>%
   #theme_bw() +
   theme(legend.position = "bottom") +
   labs(title = "Steelhead",
-       color = expression(`Winter Juveniles` / m^2))
+       color = expression(`Winter Juv` / m^2))
 
 # steelhead redds
 sthd_redd_map = uww_redd_sf %>%
@@ -396,37 +394,34 @@ sthd_redd_map = uww_redd_sf %>%
 ```{r chnk-map, fig.cap = "tmp"}
 ggarrange(chnk_sum_map,
           chnk_win_map,
-          chnk_redd_map,
-          nrow = 1)
+          chnk_redd_map)
 
 ```
 
 ```{r sthd-map, fig.cap = "tmp"}
 ggarrange(sthd_sum_map,
           sthd_win_map,
-          sthd_redd_map,
-          nrow = 1)
+          sthd_redd_map)
 
 ```
 
 ## Capacity Limitations
 
 ```{r cap-limits}
-# rec_goals %>%
-#   left_join(cap_tot %>%
-#               rename(Lifestage = LifeStage) %>%
-#               mutate(Lifestage = recode(Lifestage,
-#                                         "Summer" = "Parr",
-#                                         "Winter" = "Presmolt")) %>%
-#               select(-n_rchs,
-#                      -tot_length)) %>%
-#   mutate(deficit = Abundance - tot_cap,
-#          rel_def = deficit / tot_cap) %>%
-#   kable(booktabs = T,
-#         digits = c(rep(0, 5), 1, 0, 3),
-#         caption = "Capacity deficits and relative deficits based on recovery goals.",
-#         format.args = list(big.mark = ',')) %>%
-#   kable_styling()
+rec_goals %>%
+  left_join(cap_totals %>%
+              select(-n_rchs,
+                     -tot_length)) %>%
+  mutate(Deficit = Abundance - tot_cap,
+         `Relative Deficit` = Deficit / tot_cap) %>%
+  rename(`Required Capacity` = Abundance,
+         `Available Capacity` = tot_cap,
+         `Capacity SE` = tot_cap_se) %>%
+  kable(booktabs = T,
+        digits = c(0,0,0,0,0,0,0,2),
+        format.args = list(big.mark = ","),
+        caption = "Capacity deficits and relative deficits based on recovery goals.") %>%
+  kable_styling()
 
 ```
 
