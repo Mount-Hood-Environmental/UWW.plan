@@ -285,14 +285,14 @@ div.tocify {
 <div style="page-break-after: always;"></div>
 <div id="background" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Background</h1>
-<p>Water is the conerstone of First Food production and inherently tied to the five fundamental touchstones: hydrology, geomorphology, habitat and network connectivity, riverine biotic community, and riparian vegetation <span class="citation">(Jones et al. 2008)</span>. The Umatilla River Vision defines a holistic approach to the restoration of water quality and the implications thereof. Population status and habitat use of riverine fishes defined as First Food (including Endangered Species Act [ESA] listed middle Columbia River summer steelhead, spring-summer run Chinook salmon, bull trout, and Pacific lamprey) are identified as critical data needs in the assessment of biotic communities <span class="citation">(Jones et al. 2008)</span>. The decline of anadromous Pacific salmonids (<em>Oncorhynchus</em> spp.) across the Pacific Northwest, USA has prompted numerous actions aimed at reversing that trend. These actions are often categorized into four ‘H’s’ - harvest modification, habitat rehabilitation, hydroelectric operations, and hatchery practices. Problematically, substantial uncertainty remains regarding the degree of change to salmon populations that can be exerted across and within these categories, and what combination of changes might most cost-effectively and sustainably reduce mortality and recover depleted populations. Recovery plans (e.g., <span class="citation">NOAA (2009)</span>) have identified adult escapement targets at the population scale, providing a quantitative metric useful for evaluating the magnitude of survival improvements (across life-stages) required. These abundance targets provide a benchmark against which habitat rehabilitation actions can be measured. Here, we apply a novel approach fo estimating life-stage specific habitat capacity for Chinook salmon and steelhead that can be used to quantitatively identify the magnitude of tributary habitat restoration needed to achieve recovery goals. The necessity of tributary habitat restoration actions can now be demonstrated, and the magnitued of required change can be placed in context with the other ‘H’s.’</p>
-<p>We define habitat (carrying) capacity as the maximal abundance or load the stream habitat can support for a given species and life-stage given current resources and physical habitat quantity and quality. Within fisheries research and management, it has long been recognized that biotic and abiotic factors limit productivity within and across life-staged. However, we assume that observed fish density is a poor predictor of habitat capacity owing to both a paucity of individuals and the existence of unmeasured biotic or abiotic variables that may limit capacity. To address this, we have developed a novel approach to estimate the carrying capacity of wadable streams to support spawning and rearing spring-run Chinook salmon and summer-run steelhead using quantile random forest (QRF; <span class="citation">Meinshausen (2006)</span>; <span class="citation">Cade and Noon (2003)</span>; <span class="citation">Idaho OSC Team (2019)</span> - Appendix B). While our capacity models specifically address Chinook salmon and steelhead, any uplift in habitat for these species is expected to also uplift bull trout and lamprey.</p>
+<p>Water is the cornerstone of First Food production and inherently tied to the five fundamental touchstones: hydrology, geomorphology, habitat and network connectivity, riverine biotic community, and riparian vegetation <span class="citation">(Jones et al. 2008)</span>. The Umatilla River Vision defines a holistic approach to the restoration of water quality and the implications thereof. Population status and habitat use of riverine fishes defined as First Food (including Endangered Species Act [ESA] listed middle Columbia River summer-run steelhead, spring-run Chinook salmon, bull trout, and Pacific lamprey) are identified as critical data needs in the assessment of biotic communities <span class="citation">(Jones et al. 2008)</span>. The decline of anadromous Pacific salmonids (<em>Oncorhynchus</em> spp.) across the Pacific Northwest, USA, has prompted numerous actions aimed at reversing that trend. These actions are often categorized into four ‘H’s’ - harvest modification, habitat rehabilitation, hydroelectric operations, and hatchery practices. Problematically, substantial uncertainty remains regarding the degree of change to salmon populations that can be exerted across and within these categories, and what combination of changes might most cost-effectively and sustainably reduce mortality and recover depleted populations. Recovery plans (e.g., <span class="citation">NOAA (2009)</span>) have identified adult escapement targets at the population scale, providing a quantitative metric useful for evaluating the magnitude of survival improvements (across life-stages) required. These abundance targets provide a benchmark against which habitat rehabilitation actions can be measured. Here, we apply a novel approach to estimating life-stage specific habitat capacity for spring-run Chinook salmon (hereafter Chinook salmon) and summer-run steelhead (hereafter steelhead) that can be used to quantitatively estimate the magnitude of tributary habitat restoration needed to achieve recovery goals in the Upper Walla Walla watershed. The necessity of tributary habitat restoration actions can now be demonstrated, and the magnitude of required change can be placed in context with the other ‘H’s.’</p>
+<p>We define habitat carrying capacity as the maximal abundance or load the stream habitat can support for a given species and life-stage given current physical habitat quantity and quality. Within fisheries research and management, it has long been recognized that biotic and abiotic factors limit productivity within and across life-stages. However, we assume that observed fish density is a poor predictor of habitat capacity owing to both a paucity of individuals (e.g., low escapement levels) and the existence of unmeasured biotic or abiotic variables that may limit capacity. To address this, we have developed a novel approach to estimate the carrying capacity of wadable streams to support spawning and rearing Chinook slamon and steelhead a quantile random forest (QRF; <span class="citation">Meinshausen (2006)</span>; <span class="citation">Cade and Noon (2003)</span>; <span class="citation">Idaho OSC Team (2019)</span> - Appendix B) described in <span class="citation">See et al. (2021)</span>.</p>
 </div>
 <div id="methods" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Methods</h1>
 <div id="focal-species" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> Focal Species</h2>
-<p>The focal species for the habitat capacity assessment are:</p>
+<p>The focal species for the QRF habitat capacity assessment are:</p>
 <ul>
 <li>Spring-run Chinook salmon (<em>Oncorhynchus tshawytscha</em>; hereafter Chinook salmon)</li>
 <li>Middle Columbia River summer steelhead (<em>O. mykiss</em>; hereafter steelhead; ESA-listed threatened)</li>
@@ -309,10 +309,11 @@ div.tocify {
 </div>
 <div id="general-approach" class="section level2" number="2.3">
 <h2><span class="header-section-number">2.3</span> General Approach</h2>
-<p>Habitat data from the Columbia Habitat Monitoring Program (CHaMP) were paired to fish survey data to develop fish-habitat relationships. Importantly, the QRF model <span class="citation">(See et al. 2021)</span> places no constraints on possible fish-habitat relationships; instead, relationships are estimated from the data regardless of being positive, negative, linear, non-linear, etc. Based on the observed fish-habitat relationships, we then predict habitat capacity at any location using measurements of the same habitat covariates used to populate the model (e.g., at all CHaMP sites). From this, we can extrapolate capacity predictions at CHaMP sites across larger scales (e.g., watershed, population) using globally available attribute data. Here, globally available attribute data available for the Upper Walla Walla River watershed is used to determine capacity at the aforementioned scales. Additionally, we apply a generalized capacity model to estimate life-stage specific capacity requirements and evaluate any deficits (required capacity - available capacity) throughout the Upper Walla Walla River. Finally, a NorWeST summer stream temperature model will be used to describe changes in predicted capacity for target species given various changing climate scenarios <span class="citation">(Isaak et al. 2012; Peterson et al. 2013; Isaak et al. 2017)</span>.</p>
+<p>Habitat data from the Columbia Habitat Monitoring Program (CHaMP) were paired to fish survey data to develop fish-habitat relationships <span class="citation">(See et al. 2021)</span>, Importantly, the QRF model places no constraints on possible fish-habitat relationships; instead, relationships are estimated from the empirical data regardless of being positive, negative, linear, non-linear, etc. Based on the observed fish-habitat relationships, we can then predict habitat capacity at any location using measurements of the same habitat covariates used to populate the model (e.g., at all CHaMP sites). From this, we can then extrapolate capacity predictions at CHaMP sites across larger spatial scales (e.g., watershed) using globally available attribute data. Here, we use globally available attribute data available for the Upper Walla Walla River watershed to determine capacity at the watershed scale. Additionally, we apply a generalized capacity model to estimate life-stage specific capacity requirements to achieve given recovery goals. Habitat capacity deficits (limitations) can then be estimated as the required capacity minus the available capacity; we estimate capacity deficits for the Upper Walla Walla watershed to identify potential species and life-stage limitations. Finally, we leverage a NorWeST summer stream temperature model <span class="citation">(Isaak et al. 2012; Peterson et al. 2013; Isaak et al. 2017)</span> to evaluate changes in predicted capacity for target species and life-stages given various changing climate scenarios.</p>
 </div>
 <div id="required-capacity" class="section level2" number="2.4">
 <h2><span class="header-section-number">2.4</span> Required Capacity</h2>
+<p>Life-stage specific capacity requirements were estimated using a Generalized Capacity model which uses a combination of empirical and literature-based parameter estimates (Table <a href="#tab:param-tab">2.1</a>) to determine capacity necessary to achieve a given recovery goal. A detailed description of the Generalized Capacity model (including other methods considered to estimate capacity requirements) is provided in Appendix C of <span class="citation">Idaho OSC Team (2019)</span>. We used adult escapement goals of 3,000 for Chinook salmon and 3,400 for steelhead. Briefly, the adult escapement goals are multiplied step-wise by parameter values in Table <a href="#tab:param-tab">2.1</a> to determine the abundance for a given life-stage necessary to support that goal. As an example, the adult escapement goal is multiplied by an estimates of the proportion of female in the population and an estimate of the redds per female to determine the number of redds necessary for recovery. Sources for each of the parameter estimates are provided in Table <a href="#tab:param-tab">2.1</a>; however, those values can be modified if e.g., more up-to-date or local estimates are available.</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:param-tab">Table 2.1: </span>Life history parameters for the generalized capacity model.
@@ -494,13 +495,205 @@ McHugh et al. (2017)
 <h1><span class="header-section-number">3</span> Results</h1>
 <div id="required-capacity-1" class="section level2" number="3.1">
 <h2><span class="header-section-number">3.1</span> Required Capacity</h2>
+<p>The resulting estimates of habitat capacity requirements are shown in Table <a href="#tab:require-tab">3.1</a></p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:require-tab">Table 3.1: </span>Life-stage specific habitat capacity requirement estimates necessary to achieve given escapement recovery goals.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Species
+</th>
+<th style="text-align:left;">
+Scenario
+</th>
+<th style="text-align:left;">
+LifeStage
+</th>
+<th style="text-align:right;">
+Abundance
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Chinook
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Escapement
+</td>
+<td style="text-align:right;">
+3,000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Chinook
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Female Escapement
+</td>
+<td style="text-align:right;">
+1,470
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Chinook
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Redds
+</td>
+<td style="text-align:right;">
+1,470
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Chinook
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Eggs
+</td>
+<td style="text-align:right;">
+7,776,300
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Chinook
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Summer Juveniles
+</td>
+<td style="text-align:right;">
+2,255,127
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Chinook
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Winter Juveniles
+</td>
+<td style="text-align:right;">
+913,710
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Steelhead
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Escapement
+</td>
+<td style="text-align:right;">
+3,400
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Steelhead
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Female Escapement
+</td>
+<td style="text-align:right;">
+2,116
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Steelhead
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Redds
+</td>
+<td style="text-align:right;">
+1,887
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Steelhead
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Eggs
+</td>
+<td style="text-align:right;">
+9,295,348
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Steelhead
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Summer Juveniles
+</td>
+<td style="text-align:right;">
+1,247,900
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Steelhead
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Winter Juveniles
+</td>
+<td style="text-align:right;">
+447,532
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="available-capacity-1" class="section level2" number="3.2">
 <h2><span class="header-section-number">3.2</span> Available Capacity</h2>
-<p>Estimates of total capacity by each life-stage and species in the watershed are showin in Table <a href="#tab:cap-table">3.1</a>. Maps of the capacity extrapolations are shown in Figures <a href="#fig:chnk-maps">3.1</a> and <a href="#fig:sthd-maps">3.2</a>.</p>
+<p>Estimates of total capacity by each life-stage and species in the watershed are showin in Table <a href="#tab:cap-table">3.2</a>. Maps of the capacity extrapolations are shown in Figures <a href="#fig:chnk-maps">3.1</a> and <a href="#fig:sthd-maps">3.2</a>.</p>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:cap-table">Table 3.1: </span>Estimates of current available watershed capacity by species and life-stage.
+<span id="tab:cap-table">Table 3.2: </span>Estimates of current available watershed capacity by species and life-stage.
 </caption>
 <thead>
 <tr>
@@ -685,7 +878,7 @@ Figure 3.2: Extrapolations of habitat capacity for steelhead, by life-stage, wit
 <h2><span class="header-section-number">3.3</span> Capacity Limitations</h2>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:cap-limits">Table 3.2: </span>Capacity deficits and relative deficits based on recovery goals.
+<span id="tab:cap-limits">Table 3.3: </span>Capacity deficits and relative deficits based on recovery goals.
 </caption>
 <thead>
 <tr>
