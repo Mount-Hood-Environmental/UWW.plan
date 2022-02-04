@@ -5,23 +5,17 @@
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Mount-Hood-Environmental/UWW.plan/main?urlpath=rstudio)
 
-This repository contains the data and code for our paper:
-
-> Authors, (YYYY). *Title of your paper goes here*. Name of journal/book
-> <https://doi.org/xxx/xxx>
-
-Our pre-print is online here:
-
-> Authors, (YYYY). *Title of your paper goes here*. Name of
-> journal/book, Accessed 04 Feb 2022. Online at
-> <https://doi.org/xxx/xxx>
+This repository contains the data, code, results, and reporting for
+biological analyses to support the Upper Walla Walla Watershed
+Assessment & Action Plan.
 
 ### How to cite
 
 Please cite this compendium as:
 
-> Authors, (2022). *Compendium of R code and data for Title of your
-> paper goes here*. Accessed 04 Feb 2022. Online at
+> Mount Hood Environmental, (2022). *Compendium of R code and data for
+> Upper Walla Walla Watershed Assessment & Action Plan - Biological
+> Evaluations*. Accessed 04 Feb 2022. Online at
 > <https://doi.org/xxx/xxx>
 
 ## Contents
