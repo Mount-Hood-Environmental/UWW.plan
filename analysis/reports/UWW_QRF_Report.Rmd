@@ -104,12 +104,15 @@ While our habitat capacity models specifically address Chinook salmon and steelh
 * Columbia River bull trout (*Salvelinus confluentus*; ESA-listed threatened)
 * Pacific lamprey (*Lampetra tridentata*)
 
+
 ## Study Area
 
 This assessment will be focused on the alluvial channel of the Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North and South forks of the Walla Walla River. The primary study area includes approximately 70 miles of stream.
 
+
 ## General Approach
 
+Habitat data from the Columbia Habitat Monitoring Program (CHaMP) were paired to fish survey data to develop fish-habitat relationships. Importantly, the QRF model [@See2021] places no constraints on possible fish-habitat relationships; instead, relationships are estimated from the data regardless of being positive, negative, linear, non-linear, etc. Based on the observed fish-habitat relationships, we then predict habitat capacity at any location using measurements of the same habitat covariates used to populate the model (e.g., at all CHaMP sites). From this, we can extrapolate capacity predictions at CHaMP sites across larger scales (e.g., watershed, population) using globally available attribute data. Here, globally available attribute data available for the Upper Walla Walla River watershed is used to determine capacity at the aforementioned scales. Additionally, we apply a generalized capacity model to estimate life-stage specific capacity requirements and evaluate any deficits (required capacity - available capacity) throughout the Upper Walla Walla River. Finally, a NorWeST summer stream temperature model will be used to describe changes in predicted capacity for target species given various changing climate scenarios [@Isaak2012; @Peterson2013; @Isaak2017].
 
 ```{r load-data}
 # Upper Walla Walla QRF extrapolations
@@ -273,7 +276,7 @@ cap_totals = list(chnk_sum = chnk_sum_cap,
 
 ## Available Capacity
 
-Estimates of total capacity by each life-stage and species in the watershed are showin in Table \@ref(tab:cap-tab). Maps of the capacity extrapolations are shown in Figures \@ref(fig:chnk-maps) and \@ref(fig:sthd-maps).
+Estimates of total capacity by each life-stage and species in the watershed are showin in Table \@ref(tab:cap-table). Maps of the capacity extrapolations are shown in Figures \@ref(fig:chnk-maps) and \@ref(fig:sthd-maps).
 
 ```{r cap-table}
 cap_totals %>%
@@ -425,14 +428,14 @@ sthd_redd_map = uww_redd_sf %>%
 
 ```
 
-```{r chnk-map, fig.cap = "tmp"}
+```{r chnk-maps, fig.cap = "Extrapolations of habitat capacity for Chinook salmon, by life-stage, within the Upper Walla Walla watershed."}
 ggarrange(chnk_sum_map,
           chnk_win_map,
           chnk_redd_map)
 
 ```
 
-```{r sthd-map, fig.cap = "tmp"}
+```{r sthd-maps, fig.cap = "Extrapolations of habitat capacity for steelhead, by life-stage, within the Upper Walla Walla watershed."}
 ggarrange(sthd_sum_map,
           sthd_win_map,
           sthd_redd_map)
