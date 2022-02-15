@@ -142,8 +142,8 @@ uww_redd_df = uww_redd_sf %>%
 params = read_csv(here("analysis/data/raw_data/LifeHistoryParameters.csv"))
 
 rec_goals = tibble(Species = c("Chinook", "Steelhead"),
-                   Scenario = "Unknown",
-                   Escapement = c(3000, 3400)) %>%
+                   Scenario = "CBPTF 2020",
+                   Escapement = c(3600, 3400)) %>%
   inner_join(params %>%
                mutate(Parameter = recode(Parameter,
                                          "Female Ratio" = "prop_fem",
