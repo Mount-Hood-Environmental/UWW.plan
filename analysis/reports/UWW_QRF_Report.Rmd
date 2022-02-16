@@ -194,7 +194,7 @@ params %>%
 
 Available capacity estimates were generated following the quantile random forest (QRF) framework described in @See2021. The QRF approach enables spatially continuous estimates of available habitat capacity given existing conditions and for key life-stages of Chinook salmon and steelhead. Currently, available QRF models allow evaluation of three anadromous life stages: 1) spawning capacity (i.e., the number of redds that can be supported), 2) summer juvenile rearing capacity (i.e., the number of parr that can be supported during low-flow summer months), and 3) winter juvenile rearing capacity (i.e., the number of presmolts that can be supported through winter months). The QRF models to estimate available habitat capacity, including data inputs, are described in detail in Appendix B of @IdahoOSCTeam2019.
 
-We define habitat (carrying) capacity as the maximal abundance or load the habitat can support for a given species and life stage given current resources and habitat quantity and quality. The approach involves fitting a QRF model to paired fish and habitat data across hundreds of sites in seven watersheds within the Columbia River Basin. Habitat data from the Colmbia Habitat Monitoring Program (CHaMP) were paired to juvenile fish and redd survey data to develop fish-habitat relationships [@See2021]. Importantly, the QRF model places no constraints on possible fish-habitat relationships; instead, relationships are estimated from the empirical data regardless of being positive, negative, linear, non-linear, etc. Based on the observed fish-habitat relationships, we can then predict habitat capacity at any location using measurements of the same habitat covariates used to populate the model (e.g., at all CHaMP sites) (Table \@ref(tab:cov-tbl)).
+We define habitat (carrying) capacity as the maximal abundance or load the habitat can support for a given species and life stage given current resources and habitat quantity and quality. The approach involves fitting a QRF model to paired fish and habitat data across hundreds of sites in seven watersheds within the Columbia River Basin. Habitat data from the Colmbia Habitat Monitoring Program (CHaMP) were paired to juvenile fish and redd survey data to develop fish-habitat relationships [@See2021]. Importantly, the QRF model places no constraints on possible fish-habitat relationships; instead, relationships are estimated from the empirical data regardless of being positive, negative, linear, non-linear, etc. Based on the observed fish-habitat relationships, we can then predict habitat capacity at any location using measurements of the same habitat covariates used to populate the model (e.g., at all CHaMP sites) (Table \@ref(tab:cov-tbl)). The random forest model produces a distribution of predictions, one for each tree in the forest, and we chose the 90th quantile of that distribution as a proxy for carrying capacity.
 
 ```{r cov-tbl}
 load(here("analysis/data/derived_data/hab_cov_tbl.rda"))
@@ -210,13 +210,20 @@ hab_cov_tbl %>%
 
 ### Extrapolation
 
-From this, we can then extrapolate capacity predictions at CHaMP sites across larger spatial scales (e.g., watershed) using globally available attribute data. Here, we use globally available attribute data available for the Upper Walla Walla River watershed to determine capacity at the watershed scale. Additionally, we apply a generalized capacity model to estimate life-stage specific capacity requirements to achieve given recovery goals. Habitat capacity deficits (limitations) can then be estimated as the required capacity minus the available capacity; we estimate capacity deficits for the Upper Walla Walla watershed to identify potential species and life-stage limitations. Finally, we leverage a NorWeST summer stream temperature model [@Isaak2012; @Peterson2013; @Isaak2017] to evaluate changes in predicted capacity for target species and life-stages given various changing climate scenarios.
+Although we have hundreds of sites across the Columbia River basin with detailed habitat data, and therefore QRF predictions of capacity at those sites, that really only covers a small percentage of the anadromous zone, evein within watersheds with those sites. And many watershed, including the Walla Walla, contain no sites whatsoever.<!--I need to verify that statement, there may be a small number of CHaMP sites in the Walla Walla, but I believe, not--> Therefore, to extrapolate our capacity predictions at CHaMP sites to other areas, we used a [stream layer](https://www.nwfsc.noaa.gov/research/datatech/data/col_basin_hist_project/index.cfm) available from NOAA fisheries. This layer consists of a polyline shapefile divided into 200m reaches with various attributes attached to each reach. We refer to these as globally available attributes (GAAs) because they are associated with every reach across all watersheds in the Columbia River Basin. The file is derived  from the [National Hydrography Dataset High Resolution](https://www.usgs.gov/core-science-systems/ngp/national-hydrography/nhdplus-high-resolution) (NHDPlus HR) dataset, which has a high resolution, 1:24,000. Here, we used GAA data available for the Upper Walla Walla River watershed to estimate capacity at the watershed scale.
 
-With  that model, we predicted fish density at all sites with detailed habitat information. The random forest model produces a distribution of predictions, one for each tree in the forest, and we chose the 90th quantile of that distribution as a proxy for carrying capacity.
+We fit an extrapolation model using the predicted capacity (in either linear or areal density) as the response, and various GAAs as the covariates. The extrapolation model was also a random forest model; the nature of the random forest models allows for non-linear associations between capacity and some GAAs, while also preventing the extrapolation from growing beyond the largest predicted capacities in our initial dataset. We calculated the standard error of our predictions by the standard deviation of the random forest predicted distribution at each reach. The capacity of each 200m reach is calculated by multiplying the predicted fish/m capacity by the length of that reach. To determine the total capacity for a specified region, the capacities of each reach within that region are summed.
 
-Although we have hundreds of sites across the Columbia River basin with detailed habitat data, and therefore QRF predictions of capacity at those sites, that really only covers a small percentage of the anadromous zone, even within watersheds with those sites. And many watersheds contain no sites whatsoever. Therefore, to extrapolate our capacity predictions to the areas between these sites, we used a [stream layer](https://www.nwfsc.noaa.gov/research/datatech/data/col_basin_hist_project/index.cfm) available from NOAA fisheries. This layer consists of a polyline shapefile divided into 200m reaches with various attributes attached to each reach. We refer to these as globally available attributes (GAAs) because they are associated with every reach across all watersheds in the Colubia River Basin. The line file is based on the [National Hydrography Dataset High Resolution](https://www.usgs.gov/core-science-systems/ngp/national-hydrography/nhdplus-high-resolution) (NHDPlus HR) dataset, which has a high resolution, 1:24,000.
+```{r gaa-tbl}
+load(here("analysis/data/derived_data/extrap_gaa_tbl.rda"))
 
-We determined which reach was closest to each site with predicted capacity, and then fit a different random forest model using the predicted capacity (in either linear or areal density) as the response, and various GAAs as the covariates. The nature of the random forest models allows for non-linear associations between capacity and some GAAs, while also preventing the extrapolation from growing beyond the largest predicted capacities in our initial dataset. We calculated the standard error of our predictions by the standard deviation of the random forest predicted distribution at each reach. The capacity of each 200m reach is calculated by multiplying the predicted fish/m capacity by the length of that reach. To determine the total capacity for a specified region, the capacities of each reach within that region are summed.
+gaa_tbl %>%
+  kable(booktabs = T,
+        caption = "Habitat covariates and their descriptions used in the random forest extrapolation model.") %>%
+  kable_styling(full_width = F,
+                position = "center")
+
+```
 
 ```{r calc-chnk-capacity}
 source(here("R/calc_watershed_cap.R"))
@@ -297,13 +304,19 @@ cap_totals = list(chnk_sum = chnk_sum_cap,
 
 ```
 
+<!--Finally, we leverage a NorWeST summer stream temperature model [@Isaak2012; @Peterson2013; @Isaak2017] to evaluate changes in predicted capacity for target species and life-stages given various changing climate scenarios.-->
+
+
 ## Capacity Limitations
+
+Finally, habitat capacity deficits (limitations) can then be estimated as the required capacity minus the available capacity. We estimated capacity deficits, including relative deficits, for the Upper Walla Walla watershed to identify potential species and life-stage limitations in physical habitat quantity and/or quality.
+
 
 # Results
 
 ## Required Capacity
 
-The resulting estimates of habitat capacity requirements are shown in Table \@ref(tab:require-tab)
+The resulting estimates of habitat capacity requirements are shown in Table \@ref(tab:require-tab), based on recovery goals defined in @CBPTF2020. These abundance estimates represent the required number of a given life-stage that are necessary to achieve target adult escapement goals.
 
 ```{r require-tab}
 rec_goals %>%
@@ -319,6 +332,8 @@ rec_goals %>%
 
 
 ## Available Capacity
+
+# Start Here
 
 Estimates of total capacity by each life-stage and species in the watershed are showin in Table \@ref(tab:cap-table). Maps of the capacity extrapolations are shown in Figures \@ref(fig:chnk-maps) and \@ref(fig:sthd-maps).
 
@@ -342,7 +357,8 @@ cap_totals %>%
         digits = c(0, 0, 1, 0, 0, 0, 3),
         format.args = list(big.mark = ","),
         caption = "Estimates of current available watershed capacity by species and life-stage.") %>%
-  kable_styling()
+  kable_styling(full_width = F,
+                position = "center")
 
 ```
 
@@ -503,11 +519,14 @@ rec_goals %>%
         digits = c(0,0,0,0,0,0,0,2),
         format.args = list(big.mark = ","),
         caption = "Capacity deficits and relative deficits based on recovery goals.") %>%
-  kable_styling()
+  kable_styling(full_width = F,
+                position = "center")
 
 ```
 
 # Inference and Discussion
+
+# Considerations
 
 # References
 <!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
