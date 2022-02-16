@@ -59,7 +59,7 @@ knitr::opts_chunk$set(
   dpi = 600
 )
 
-options(knitr.kable.NA = '-')
+options(knitr.kable.NA = '--')
 
 ```
 
@@ -77,6 +77,7 @@ library(tidyverse)
 library(magrittr)
 library(ggmap)
 library(nngeo)
+library(janitor)
 
 theme_set(theme_pubr(x.text.angle = 45,
                      base_size = 8))
@@ -172,7 +173,6 @@ rec_goals = tibble(Species = c("Chinook", "Steelhead"),
                names_to = "LifeStage",
                values_to = "Abundance")
 
-
 ```
 
 Life-stage-specific capacity requirement were estimates using a Generalized Capacity Model described in Appendix C of @IdahoOSCTeam2019 which uses a combination of empirical and literature-based parameter estimates (Table \@ref(tab:param-tab)) to determine capacity necessary to achieve a given adult abundance goal. We used adult escapement goals of `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Chinook" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for Chinook salmon and `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Steelhead" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for steelhead. These escapement goals are "high-range" goals and are intended to represent "healthy and harvestable abundance levels that would sustain very high levels of species viability, significant fishery opportunities and harvest, and a fuller range of ecological values" [@CBPTF2020]. Briefly, these adult escapement goals are multiplied step-wise by parameter values in Table \@ref(tab:param-tab) to determine the abundance for a given life-stage necessary to support that goal. As an example, the adult escapement goal is multiplied by an estimate of the proportion of female in the population and an estimate of the redds per female to determine the number of redds necessary for recovery. Sources for each of the parameter estimates are provided in Table \@ref(tab:param-tab); however, those values can be modified if e.g., more up-to-date or local estimates are available and justifiable.
@@ -181,11 +181,13 @@ Life-stage-specific capacity requirement were estimates using a Generalized Capa
 params %>%
   kable(booktabs = T,
         digits = 3,
+        align = "lccc",
         format.args = list(big.mark = ",",
                            drop0trailing = T),
         caption = "Life history parameters for the generalized capacity model.") %>%
   kable_styling(full_width = F,
-                position = "center")
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
 
 ```
 
@@ -202,8 +204,10 @@ load(here("analysis/data/derived_data/hab_cov_tbl.rda"))
 hab_cov_tbl %>%
   select(-Covariate) %>%
   kable(booktabs = T,
+        align = "ccccccccl",
         caption = "Habitat covariates and their descriptions used in each of the QRF capacity models. Numbers indicate where each metric ranked in relative importance for each model. Dots indicate a metric was not used for a given model.") %>%
-  kable_styling(position = "center")
+  kable_styling(position = "center",
+                bootstrap_options = c("striped", "condensed"))
 
 ```
 
@@ -219,9 +223,11 @@ load(here("analysis/data/derived_data/extrap_gaa_tbl.rda"))
 
 gaa_tbl %>%
   kable(booktabs = T,
+        align = "cl",
         caption = "Habitat covariates and their descriptions used in the random forest extrapolation model.") %>%
   kable_styling(full_width = F,
-                position = "center")
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
 
 ```
 
@@ -322,20 +328,20 @@ The resulting estimates of habitat capacity requirements are shown in Table \@re
 rec_goals %>%
   kable(booktabs = T,
         digits = 0,
+        align = "cccc",
         format.args = list(big.mark = ",",
                            drop0trailing = T),
         caption = "Life-stage specific habitat capacity requirement estimates necessary to achieve given escapement recovery goals.") %>%
   kable_styling(full_width = F,
-                position = "center")
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
 
 ```
 
 
 ## Available Capacity
 
-# Start Here
-
-Estimates of total capacity by each life-stage and species in the watershed are showin in Table \@ref(tab:cap-table). Maps of the capacity extrapolations are shown in Figures \@ref(fig:chnk-maps) and \@ref(fig:sthd-maps).
+Estimates of total capacity by species and life-stage are shown in Table \@ref(tab:cap-table). Currently, using the spatial domains defined in [StreamNet](https://www.streamnet.org/home/data-maps/gis-data-sets/), capacity extrapolations were made for `r unique(cap_totals$n_rchs[cap_totals$Species == "Chinook"])` reaches totaling `r round(unique(cap_totals$tot_length[cap_totals$Species == "Chinook"]) / 1000)` km in length for Chinook salmon and `r prettyNum(unique(cap_totals$n_rchs[cap_totals$Species == "Steelhead"]), big.mark = ",")` reaches totaling `r round(unique(cap_totals$tot_length[cap_totals$Species == "Steelhead"]) / 1000)` km in length for steelhead. If different spatial domains are deemed more appropriate these modeled spatial domains can be updated, taking into account study questions.
 
 ```{r cap-table}
 cap_totals %>%
@@ -355,12 +361,16 @@ cap_totals %>%
          `Avg. Capacity / m`) %>%
   kable(booktabs = T,
         digits = c(0, 0, 1, 0, 0, 0, 3),
+        align = "ccccccc",
         format.args = list(big.mark = ","),
         caption = "Estimates of current available watershed capacity by species and life-stage.") %>%
   kable_styling(full_width = F,
-                position = "center")
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
 
 ```
+
+Maps of the capacity extrapolations are shown in Figures \@ref(fig:chnk-maps) and \@ref(fig:sthd-maps).
 
 ```{r create-chnk-maps}
 # pick a background river color
@@ -381,8 +391,10 @@ chnk_sum_map = uww_sum_sf %>%
           size = 1) +
   scale_color_viridis_c(direction = -1) +
   #theme_bw() +
-  theme(legend.position = "bottom") +
-  labs(title = "Chinook Salmon",
+  theme(legend.position = "bottom",
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank()) +
+  labs(title = "Chinook, Summer Juveniles",
        color = expression(`Summer Juv` / m^2))
 
 # chinook winter presmolts
@@ -400,8 +412,10 @@ chnk_win_map = uww_win_sf %>%
           size = 1) +
   scale_color_viridis_c(direction = -1) +
   #theme_bw() +
-  theme(legend.position = "bottom") +
-  labs(title = "Chinook Salmon",
+  theme(legend.position = "bottom",
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank()) +
+  labs(title = "Chinook, Winter Juveniles",
        color = expression(`Winter Juv` / m^2))
 
 # chinook redds
@@ -420,8 +434,10 @@ chnk_redd_map = uww_redd_sf %>%
           size = 1) +
   scale_color_viridis_c(direction = -1) +
   #theme_bw() +
-  theme(legend.position = "bottom") +
-  labs(title = "Chinook Salmon",
+  theme(legend.position = "bottom",
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank()) +
+  labs(title = "Chinook, Redds",
        color = expression(Redds / km))
     
 
@@ -443,8 +459,10 @@ sthd_sum_map = uww_sum_sf %>%
           size = 1) +
   scale_color_viridis_c(direction = -1) +
   #theme_bw() +
-  theme(legend.position = "bottom") +
-  labs(title = "Steelhead",
+  theme(legend.position = "bottom",
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank()) +
+  labs(title = "Steelhead, Summer Juveniles",
        color = expression(`Summer Juv` / m^2))
 
 # steelhead winter juveniles
@@ -462,8 +480,10 @@ sthd_win_map = uww_win_sf %>%
           size = 1) +
   scale_color_viridis_c(direction = -1) +
   #theme_bw() +
-  theme(legend.position = "bottom") +
-  labs(title = "Steelhead",
+  theme(legend.position = "bottom",
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank()) +
+  labs(title = "Steelhead, Winter Juveniles",
        color = expression(`Winter Juv` / m^2))
 
 # steelhead redds
@@ -482,8 +502,10 @@ sthd_redd_map = uww_redd_sf %>%
           size = 1) +
   scale_color_viridis_c(direction = -1) +
   #theme_bw() +
-  theme(legend.position = "bottom") +
-  labs(title = "Steelhead",
+  theme(legend.position = "bottom",
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank()) +
+  labs(title = "Steelhead, Redds",
        color = expression(Redds / km))
 
 ```
@@ -517,16 +539,141 @@ rec_goals %>%
          `Capacity SE` = tot_cap_se) %>%
   kable(booktabs = T,
         digits = c(0,0,0,0,0,0,0,2),
+        align = "cccccccc",
         format.args = list(big.mark = ","),
         caption = "Capacity deficits and relative deficits based on recovery goals.") %>%
   kable_styling(full_width = F,
-                position = "center")
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
 
 ```
 
 # Inference and Discussion
 
-# Considerations
+## Further Considerations
+
+# Additional Tables and Figures
+
+```{r chnk-sum-tbl}
+chnk_sum_cap %>%
+  subset(!StreamName == "Total" | is.na(StreamName)) %>%
+  adorn_totals() %>%
+  mutate(tot_length = tot_length / 1000) %>%
+  rename(`n Reaches` = n_rchs,
+         `Stream Length (km)` = tot_length,
+         Capacity = tot_cap,
+         `Capacity SE` = tot_cap_se) %>%
+  kable(booktabs = T,
+        digits = c(0,0,1,0,0),
+        align = "lcccc",
+        format.args = list(big.mark = ","),
+        caption = "Estimates of currently available habitat for **juvenile Chinook salmon, summer rearing** in the Upper Walla Walla watershed.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
+
+```
+
+```{r chnk-win-tbl}
+chnk_win_cap %>%
+  subset(!StreamName == "Total" | is.na(StreamName)) %>%
+  adorn_totals() %>%
+  mutate(tot_length = tot_length / 1000) %>%
+  rename(`n Reaches` = n_rchs,
+         `Stream Length (km)` = tot_length,
+         Capacity = tot_cap,
+         `Capacity SE` = tot_cap_se) %>%
+  kable(booktabs = T,
+        digits = c(0,0,1,0,0),
+        align = "lcccc",
+        format.args = list(big.mark = ","),
+        caption = "Estimates of currently available habitat for **juvenile Chinook salmon, winter rearing** in the Upper Walla Walla watershed.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
+
+```
+
+```{r chnk-redd-tbl}
+chnk_redd_cap %>%
+  subset(!StreamName == "Total" | is.na(StreamName)) %>%
+  adorn_totals() %>%
+  mutate(tot_length = tot_length / 1000) %>%
+  rename(`n Reaches` = n_rchs,
+         `Stream Length (km)` = tot_length,
+         Capacity = tot_cap,
+         `Capacity SE` = tot_cap_se) %>%
+  kable(booktabs = T,
+        digits = c(0,0,1,0,0),
+        align = "lcccc",
+        format.args = list(big.mark = ","),
+        caption = "Estimates of currently available habitat for **juvenile Chinook salmon, spawning (redds)** in the Upper Walla Walla watershed.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
+
+```
+
+```{r sthd-sum-tbl}
+sthd_sum_cap %>%
+  subset(!StreamName == "Total" | is.na(StreamName)) %>%
+  adorn_totals() %>%
+  mutate(tot_length = tot_length / 1000) %>%
+  rename(`n Reaches` = n_rchs,
+         `Stream Length (km)` = tot_length,
+         Capacity = tot_cap,
+         `Capacity SE` = tot_cap_se) %>%
+  kable(booktabs = T,
+        digits = c(0,0,1,0,0),
+        align = "lcccc",
+        format.args = list(big.mark = ","),
+        caption = "Estimates of currently available habitat for **juvenile steelhead, summer rearing** in the Upper Walla Walla watershed.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
+
+```
+
+```{r sthd-win-tbl}
+sthd_win_cap %>%
+  subset(!StreamName == "Total" | is.na(StreamName)) %>%
+  adorn_totals() %>%
+  mutate(tot_length = tot_length / 1000) %>%
+  rename(`n Reaches` = n_rchs,
+         `Stream Length (km)` = tot_length,
+         Capacity = tot_cap,
+         `Capacity SE` = tot_cap_se) %>%
+  kable(booktabs = T,
+        digits = c(0,0,1,0,0),
+        align = "lcccc",
+        format.args = list(big.mark = ","),
+        caption = "Estimates of currently available habitat for **juvenile steelhead, winter rearing** in the Upper Walla Walla watershed.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+
+                bootstrap_options = c("striped", "condensed"))
+
+```
+
+```{r sthd-redd-tbl}
+sthd_redd_cap %>%
+  subset(!StreamName == "Total" | is.na(StreamName)) %>%
+  adorn_totals() %>%
+  mutate(tot_length = tot_length / 1000) %>%
+  rename(`n Reaches` = n_rchs,
+         `Stream Length (km)` = tot_length,
+         Capacity = tot_cap,
+         `Capacity SE` = tot_cap_se) %>%
+  kable(booktabs = T,
+        digits = c(0,0,1,0,0),
+        align = "lcccc",
+        format.args = list(big.mark = ","),
+        caption = "Estimates of currently available habitat for **juvenile steelhead, spawning (redds)** in the Upper Walla Walla watershed.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
+
+```
 
 # References
 <!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
