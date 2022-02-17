@@ -79,6 +79,10 @@ hab_cov_tbl = as_tibble(juv_sum_chnk_covs, rownames = "Covariate") %>%
          MetricCategory,
          everything(),
          DescriptiveText) %>%
+  mutate(
+    MetricCategory = if_else(Covariate == "DpthResid" & is.na(MetricCategory), "Size", MetricCategory),
+    MetricCategory = if_else(Covariate == "Tier1" & is.na(MetricCategory), "ChannelUnit", MetricCategory)
+  ) %>%
   arrange(MetricCategory,
           Covariate) %>%
   rename(`Metric Category` = MetricCategory,
