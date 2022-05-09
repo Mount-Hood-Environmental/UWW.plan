@@ -23,7 +23,7 @@ uww_crs = st_crs(4326) # WGS84
 
 #-----------------------------------------------------------------
 # read in HUC12 watershed boundaries from NAS, majority of PNW
-huc12_sf = st_read(paste0(nas_prefix, "data/habitat/watershed_boundaries/WBDHU12.shp")) %>%
+huc12_sf = st_read(paste0(nas_prefix, "Public Data/data/habitat/watershed_boundaries/WBDHU12.shp")) %>%
   st_transform(uww_crs)
 
 #-----------------------------------------------------------------
@@ -31,18 +31,18 @@ huc12_sf = st_read(paste0(nas_prefix, "data/habitat/watershed_boundaries/WBDHU12
 # use Morgan Bond's spatially continuous, 200m linear network layer
 # use random forest extrapolation model
 
-# sum_juv_sf = st_read(paste0(nas_prefix, "data/qrf/extrapolations/Rch_Cap_RF_juv_summer_dash.gpkg")) %>% st_transform(ww_crs)
-# win_juv_sf = st_read(paste0(nas_prefix, "data/qrf/extrapolations/Rch_Cap_RF_juv_winter.gpkg")) %>% st_transform(ww_crs)
-# redd_sf = st_read(paste0(nas_prefix, "data/qrf/extrapolations/Rch_Cap_RF_redds.gpkg")) %>% st_transform(ww_crs)
+sum_juv_sf = st_read(paste0(nas_prefix, "Public Data/data/qrf/extrapolations/Rch_Cap_RF_juv_summer_dash.gpkg")) %>% st_transform(ww_crs)
+win_juv_sf = st_read(paste0(nas_prefix, "Public Data/data/qrf/extrapolations/Rch_Cap_RF_juv_winter.gpkg")) %>% st_transform(ww_crs)
+redd_sf = st_read(paste0(nas_prefix, "Public Data/data/qrf/extrapolations/Rch_Cap_RF_redds.gpkg")) %>% st_transform(ww_crs)
 
 # if needed, these .gpkg files can be saved locally to decrease read times, e.g.,
 # on Mike's machine...
-sum_juv_sf = st_read("C:/Workspace/qrf/Rch_Cap_RF_juv_summer_dash.gpkg") %>%
-  st_transform(uww_crs)
-win_juv_sf = st_read("C:/Workspace/qrf/Rch_Cap_RF_juv_winter.gpkg") %>%
-  st_transform(uww_crs)
-redd_sf = st_read("C:/Workspace/qrf/Rch_Cap_RF_redds.gpkg") %>%
-  st_transform(uww_crs)
+# sum_juv_sf = st_read("C:/Workspace/qrf/Rch_Cap_RF_juv_summer_dash.gpkg") %>%
+#   st_transform(uww_crs)
+# win_juv_sf = st_read("C:/Workspace/qrf/Rch_Cap_RF_juv_winter.gpkg") %>%
+#   st_transform(uww_crs)
+# redd_sf = st_read("C:/Workspace/qrf/Rch_Cap_RF_redds.gpkg") %>%
+#   st_transform(uww_crs)
 # these are too large to reasonably plot
 
 #-----------------------------------------------------------------
