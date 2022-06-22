@@ -671,7 +671,7 @@ rec_goals %>%
          `Available Capacity` = tot_cap,
          `Capacity SE` = tot_cap_se) %>%
   kable(booktabs = T,
-        digits = c(0,0,0,0,0,0,0,0,0,0,0,2),
+        digits = c(0,0,0,0,0,0,0,0,2),
         align = "cccccccccccc",
         format.args = list(big.mark = ","),
         col.names = c("Species","Scenario","Life-stage","Required Capacity", "Required Capacity SD","Available Capacity","Available Capacity SE","Deficit","Relative Deficit"),
@@ -684,7 +684,7 @@ rec_goals %>%
 
 Comparisons of available and required capacity by life-stage are shown in Figures \@ref(fig:chnk-def-fig) and \@ref(fig:sthd-def-fig).
 
-```{r chnk-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for Chinook salmon at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals. Error bars represent one standard deviation from predicted mean values."}
+```{r chnk-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for Chinook salmon at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals. Error bars represent one standard deviation from predicted values."}
 chnk_def_p = rec_goals %>%
   select(-Scenario) %>%
   filter(Species == "Chinook",
@@ -744,7 +744,7 @@ chnk_def_p
 
 ```
 
-```{r sthd-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for steelhead at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals. Error bars represent one standard deviation from predicted mean values."}
+```{r sthd-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for steelhead at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals. Error bars represent one standard deviation from predicted values."}
 sthd_def_p = rec_goals %>%
   select(-Scenario) %>%
   filter(Species == "Steelhead",
