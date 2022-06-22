@@ -32,12 +32,12 @@ output:
       smooth_scroll: yes
     number_sections: yes
     pandoc_args:
-    - --lua-filter=../templates/scholarly-metadata.lua
-    - --lua-filter=../templates/author-info-blocks.lua
-    - --lua-filter=../templates/pagebreak.lua  
-csl: "../templates/american-fisheries-society.csl"
-bibliography:
-  - AckermanLibrary.bib
+#     - --lua-filter=../templates/scholarly-metadata.lua
+#     - --lua-filter=../templates/author-info-blocks.lua
+#     - --lua-filter=../templates/pagebreak.lua  
+# csl: "../templates/american-fisheries-society.csl"
+# bibliography:
+#   - AckermanLibrary.bib
 ---
 
 <!-- the following inserts MHE logo into header -->
@@ -213,26 +213,31 @@ reqs = tibble(Sim_number = rep(1:n.sim,2),
 reqs_summary = reqs %>%
   group_by(Species) %>%
   summarize(Mean_Female_esc = mean(Female_escapement),
+            Female_escapement_sd = sd(Female_escapement),
             Female_escapement_80L = quantile(Female_escapement, .1),
             Female_escapement_80U = quantile(Female_escapement, .9),
             Female_escapement_90L = quantile(Female_escapement, 0.05),
             Female_escapement_90U = quantile(Female_escapement, 0.95),
             Mean_Redds = mean(Redds),
+            Redds_sd = sd(Redds),
             Redds_80L = quantile(Redds, .1),
             Redds_80U = quantile(Redds, .9),
             Redds_90L = quantile(Redds, 0.05),
             Redds_90U = quantile(Redds, 0.95),
             Mean_Eggs = mean(Eggs),
+            Eggs_sd = sd(Eggs),
             Eggs_80L = quantile(Eggs, .1),
             Eggs_80U = quantile(Eggs, .9),
             Eggs_90L = quantile(Eggs, 0.05),
             Eggs_90U = quantile(Eggs, 0.95),
             Mean_Summer_juv = mean(Summer_juv),
+            Summer_juv_sd = sd(Summer_juv),
             Summer_juv_80L = quantile(Summer_juv, .1),
             Summer_juv_80U = quantile(Summer_juv, .9),
             Summer_juv_90L = quantile(Summer_juv, 0.05),
             Summer_juv_90U = quantile(Summer_juv, 0.95),
             Mean_Winter_juv = mean(Winter_juv),
+            Winter_juv_sd = sd(Winter_juv),
             Winter_juv_80L = quantile(Winter_juv, .1),
             Winter_juv_80U = quantile(Winter_juv, .9),
             Winter_juv_90L = quantile(Winter_juv, 0.05),
@@ -289,6 +294,7 @@ rec_goals = tibble(Species = c("Chinook", "Steelhead"),
   pivot_longer(cols = c(Escapement, `Female Escapement`:`Winter Juveniles`),
                names_to = "LifeStage",
                values_to = "Abundance") %>%
+  mutate(SD = c(NA,as.numeric(select(reqs_summary, ends_with("sd"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("sd"))[2,]))) %>%
   mutate(`80% CI, lower` = c(NA,as.numeric(select(reqs_summary, ends_with("80L"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("80L"))[2,]))) %>%
   mutate(`80% CI, upper` = c(NA,as.numeric(select(reqs_summary, ends_with("80U"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("80U"))[2,])))
 ```
@@ -314,12 +320,13 @@ The resulting estimated habitat capacity requirements are shown in Table \@ref(t
 
 ```{r require-tab}
 rec_goals %>%
+  select(-`80% CI, lower`, -`80% CI, upper`) %>%
   kable(booktabs = T,
         digits = 0,
-        align = "cccc",
+        align = "ccccc",
         format.args = list(big.mark = ",",
                            drop0trailing = T),
-        col.names = c("Species", "Scenario","Life-stage","Abundance"),
+        col.names = c("Species", "Scenario","Life-stage","Abundance", "Abundance SD"),
         caption = "Life-stage specific habitat capacity requirement estimates necessary to achieve given escapement recovery goals.") %>%
   kable_styling(full_width = F,
                 position = "center",
@@ -338,9 +345,9 @@ We define the available habitat carrying capacity as the maximal abundance or lo
 The QRF model is a novel approach to estimate the carrying capacity of wadable streams to support spawning and rearing Chinook salmon and steelhead. The approach involves fitting a QRF [@Meinshausen2006; @Cade2003] model to paired fish and habitat data across hundreds of sites in seven watersheds within the Columbia River Basin. Habitat data from the Colmbia Habitat Monitoring Program (CHaMP) were paired to juvenile fish and redd survey data to develop fish-habitat relationships [@See2021]. Importantly, the QRF model places no constraints on possible fish-habitat relationships; instead, relationships are estimated from the empirical data regardless of being positive, negative, linear, non-linear, etc. The QRF approach enables spatially continuous estimates of available habitat capacity given existing conditions at key life-stages for Chinook salmon and steelhead. Currently, available QRF models allow evaluation of three anadromous life stages: 1) spawning (redd) capacity, 2) juvenile (parr) summer rearing capacity, and 3) juvenile (presmolt) winter rearing capacity. Using the observed fish-habitat relationships, we can predict habitat capacity at any location with habitat data for all model covariates (e.g., at all CHaMP sites) (Table \@ref(tab:cov-tab)). The random forest model produces a distribution of predictions, one for each tree in the forest, and we chose the 90th quantile of that distribution as a proxy for carrying capacity. The QRF models used to estimate available habitat capacity, including data inputs, are described in further detail in Appendix B of @IdahoOSCTeam2019.
 
 ```{r cov-tab}
-load(here("analysis/data/derived_data/hab_cov_tbl.rda"))
+load(here("analysis/data/derived_data/QRF_cov_tbl.rda"))
 
-hab_cov_tbl %>%
+QRF_new_hab_cov_tbl %>%
   select(-Covariate) %>%
   kable(booktabs = T,
         align = "ccccccccl",
@@ -358,15 +365,18 @@ Although we have hundreds of sites across the Columbia River basin with detailed
 We estimated capacity in the Upper Walla Wala River watershed by quantifying the relationships between GAAs and QRF capacity predictions at all of the sites used the populate the QRF model. This was conducted using a second random forest model, with GAAs as covariates and QRF-predicted densities (linear or areal) as the response. The random forest approach allows for non-linear associations between capacity and GAAs, and constricts capacity predictions within the estimated range from the initial QRF model. Densities predictions for the Upper Walla Walla River watershed were calculated for 200m reach segments using the random forest model with GAA inputs, and reach capacity was calculated by multiplying the predicted fish/m by the length of the reach. Capacity for specific regions were then calculated by summing capacities for all reaches within the region.
 
 ```{r gaa-tbl}
-load(here("analysis/data/derived_data/extrap_gaa_tbl.rda"))
+load(here("analysis/data/derived_data/gaa_hab_dict.rda"))
 
-gaa_tbl %>%
+gaa_hab_dict %>% 
+  select(Metric = Name,
+         Decription = DescriptiveText) %>%
   kable(booktabs = T,
         align = "cl",
-        caption = "Habitat covariates and their descriptions used in the random forest extrapolation model.") %>%
+        caption = "Globally available attritibutes (GAAs) and their descriptions used in the random forest extrapolation model.") %>%
   kable_styling(full_width = F,
                 position = "center",
                 bootstrap_options = c("striped", "condensed"))
+
 
 ```
 
@@ -374,6 +384,8 @@ gaa_tbl %>%
 ### QRF Capacity Estimates
 
 ```{r calc-chnk-capacity}
+#These will need to be updated using the new QRF & extrap models - MR 6/22/22
+
 source(here("R/calc_watershed_cap.R"))
 
 # Chinook salmon, summer parr
@@ -649,6 +661,7 @@ Finally, habitat capacity limitations were quantified by subtracting required ca
 
 ```{r cap-limits}
 rec_goals %>%
+  select(-`80% CI, lower`, - `80% CI, upper`) %>%
   left_join(cap_totals %>%
               select(-n_rchs,
                      -tot_length)) %>%
@@ -658,10 +671,10 @@ rec_goals %>%
          `Available Capacity` = tot_cap,
          `Capacity SE` = tot_cap_se) %>%
   kable(booktabs = T,
-        digits = c(0,0,0,0,0,0,0,2),
-        align = "cccccccc",
+        digits = c(0,0,0,0,0,0,0,0,0,0,0,2),
+        align = "cccccccccccc",
         format.args = list(big.mark = ","),
-        col.names = c("Species","Scenario","Life-stage","Required Capacity","Available Capacity","Capacity SE","Deficit","Relative Deficit"),
+        col.names = c("Species","Scenario","Life-stage","Required Capacity", "Required Capacity SD","Available Capacity","Available Capacity SE","Deficit","Relative Deficit"),
         caption = "Capacity deficits and relative deficits based on recovery goals.") %>%
   kable_styling(full_width = F,
                 position = "center",
@@ -671,7 +684,7 @@ rec_goals %>%
 
 Comparisons of available and required capacity by life-stage are shown in Figures \@ref(fig:chnk-def-fig) and \@ref(fig:sthd-def-fig).
 
-```{r chnk-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for Chinook salmon at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals."}
+```{r chnk-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for Chinook salmon at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals. Error bars represent one standard deviation from predicted mean values."}
 chnk_def_p = rec_goals %>%
   select(-Scenario) %>%
   filter(Species == "Chinook",
@@ -687,8 +700,8 @@ chnk_def_p = rec_goals %>%
          se = tot_cap_se) %>%
   pivot_longer(cols = c("Required",
                         "Available")) %>%
-  mutate(se = ifelse(name == "Required", NA, se)) %>%
-  select(LifeStage, name, value, se) %>%
+  mutate(error = ifelse(name == "Required", SD, se)) %>%
+  select(LifeStage, name, value, error) %>%
   ggplot() +
   geom_bar(aes(x = name,
                y = value,
@@ -705,9 +718,11 @@ chnk_def_p = rec_goals %>%
              strip.position = "left",
              labeller = labeller(LifeStage = label_wrap_gen(width = 10))) +
   geom_errorbar(aes(x = name,
-                    ymin = value - 1.96 * se,
-                    ymax = value + 1.96 * se),
-                width = 0,
+                    ymin = value - error,
+                    ymax = value + error),
+                    # ymin = value - 1.96 * error,
+                    # ymax = value + 1.96 * error),
+                width = 0.3,
                 size = 0.5) +
   scale_y_continuous(labels = scales::comma,
                      expand = c(0,0)) +
@@ -729,7 +744,7 @@ chnk_def_p
 
 ```
 
-```{r sthd-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for steelhead at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals."}
+```{r sthd-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for steelhead at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals. Error bars represent one standard deviation from predicted mean values."}
 sthd_def_p = rec_goals %>%
   select(-Scenario) %>%
   filter(Species == "Steelhead",
@@ -745,8 +760,8 @@ sthd_def_p = rec_goals %>%
          se = tot_cap_se) %>%
   pivot_longer(cols = c("Required",
                         "Available")) %>%
-  mutate(se = ifelse(name == "Required", NA, se)) %>%
-  select(LifeStage, name, value, se) %>%
+  mutate(error = ifelse(name == "Required", SD, se)) %>%
+  select(LifeStage, name, value, error) %>%
   ggplot() +
   geom_bar(aes(x = name,
                y = value,
@@ -763,10 +778,12 @@ sthd_def_p = rec_goals %>%
              strip.position = "left",
              labeller = labeller(LifeStage = label_wrap_gen(width = 10))) +
   geom_errorbar(aes(x = name,
-                    ymin = value - 1.96 * se,
-                    ymax = value + 1.96 * se),
-                width = 0,
-                size = 0.8) +
+                    ymin = value - error,
+                    ymax = value + error),
+                    # ymin = value - 1.96 * se,
+                    # ymax = value + 1.96 * se),
+                width = 0.3,
+                size = 0.5) +
   scale_y_continuous(labels = scales::comma,
                      expand = c(0,0)) +
   labs(title = "Steelhead") +
