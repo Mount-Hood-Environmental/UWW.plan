@@ -156,11 +156,120 @@ knitr::include_graphics("../figures/hab-capac-fig.png")
 ## Required Capacity
 
 ```{r get-params}
-params = read_csv(here("analysis/data/raw_data/LifeHistoryParameters.csv"))
+params = read_csv(here("analysis/data/raw_data/LifeHistoryParameters_0622.csv"))
+
+#define target escapement
+target.esc = c(3600,3400)
+n.sim = 5000
+
+set.seed(352)
+#Simulate the required abundances by life stage
+reqs = tibble(Sim_number = rep(1:n.sim,2),
+              Species = c(rep("Chinook",n.sim),rep("Steelhead",n.sim)),
+              Escapement = c(rep(target.esc[1],n.sim), rep(target.esc[2],n.sim)),
+              # Female_escapement = NA,
+              # Redds = NA,
+              # Eggs = NA,
+              # Summer_juv = NA,
+              # Winter_juv = NA,
+              f_ratio = c(rnorm(n.sim, params$Value[1],params$SD[1]),
+                          rnorm(n.sim, params$Value[6],params$SD[6])),
+              redds_f = c(rnorm(n.sim, params$Value[2],params$SD[2]),
+                          rnorm(n.sim, params$Value[7],params$SD[7])),
+              fecund = c(rnorm(n.sim, params$Value[3],params$SD[3]),
+                          rnorm(n.sim, params$Value[8],params$SD[8])),
+              egg_to_parr = c(rnorm(n.sim, params$Value[4],params$SD[4]),
+                          rnorm(n.sim, params$Value[9],params$SD[9])),
+              parr_to_presmolt = c(rnorm(n.sim, params$Value[5],params$SD[5]),
+                          rnorm(n.sim, params$Value[10],params$SD[10]))) %>%
+  mutate(f_ratio = ifelse(f_ratio < params$Min[1] & Species == "Chinook", params$Min[1],
+                          ifelse(f_ratio > params$Max[1] & Species == "Chinook", params$Max[1],
+                                 ifelse(f_ratio < params$Min[6] & Species == "Steelhead", params$Min[6],
+                                        ifelse(f_ratio > params$Max[6] & Species == "Steelhead", params$Max[6], f_ratio)))),
+         redds_f = ifelse(redds_f < params$Min[2] & Species == "Chinook", params$Min[2],
+                          ifelse(redds_f > params$Max[2] & Species == "Chinook", params$Max[2],
+                                 ifelse(redds_f < params$Min[7] & Species == "Steelhead", params$Min[7],
+                                        ifelse(redds_f > params$Max[7] & Species == "Steelhead", params$Max[7], redds_f)))),
+         fecund = ifelse(fecund < params$Min[3] & Species == "Chinook", params$Min[3],
+                          ifelse(fecund > params$Max[3] & Species == "Chinook", params$Max[3],
+                                 ifelse(fecund < params$Min[8] & Species == "Steelhead", params$Min[8],
+                                        ifelse(fecund > params$Max[8] & Species == "Steelhead", params$Max[8], fecund)))),
+         egg_to_parr = ifelse(egg_to_parr < params$Min[4] & Species == "Chinook", params$Min[4],
+                          ifelse(egg_to_parr > params$Max[4] & Species == "Chinook", params$Max[4],
+                                 ifelse(egg_to_parr < params$Min[9] & Species == "Steelhead", params$Min[9],
+                                        ifelse(egg_to_parr > params$Max[9] & Species == "Steelhead", params$Max[9], egg_to_parr)))),
+         parr_to_presmolt = ifelse(parr_to_presmolt < params$Min[5] & Species == "Chinook", params$Min[5],
+                          ifelse(parr_to_presmolt > params$Max[5] & Species == "Chinook", params$Max[5],
+                                 ifelse(parr_to_presmolt < params$Min[10] & Species == "Steelhead", params$Min[10],
+                                        ifelse(parr_to_presmolt > params$Max[10] & Species == "Steelhead", params$Max[10], parr_to_presmolt))))) %>%
+  mutate(Female_escapement = Escapement * f_ratio,
+         Redds = Female_escapement * redds_f,
+         Eggs = Redds * fecund,
+         Summer_juv = Eggs * egg_to_parr,
+         Winter_juv = Summer_juv * parr_to_presmolt
+           )
+
+#Summarize sim results
+reqs_summary = reqs %>%
+  group_by(Species) %>%
+  summarize(Mean_Female_esc = mean(Female_escapement),
+            Female_escapement_80L = quantile(Female_escapement, .1),
+            Female_escapement_80U = quantile(Female_escapement, .9),
+            Female_escapement_90L = quantile(Female_escapement, 0.05),
+            Female_escapement_90U = quantile(Female_escapement, 0.95),
+            Mean_Redds = mean(Redds),
+            Redds_80L = quantile(Redds, .1),
+            Redds_80U = quantile(Redds, .9),
+            Redds_90L = quantile(Redds, 0.05),
+            Redds_90U = quantile(Redds, 0.95),
+            Mean_Eggs = mean(Eggs),
+            Eggs_80L = quantile(Eggs, .1),
+            Eggs_80U = quantile(Eggs, .9),
+            Eggs_90L = quantile(Eggs, 0.05),
+            Eggs_90U = quantile(Eggs, 0.95),
+            Mean_Summer_juv = mean(Summer_juv),
+            Summer_juv_80L = quantile(Summer_juv, .1),
+            Summer_juv_80U = quantile(Summer_juv, .9),
+            Summer_juv_90L = quantile(Summer_juv, 0.05),
+            Summer_juv_90U = quantile(Summer_juv, 0.95),
+            Mean_Winter_juv = mean(Winter_juv),
+            Winter_juv_80L = quantile(Winter_juv, .1),
+            Winter_juv_80U = quantile(Winter_juv, .9),
+            Winter_juv_90L = quantile(Winter_juv, 0.05),
+            Winter_juv_90U = quantile(Winter_juv, 0.95)
+            )
+
+reqs_plotdat = reqs %>%
+  left_join(reqs_summary, by = 'Species')
+
+
+reddsplot = ggplot(reqs_plotdat)+
+  geom_density(aes(x=Redds))+
+  geom_vline(aes(xintercept=Redds_80L), linetype = 'dotted')+
+  geom_vline(aes(xintercept=Redds_80U), linetype = 'dotted')+
+  facet_wrap(~Species) +
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank())
+
+summer_juvsplot = ggplot(reqs_plotdat)+
+  geom_density(aes(x=Summer_juv))+
+  geom_vline(aes(xintercept=Summer_juv_80L), linetype = 'dotted')+
+  geom_vline(aes(xintercept=Summer_juv_80U), linetype = 'dotted')+
+  facet_wrap(~Species) +
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank())
+
+winter_juvsplot = ggplot(reqs_plotdat)+
+  geom_density(aes(x=Winter_juv))+
+  geom_vline(aes(xintercept=Winter_juv_80L), linetype = 'dotted')+
+  geom_vline(aes(xintercept=Winter_juv_80U), linetype = 'dotted')+
+  facet_wrap(~Species) +
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank())
 
 rec_goals = tibble(Species = c("Chinook", "Steelhead"),
                    Scenario = "CBPTF 2020",
-                   Escapement = c(3600, 3400)) %>%
+                   Escapement = target.esc) %>%
   inner_join(params %>%
                mutate(Parameter = recode(Parameter,
                                          "Female Ratio" = "prop_fem",
@@ -171,25 +280,27 @@ rec_goals = tibble(Species = c("Chinook", "Steelhead"),
                pivot_wider(id_cols = "Species",
                            names_from = "Parameter",
                            values_from = "Value")) %>%
-  mutate(`Female Escapement` = Escapement * prop_fem,
-         Redds = `Female Escapement` * redd_per_fem,
-         Eggs = Redds * fecund,
-         `Summer Juveniles` = Eggs * egg_to_parr,
-         `Winter Juveniles` = `Summer Juveniles` * parr_to_presmolt) %>%
+  mutate(`Female Escapement` = reqs_summary$Mean_Female_esc,
+         Redds = reqs_summary$Mean_Redds,
+         Eggs = reqs_summary$Mean_Eggs,
+         `Summer Juveniles` = reqs_summary$Mean_Summer_juv,
+         `Winter Juveniles` = reqs_summary$Mean_Winter_juv) %>%
   select(-c(prop_fem:parr_to_presmolt)) %>%
   pivot_longer(cols = c(Escapement, `Female Escapement`:`Winter Juveniles`),
                names_to = "LifeStage",
-               values_to = "Abundance")
-
+               values_to = "Abundance") %>%
+  mutate(`80% CI, lower` = c(NA,as.numeric(select(reqs_summary, ends_with("80L"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("80L"))[2,]))) %>%
+  mutate(`80% CI, upper` = c(NA,as.numeric(select(reqs_summary, ends_with("80U"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("80U"))[2,])))
 ```
 
 Life-stage specific capacity requirements were estimated using a Generalized Capacity Model described in Appendix C of @IdahoOSCTeam2019. The model uses a combination of empirical and literature-based parameter estimates (Table \@ref(tab:param-tab)) to determine the capacity required to achieve a given adult abundance goal. We used adult escapement goals of `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Chinook" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for Chinook salmon and `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Steelhead" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for steelhead. These escapement goals are considered high-range goals and are intended to represent *"healthy and harvestable abundance levels that would sustain very high levels of species viability, significant fishery opportunities and harvest, and a fuller range of ecological values"* [@CBPTF2020]. Briefly, adult escapement goals are multiplied step-wise through the applicable parameter values in Table \@ref(tab:param-tab) to determine the necessary abundance for a given life-stage to produce the target adult abundance. For example, the number of redds necessary for recovery is calculated by multiplying the adult escapement goal by the female ratio and the estimated redds per female. Sources for each parameter estimate are provided in Table \@ref(tab:param-tab); however, those values can be modified if updated or in-basin estimates with empirical support are available.
 
 ```{r param-tab}
 params %>%
+  select(-Min, -Max) %>%
   kable(booktabs = T,
         digits = 3,
-        align = "lccc",
+        align = "lcccc",
         format.args = list(big.mark = ",",
                            drop0trailing = T),
         caption = "Life history parameters for the generalized capacity model.") %>%
