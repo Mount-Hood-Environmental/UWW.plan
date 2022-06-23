@@ -1,14 +1,10 @@
 ---
 title: "Upper Walla Walla Watershed - Habitat Capacity Assessment"
 author:
-  - Michael W. Ackerman:
-      email: mike.ackerman@mthoodenvironmental.com
-      institute: [mhe_mccall]
+  - Bryce N. Oldemeyer:
+      email: bryce.oldemeyer@mthoodenvironmental.com
+      institute: [mhe_challis]
       correspondence: true
-  - Tara E. Blackman:
-      email: tara.blackman@mthoodenvironmenal.com
-      institute: [mhe_sandy]
-      correspondence: false
   - Mark Roes:
       email: mark.roes@mthoodenvironmental.com
       institute: [mhe_sandy]
@@ -17,10 +13,20 @@ author:
       email: Kevin.See@dfw.wa.gov
       institute: wdfw
       correspondence: false
+  - Joshua P. Egan:
+      email: joshua.egan@mthoodenvironmental.com
+      institute: [mhe_moscow]
+      correspondence: false
+  - Michael W. Ackerman:
+      email: mike.ackerman@mthoodenvironmental.com
+      institute: [mhe_mccall]
+      correspondence: true
 institute:
-  - mhe_mccall: Mount Hood Environmental, PO Box 4282, McCall, Idaho, 83638, USA
+  - mhe_challis: Mount Hood Environmental, PO Box 1303, Challis, Idaho 83226, USA
   - mhe_sandy: Mount Hood Environmental, 39085 Pioneer Boulevard \#100 Mezzanine, Sandy, Oregon, 97055, USA
   - wdfw: Washington Department of Fish and Wildife, Fish Program, Science Division, 1111 Washington Street NE, Olympia, Washington, 98501, USA
+  - mhe_moscow: Mount Hood Environmental, Temporary Moscow Address, Idaho xxxxx, USA
+  - mhe_mccall: Mount Hood Environmental, PO Box 4282, McCall, Idaho, 83638, USA
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   bookdown::html_document2:
@@ -32,12 +38,13 @@ output:
       smooth_scroll: yes
     number_sections: yes
     pandoc_args:
-#     - --lua-filter=../templates/scholarly-metadata.lua
-#     - --lua-filter=../templates/author-info-blocks.lua
-#     - --lua-filter=../templates/pagebreak.lua  
-# csl: "../templates/american-fisheries-society.csl"
-# bibliography:
-#   - AckermanLibrary.bib
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks.lua
+    - --lua-filter=../templates/pagebreak.lua  
+csl: "../templates/journal-of-archaeological-science.csl"
+bibliography:
+  - AckermanLibrary.bib
+always_allow_html: yes
 ---
 
 <!-- the following inserts MHE logo into header -->
