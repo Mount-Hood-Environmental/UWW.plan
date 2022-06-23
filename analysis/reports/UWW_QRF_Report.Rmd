@@ -770,8 +770,10 @@ sthd_def_p = rec_goals %>%
          se = tot_cap_se) %>%
   pivot_longer(cols = c("Required",
                         "Available")) %>%
-  mutate(error = ifelse(name == "Required", SD, se)) %>%
-  select(LifeStage, name, value, error) %>%
+  mutate(std.error = ifelse(name == "Required", SE, se),
+         cap_90CI_L = ifelse(name == "Required", `90% CI, lower`, tot_cap_90CI_L),
+         cap_90CI_U = ifelse(name == "Required", `90% CI, upper`, tot_cap_90CI_U)) %>%
+  select(LifeStage, name, value, std.error, cap_90CI_L, cap_90CI_U) %>%
   ggplot() +
   geom_bar(aes(x = name,
                y = value,
@@ -788,10 +790,8 @@ sthd_def_p = rec_goals %>%
              strip.position = "left",
              labeller = labeller(LifeStage = label_wrap_gen(width = 10))) +
   geom_errorbar(aes(x = name,
-                    ymin = value - error,
-                    ymax = value + error),
-                    # ymin = value - 1.96 * se,
-                    # ymax = value + 1.96 * se),
+                    ymin = cap_90CI_L,
+                    ymax = cap_90CI_U),
                 width = 0.3,
                 size = 0.5) +
   scale_y_continuous(labels = scales::comma,
