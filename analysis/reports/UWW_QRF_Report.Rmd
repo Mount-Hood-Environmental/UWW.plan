@@ -756,6 +756,67 @@ chnk_def_p
 
 ```
 
+```{r chnk-dens-req-fig, fig.cap = "Comparison of model predictions for available and required habitat capacities"}
+ chnk_def_line = rec_goals %>%
+  select(-Scenario) %>%
+  filter(Species == "Chinook",
+         LifeStage %in% c("Redds",
+                          "Summer Juveniles",
+                          "Winter Juveniles")) %>%
+  left_join(cap_totals %>%
+              select(-n_rchs,
+                     -tot_length)) %>%
+  select(!Species) %>%
+  rename(Required = Abundance,
+         Available = tot_cap,
+         se = tot_cap_se) %>%
+  pivot_longer(cols = c("Required",
+                        "Available")) %>%
+  mutate(std.error = ifelse(name == "Required", SE, se),
+         cap_90CI_L = ifelse(name == "Required", `90% CI, lower`, tot_cap_90CI_L),
+         cap_90CI_U = ifelse(name == "Required", `90% CI, upper`, tot_cap_90CI_U)) %>%
+  select(LifeStage, name, value, std.error, cap_90CI_L, cap_90CI_U) %>%
+  ggplot() +
+  geom_point(aes(x = name,
+               y = value),
+           color = "black",
+           stat = "identity") +
+  #scale_x_discrete(limits = rev) +
+  scale_fill_manual(name = "Capacity",
+                    values = c("gray30", "forestgreen")) +
+  coord_flip() +
+  facet_wrap(~ LifeStage,
+             scales = "free",
+             ncol = 1,
+             strip.position = "top",
+             labeller = labeller(LifeStage = label_wrap_gen(width = 10))) +
+  geom_errorbar(aes(x = name,
+                    ymin = cap_90CI_L,
+                    ymax = cap_90CI_U),
+                width = 0,
+                size = 0.2) +
+  scale_y_continuous(labels = scales::comma,
+                     expand = c(0,0)) +
+  labs(title = "Chinook salmon") +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        #axis.text.y = element_blank(),
+        #axis.ticks.y = element_blank(),
+        axis.text.x = element_text(size = 8,
+                                   color = "black"),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 10),
+        strip.text.y = element_text(size = 10),
+        plot.title = element_text(size = 12,
+                                  face = "bold"),
+        legend.position = "right")
+
+chnk_def_line
+
+
+```
+
+
 ```{r sthd-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for steelhead at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals. Error bars represent 90% confidence intervals."}
 sthd_def_p = rec_goals %>%
   select(-Scenario) %>%
