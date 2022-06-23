@@ -219,31 +219,31 @@ reqs = tibble(Sim_number = rep(1:n.sim,2),
 reqs_summary = reqs %>%
   group_by(Species) %>%
   summarize(Mean_Female_esc = mean(Female_escapement),
-            Female_escapement_sd = sd(Female_escapement),
+            Female_escapement_se = sd(Female_escapement),
             Female_escapement_80L = quantile(Female_escapement, .1),
             Female_escapement_80U = quantile(Female_escapement, .9),
             Female_escapement_90L = quantile(Female_escapement, 0.05),
             Female_escapement_90U = quantile(Female_escapement, 0.95),
             Mean_Redds = mean(Redds),
-            Redds_sd = sd(Redds),
+            Redds_se = sd(Redds),
             Redds_80L = quantile(Redds, .1),
             Redds_80U = quantile(Redds, .9),
             Redds_90L = quantile(Redds, 0.05),
             Redds_90U = quantile(Redds, 0.95),
             Mean_Eggs = mean(Eggs),
-            Eggs_sd = sd(Eggs),
+            Eggs_se = sd(Eggs),
             Eggs_80L = quantile(Eggs, .1),
             Eggs_80U = quantile(Eggs, .9),
             Eggs_90L = quantile(Eggs, 0.05),
             Eggs_90U = quantile(Eggs, 0.95),
             Mean_Summer_juv = mean(Summer_juv),
-            Summer_juv_sd = sd(Summer_juv),
+            Summer_juv_se = sd(Summer_juv),
             Summer_juv_80L = quantile(Summer_juv, .1),
             Summer_juv_80U = quantile(Summer_juv, .9),
             Summer_juv_90L = quantile(Summer_juv, 0.05),
             Summer_juv_90U = quantile(Summer_juv, 0.95),
             Mean_Winter_juv = mean(Winter_juv),
-            Winter_juv_sd = sd(Winter_juv),
+            Winter_juv_se = sd(Winter_juv),
             Winter_juv_80L = quantile(Winter_juv, .1),
             Winter_juv_80U = quantile(Winter_juv, .9),
             Winter_juv_90L = quantile(Winter_juv, 0.05),
@@ -256,24 +256,24 @@ reqs_plotdat = reqs %>%
 
 reddsplot = ggplot(reqs_plotdat)+
   geom_density(aes(x=Redds))+
-  geom_vline(aes(xintercept=Redds_80L), linetype = 'dotted')+
-  geom_vline(aes(xintercept=Redds_80U), linetype = 'dotted')+
+  geom_vline(aes(xintercept=Redds_90L), linetype = 'dotted')+
+  geom_vline(aes(xintercept=Redds_90U), linetype = 'dotted')+
   facet_wrap(~Species) +
   theme(axis.ticks.y = element_blank(),
         axis.text.y = element_blank())
 
 summer_juvsplot = ggplot(reqs_plotdat)+
   geom_density(aes(x=Summer_juv))+
-  geom_vline(aes(xintercept=Summer_juv_80L), linetype = 'dotted')+
-  geom_vline(aes(xintercept=Summer_juv_80U), linetype = 'dotted')+
+  geom_vline(aes(xintercept=Summer_juv_90L), linetype = 'dotted')+
+  geom_vline(aes(xintercept=Summer_juv_90U), linetype = 'dotted')+
   facet_wrap(~Species) +
   theme(axis.ticks.y = element_blank(),
         axis.text.y = element_blank())
 
 winter_juvsplot = ggplot(reqs_plotdat)+
   geom_density(aes(x=Winter_juv))+
-  geom_vline(aes(xintercept=Winter_juv_80L), linetype = 'dotted')+
-  geom_vline(aes(xintercept=Winter_juv_80U), linetype = 'dotted')+
+  geom_vline(aes(xintercept=Winter_juv_90L), linetype = 'dotted')+
+  geom_vline(aes(xintercept=Winter_juv_90U), linetype = 'dotted')+
   facet_wrap(~Species) +
   theme(axis.ticks.y = element_blank(),
         axis.text.y = element_blank())
@@ -300,9 +300,9 @@ rec_goals = tibble(Species = c("Chinook", "Steelhead"),
   pivot_longer(cols = c(Escapement, `Female Escapement`:`Winter Juveniles`),
                names_to = "LifeStage",
                values_to = "Abundance") %>%
-  mutate(SD = c(NA,as.numeric(select(reqs_summary, ends_with("sd"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("sd"))[2,]))) %>%
-  mutate(`80% CI, lower` = c(NA,as.numeric(select(reqs_summary, ends_with("80L"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("80L"))[2,]))) %>%
-  mutate(`80% CI, upper` = c(NA,as.numeric(select(reqs_summary, ends_with("80U"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("80U"))[2,])))
+  mutate(SE = c(NA,as.numeric(select(reqs_summary, ends_with("se"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("se"))[2,]))) %>%
+  mutate(`90% CI, lower` = c(NA,as.numeric(select(reqs_summary, ends_with("90L"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("90L"))[2,]))) %>%
+  mutate(`90% CI, upper` = c(NA,as.numeric(select(reqs_summary, ends_with("90U"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("90U"))[2,])))
 ```
 
 Life-stage specific capacity requirements were estimated using a Generalized Capacity Model described in Appendix C of @IdahoOSCTeam2019. The model uses a combination of empirical and literature-based parameter estimates (Table \@ref(tab:param-tab)) to determine the capacity required to achieve a given adult abundance goal. We used adult escapement goals of `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Chinook" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for Chinook salmon and `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Steelhead" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for steelhead. These escapement goals are considered high-range goals and are intended to represent *"healthy and harvestable abundance levels that would sustain very high levels of species viability, significant fishery opportunities and harvest, and a fuller range of ecological values"* [@CBPTF2020]. Briefly, adult escapement goals are multiplied step-wise through the applicable parameter values in Table \@ref(tab:param-tab) to determine the necessary abundance for a given life-stage to produce the target adult abundance. For example, the number of redds necessary for recovery is calculated by multiplying the adult escapement goal by the female ratio and the estimated redds per female. Sources for each parameter estimate are provided in Table \@ref(tab:param-tab); however, those values can be modified if updated or in-basin estimates with empirical support are available.
@@ -326,13 +326,14 @@ The resulting estimated habitat capacity requirements are shown in Table \@ref(t
 
 ```{r require-tab}
 rec_goals %>%
-  select(-`80% CI, lower`, -`80% CI, upper`) %>%
+  mutate(`90% CI` = paste0("(",round(`90% CI, lower`,0),"-",round(`90% CI, upper`,0),")")) %>%
+  select(-`90% CI, lower`, -`90% CI, upper`) %>%
   kable(booktabs = T,
         digits = 0,
         align = "ccccc",
         format.args = list(big.mark = ",",
                            drop0trailing = T),
-        col.names = c("Species", "Scenario","Life-stage","Abundance", "Abundance SD"),
+        col.names = c("Species", "Scenario","Life-stage","Abundance", "Abundance SE", "90% CI"),
         caption = "Life-stage specific habitat capacity requirement estimates necessary to achieve given escapement recovery goals.") %>%
   kable_styling(full_width = F,
                 position = "center",
@@ -454,7 +455,9 @@ cap_totals = list(chnk_sum = chnk_sum_cap,
             filter(StreamName == "Total")
         }) %>%
   mutate(Species = str_split(type, "_", simplify = T)[ ,1],
-         LifeStage = str_split(type, "_", simplify = T)[ ,2]) %>%
+         LifeStage = str_split(type, "_", simplify = T)[ ,2],
+         tot_cap_90CI_L = tot_cap - tot_cap_se*1.65,
+         tot_cap_90CI_U = tot_cap + tot_cap_se*1.65) %>%
   mutate(Species = recode(Species,
                           "chnk" = "Chinook",
                           "sthd" = "Steelhead"),
@@ -467,7 +470,6 @@ cap_totals = list(chnk_sum = chnk_sum_cap,
          everything(),
          -StreamName,
          -type)
-
 ```
 
 Estimates of total habitat capacity for the Upper Walla Walla by species and life-stage are shown in Table \@ref(tab:cap-table). Estimates were made using the anadromous spatial domain defined in [StreamNet](https://www.streamnet.org/home/data-maps/gis-data-sets/) for Chinook salmon and steelhead. Capacity was extrapolated within these domains for `r unique(cap_totals$n_rchs[cap_totals$Species == "Chinook"])` reaches totaling `r round(unique(cap_totals$tot_length[cap_totals$Species == "Chinook"]) / 1000)` km in length for Chinook salmon and `r prettyNum(unique(cap_totals$n_rchs[cap_totals$Species == "Steelhead"]), big.mark = ",")` reaches totaling `r round(unique(cap_totals$tot_length[cap_totals$Species == "Steelhead"]) / 1000)` km in length for steelhead. Different spatial domains could be used for both Chinook salmon and steelhead if deemed appropriate. Capacity estimates for individual streams by species and life stage are provided in [Supplemental Tables and Figures](#supplemental-tables-and-figures). 
@@ -475,7 +477,8 @@ Estimates of total habitat capacity for the Upper Walla Walla by species and lif
 ```{r cap-table}
 cap_totals %>%
   mutate(avg_cap_per_m = tot_cap / tot_length) %>%
-  mutate(tot_length_km = tot_length / 1000) %>%
+  mutate(tot_length_km = tot_length / 1000,
+         `90% CI` = paste0("(", round(tot_cap_90CI_L, 0), "-", round(tot_cap_90CI_U, 0),")")) %>%
   rename(`n Reaches` = n_rchs,
          `Stream Length (km)` = tot_length_km,
          Capacity = tot_cap,
@@ -487,12 +490,13 @@ cap_totals %>%
          `Stream Length (km)`,
          Capacity,
          SE,
+         `90% CI`,
          `Avg. Capacity / m`) %>%
   kable(booktabs = T,
-        digits = c(0, 0, 1, 0, 0, 0, 3),
-        align = "ccccccc",
+        digits = c(0, 0, 1, 0, 0, 0, 0, 3),
+        align = "cccccccc",
         format.args = list(big.mark = ","),
-        col.names = c("Species","Life-stage","Reaches","Stream Length (km)", "Capacity","SE","Avg. Capacity/m"),
+        col.names = c("Species","Life-stage","Reaches","Stream Length (km)", "Capacity","SE", "Capacity 90% CI","Avg. Capacity/m"),
         caption = "Estimates of current available watershed capacity by species and life-stage.") %>%
   kable_styling(full_width = F,
                 position = "center",
@@ -667,7 +671,6 @@ Finally, habitat capacity limitations were quantified by subtracting required ca
 
 ```{r cap-limits}
 rec_goals %>%
-  select(-`80% CI, lower`, - `80% CI, upper`) %>%
   left_join(cap_totals %>%
               select(-n_rchs,
                      -tot_length)) %>%
@@ -676,11 +679,12 @@ rec_goals %>%
   rename(`Required Capacity` = Abundance,
          `Available Capacity` = tot_cap,
          `Capacity SE` = tot_cap_se) %>%
+  select(-tot_cap_90CI_U, -tot_cap_90CI_L, -`90% CI, lower`, -`90% CI, upper`) %>%
   kable(booktabs = T,
         digits = c(0,0,0,0,0,0,0,0,2),
         align = "cccccccccccc",
         format.args = list(big.mark = ","),
-        col.names = c("Species","Scenario","Life-stage","Required Capacity", "Required Capacity SD","Available Capacity","Available Capacity SE","Deficit","Relative Deficit"),
+        col.names = c("Species","Scenario","Life-stage","Required Capacity", "Required Capacity SE","Available Capacity","Available Capacity SE","Deficit","Relative Deficit"),
         caption = "Capacity deficits and relative deficits based on recovery goals.") %>%
   kable_styling(full_width = F,
                 position = "center",
@@ -690,7 +694,7 @@ rec_goals %>%
 
 Comparisons of available and required capacity by life-stage are shown in Figures \@ref(fig:chnk-def-fig) and \@ref(fig:sthd-def-fig).
 
-```{r chnk-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for Chinook salmon at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals. Error bars represent one standard deviation from predicted values."}
+```{r chnk-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for Chinook salmon at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals. Error bars represent 90% confidence intervals."}
 chnk_def_p = rec_goals %>%
   select(-Scenario) %>%
   filter(Species == "Chinook",
@@ -706,8 +710,10 @@ chnk_def_p = rec_goals %>%
          se = tot_cap_se) %>%
   pivot_longer(cols = c("Required",
                         "Available")) %>%
-  mutate(error = ifelse(name == "Required", SD, se)) %>%
-  select(LifeStage, name, value, error) %>%
+  mutate(std.error = ifelse(name == "Required", SE, se),
+         cap_90CI_L = ifelse(name == "Required", `90% CI, lower`, tot_cap_90CI_L),
+         cap_90CI_U = ifelse(name == "Required", `90% CI, upper`, tot_cap_90CI_U)) %>%
+  select(LifeStage, name, value, std.error, cap_90CI_L, cap_90CI_U) %>%
   ggplot() +
   geom_bar(aes(x = name,
                y = value,
@@ -724,10 +730,8 @@ chnk_def_p = rec_goals %>%
              strip.position = "left",
              labeller = labeller(LifeStage = label_wrap_gen(width = 10))) +
   geom_errorbar(aes(x = name,
-                    ymin = value - error,
-                    ymax = value + error),
-                    # ymin = value - 1.96 * error,
-                    # ymax = value + 1.96 * error),
+                    ymin = cap_90CI_L,
+                    ymax = cap_90CI_U),
                 width = 0.3,
                 size = 0.5) +
   scale_y_continuous(labels = scales::comma,
