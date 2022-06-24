@@ -23,7 +23,7 @@ uww_crs = st_crs(4326) # WGS84
 
 #-----------------------------------------------------------------
 # read in HUC12 watershed boundaries from NAS, majority of PNW
-huc12_sf = st_read(paste0(nas_prefix, "Public Data/data/habitat/watershed_boundaries/WBDHU12.shp")) %>%
+huc12_sf = st_read(paste0(nas_prefix, "main/data/habitat/watershed_boundaries/WBDHU12.shp")) %>%
   st_transform(uww_crs)
 
 #-----------------------------------------------------------------
@@ -31,9 +31,9 @@ huc12_sf = st_read(paste0(nas_prefix, "Public Data/data/habitat/watershed_bounda
 # use Morgan Bond's spatially continuous, 200m linear network layer
 # use random forest extrapolation model
 
-sum_juv_sf = st_read(paste0(nas_prefix, "Public Data/data/qrf/extrapolations/Rch_Cap_RF_juv_summer_dash.gpkg")) %>% st_transform(ww_crs)
-win_juv_sf = st_read(paste0(nas_prefix, "Public Data/data/qrf/extrapolations/Rch_Cap_RF_juv_winter.gpkg")) %>% st_transform(ww_crs)
-redd_sf = st_read(paste0(nas_prefix, "Public Data/data/qrf/extrapolations/Rch_Cap_RF_redds.gpkg")) %>% st_transform(ww_crs)
+sum_juv_sf = st_read(paste0(nas_prefix, "main/data/qrf/gitrepo_data/output/gpkg/Rch_Cap_RF_Dash_juv_summer.gpkg")) %>% st_transform(uww_crs)
+win_juv_sf = st_read(paste0(nas_prefix, "main/data/qrf/gitrepo_data/output/gpkg/Rch_Cap_RF_Dash_juv_winter.gpkg")) %>% st_transform(uww_crs)
+redd_sf = st_read(paste0(nas_prefix, "main/data/qrf/gitrepo_data/output/gpkg/Rch_Cap_RF_Dash_redds.gpkg")) %>% st_transform(uww_crs)
 
 # if needed, these .gpkg files can be saved locally to decrease read times, e.g.,
 # on Mike's machine...
@@ -126,7 +126,8 @@ ggplot(uww_redd_sf) + geom_sf()
 #-----------------------------------------------------------------
 # get 200m reach layer for this area; contains a bunch of habitat metrics for the 200m reaches
 # this dataset is in the QRFcapacity repo
-load("C:/Git/QRFcapacity/data/rch_200.rda")
+load(paste0(nas_prefix, "main/data/qrf/gitrepo_data/input/rch_200.rda"))
+#load("C:/Git/QRFcapacity/data/rch_200.rda")
 
 # alternatively, by installing QRFcapacity R package...
 # library(devtools)
