@@ -170,6 +170,55 @@ n.sim = 5000
 
 set.seed(352)
 #Simulate the required abundances by life stage
+
+#With normal distribution
+# reqs = tibble(Sim_number = rep(1:n.sim,2),
+#               Species = c(rep("Chinook",n.sim),rep("Steelhead",n.sim)),
+#               Escapement = c(rep(target.esc[1],n.sim), rep(target.esc[2],n.sim)),
+#               # Female_escapement = NA,
+#               # Redds = NA,
+#               # Eggs = NA,
+#               # Summer_juv = NA,
+#               # Winter_juv = NA,
+#               f_ratio = c(rnorm(n.sim, params$Value[1],params$SD[1]),
+#                           rnorm(n.sim, params$Value[6],params$SD[6])),
+#               redds_f = c(rnorm(n.sim, params$Value[2],params$SD[2]),
+#                           rnorm(n.sim, params$Value[7],params$SD[7])),
+#               fecund = c(rnorm(n.sim, params$Value[3],params$SD[3]),
+#                           rnorm(n.sim, params$Value[8],params$SD[8])),
+#               egg_to_parr = c(rnorm(n.sim, params$Value[4],params$SD[4]),
+#                           rnorm(n.sim, params$Value[9],params$SD[9])),
+#               parr_to_presmolt = c(rnorm(n.sim, params$Value[5],params$SD[5]),
+#                           rnorm(n.sim, params$Value[10],params$SD[10]))) %>%
+#   mutate(f_ratio = ifelse(f_ratio < params$Min[1] & Species == "Chinook", params$Min[1],
+#                           ifelse(f_ratio > params$Max[1] & Species == "Chinook", params$Max[1],
+#                                  ifelse(f_ratio < params$Min[6] & Species == "Steelhead", params$Min[6],
+#                                         ifelse(f_ratio > params$Max[6] & Species == "Steelhead", params$Max[6], f_ratio)))),
+#          redds_f = ifelse(redds_f < params$Min[2] & Species == "Chinook", params$Min[2],
+#                           ifelse(redds_f > params$Max[2] & Species == "Chinook", params$Max[2],
+#                                  ifelse(redds_f < params$Min[7] & Species == "Steelhead", params$Min[7],
+#                                         ifelse(redds_f > params$Max[7] & Species == "Steelhead", params$Max[7], redds_f)))),
+#          fecund = ifelse(fecund < params$Min[3] & Species == "Chinook", params$Min[3],
+#                           ifelse(fecund > params$Max[3] & Species == "Chinook", params$Max[3],
+#                                  ifelse(fecund < params$Min[8] & Species == "Steelhead", params$Min[8],
+#                                         ifelse(fecund > params$Max[8] & Species == "Steelhead", params$Max[8], fecund)))),
+#          egg_to_parr = ifelse(egg_to_parr < params$Min[4] & Species == "Chinook", params$Min[4],
+#                           ifelse(egg_to_parr > params$Max[4] & Species == "Chinook", params$Max[4],
+#                                  ifelse(egg_to_parr < params$Min[9] & Species == "Steelhead", params$Min[9],
+#                                         ifelse(egg_to_parr > params$Max[9] & Species == "Steelhead", params$Max[9], egg_to_parr)))),
+#          parr_to_presmolt = ifelse(parr_to_presmolt < params$Min[5] & Species == "Chinook", params$Min[5],
+#                           ifelse(parr_to_presmolt > params$Max[5] & Species == "Chinook", params$Max[5],
+#                                  ifelse(parr_to_presmolt < params$Min[10] & Species == "Steelhead", params$Min[10],
+#                                         ifelse(parr_to_presmolt > params$Max[10] & Species == "Steelhead", params$Max[10], parr_to_presmolt))))) %>%
+#   mutate(Female_escapement = Escapement * f_ratio,
+#          Redds = Female_escapement * redds_f,
+#          Eggs = Redds * fecund,
+#          Summer_juv = Eggs * egg_to_parr,
+#          Winter_juv = Summer_juv * parr_to_presmolt
+#            )
+
+
+#With truncated uniform distribution
 reqs = tibble(Sim_number = rep(1:n.sim,2),
               Species = c(rep("Chinook",n.sim),rep("Steelhead",n.sim)),
               Escapement = c(rep(target.esc[1],n.sim), rep(target.esc[2],n.sim)),
@@ -178,42 +227,23 @@ reqs = tibble(Sim_number = rep(1:n.sim,2),
               # Eggs = NA,
               # Summer_juv = NA,
               # Winter_juv = NA,
-              f_ratio = c(rnorm(n.sim, params$Value[1],params$SD[1]),
-                          rnorm(n.sim, params$Value[6],params$SD[6])),
-              redds_f = c(rnorm(n.sim, params$Value[2],params$SD[2]),
-                          rnorm(n.sim, params$Value[7],params$SD[7])),
-              fecund = c(rnorm(n.sim, params$Value[3],params$SD[3]),
-                          rnorm(n.sim, params$Value[8],params$SD[8])),
-              egg_to_parr = c(rnorm(n.sim, params$Value[4],params$SD[4]),
-                          rnorm(n.sim, params$Value[9],params$SD[9])),
-              parr_to_presmolt = c(rnorm(n.sim, params$Value[5],params$SD[5]),
-                          rnorm(n.sim, params$Value[10],params$SD[10]))) %>%
-  mutate(f_ratio = ifelse(f_ratio < params$Min[1] & Species == "Chinook", params$Min[1],
-                          ifelse(f_ratio > params$Max[1] & Species == "Chinook", params$Max[1],
-                                 ifelse(f_ratio < params$Min[6] & Species == "Steelhead", params$Min[6],
-                                        ifelse(f_ratio > params$Max[6] & Species == "Steelhead", params$Max[6], f_ratio)))),
-         redds_f = ifelse(redds_f < params$Min[2] & Species == "Chinook", params$Min[2],
-                          ifelse(redds_f > params$Max[2] & Species == "Chinook", params$Max[2],
-                                 ifelse(redds_f < params$Min[7] & Species == "Steelhead", params$Min[7],
-                                        ifelse(redds_f > params$Max[7] & Species == "Steelhead", params$Max[7], redds_f)))),
-         fecund = ifelse(fecund < params$Min[3] & Species == "Chinook", params$Min[3],
-                          ifelse(fecund > params$Max[3] & Species == "Chinook", params$Max[3],
-                                 ifelse(fecund < params$Min[8] & Species == "Steelhead", params$Min[8],
-                                        ifelse(fecund > params$Max[8] & Species == "Steelhead", params$Max[8], fecund)))),
-         egg_to_parr = ifelse(egg_to_parr < params$Min[4] & Species == "Chinook", params$Min[4],
-                          ifelse(egg_to_parr > params$Max[4] & Species == "Chinook", params$Max[4],
-                                 ifelse(egg_to_parr < params$Min[9] & Species == "Steelhead", params$Min[9],
-                                        ifelse(egg_to_parr > params$Max[9] & Species == "Steelhead", params$Max[9], egg_to_parr)))),
-         parr_to_presmolt = ifelse(parr_to_presmolt < params$Min[5] & Species == "Chinook", params$Min[5],
-                          ifelse(parr_to_presmolt > params$Max[5] & Species == "Chinook", params$Max[5],
-                                 ifelse(parr_to_presmolt < params$Min[10] & Species == "Steelhead", params$Min[10],
-                                        ifelse(parr_to_presmolt > params$Max[10] & Species == "Steelhead", params$Max[10], parr_to_presmolt))))) %>%
+              f_ratio = c(runif(n.sim, params$Value[1]-params$SD[1], params$Value[1]+params$SD[1]),
+                          runif(n.sim, params$Value[6]-params$SD[6], params$Value[6]+params$SD[6])),
+              redds_f = c(runif(n.sim, params$Value[2]-params$SD[2], params$Value[2]+params$SD[2]),
+                          runif(n.sim, params$Value[7]-params$SD[7], params$Value[7]+params$SD[7])),
+              fecund = c(runif(n.sim, params$Value[3]-params$SD[3], params$Value[3]+params$SD[3]),
+                          runif(n.sim, params$Value[8]-params$SD[8],                     params$Value[8]+params$SD[8])),
+              egg_to_parr = c(runif(n.sim, params$Value[4]-params$SD[4], params$Value[4]+params$SD[4]),
+                          runif(n.sim, params$Value[9]-params$SD[9], params$Value[9]+params$SD[9])),
+              parr_to_presmolt = c(runif(n.sim, params$Value[5]-params$SD[5], params$Value[5]+params$SD[5]),
+                          runif(n.sim, params$Value[10]-params$SD[10], params$Value[10]+params$SD[10]))) %>%
   mutate(Female_escapement = Escapement * f_ratio,
          Redds = Female_escapement * redds_f,
          Eggs = Redds * fecund,
          Summer_juv = Eggs * egg_to_parr,
          Winter_juv = Summer_juv * parr_to_presmolt
            )
+
 
 #Summarize sim results
 reqs_summary = reqs %>%
@@ -788,7 +818,7 @@ chnk_def_p
   facet_wrap(~ LifeStage,
              scales = "free",
              ncol = 1,
-             strip.position = "top",
+             strip.position = "left",
              labeller = labeller(LifeStage = label_wrap_gen(width = 10))) +
   geom_errorbar(aes(x = name,
                     ymin = cap_90CI_L,
