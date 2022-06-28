@@ -124,22 +124,13 @@ The primary objectives of the Upper Walla Walla stream temperature assessment is
 
 ## Stream Temperature Data
 
-NorWest August stream temperature estimates -- current, 2040, and 2080 summaries. Additionally, -1^o^ C temperature scenario.
+NorWest August stream temperature estimates -- 2002-2011, 2040, and 2080 summaries. Additionally, -1^o^ C temperature scenario.
 
-S2_02_11 Historical composite scenario representing 10 year average August mean
-stream temperatures for 2002-2011
+-   S2_02_11 Historical composite scenario representing 10 year average August mean stream temperatures for 2002-2011
 
-S30_2040D Future August mean stream temperature scenario based on global climate
-model ensemble average projected changes in August air temperature and
-stream discharge for the A1B warming trajectory in the 2040s (2030-2059).
-Future stream deltas within a NorWeST unit account for differential sensitivity
-among streams so that cold streams warm less than warm streams.
+-   S30_2040D Future August mean stream temperature scenario based on global climate model ensemble average projected changes in August air temperature and stream discharge for the A1B warming trajectory in the 2040s (2030-2059). Future stream deltas within a NorWeST unit account for differential sensitivity among streams so that cold streams warm less than warm streams.
 
-S32_2080D Future August mean stream temperature scenario based on global climate
-model ensemble average projected changes in August air temperature and
-stream discharge for the A1B warming trajectory in the 2080s (2070-2099).
-Future stream deltas within a NorWeST unit account for differential sensitivity
-among streams so that cold streams warm less than warm streams.
+-   S32_2080D Future August mean stream temperature scenario based on global climate model ensemble average projected changes in August air temperature and stream discharge for the A1B warming trajectory in the 2080s (2070-2099). Future stream deltas within a NorWeST unit account for differential sensitivity among streams so that cold streams warm less than warm streams.
 
 ## Fish Temperature Thresholds
 
@@ -177,8 +168,8 @@ temp_map_cur = uww_rch_sf %>%
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank()) +
-  labs(title = "Current Stream Temperature",
-       color = expression('Temperature (oC)'))
+  labs(title = "2002-2011 historical composite scenario",
+       color = expression("Temperature ("^o*"C)"))
 
 # 2040 temp map
 temp_map_2040 = uww_rch_sf %>%
@@ -199,8 +190,8 @@ temp_map_2040 = uww_rch_sf %>%
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank()) +
-  labs(title = "2040 prediction",
-       color = expression('Temperature (oC)'))
+  labs(title = "2040 future scenario",
+       color = expression("Temperature ("^o*"C)"))
 
 # 2080 temp map
 temp_map_2080 = uww_rch_sf %>%
@@ -221,8 +212,8 @@ temp_map_2080 = uww_rch_sf %>%
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank()) +
-  labs(title = "2080 prediction",
-       color = expression('Temperature (oC)'))
+  labs(title = "2080 future scenario",
+       color = expression("Temperature ("^o*"C)"))
 
 # -1C results
 temp_map_1C_2080 = uww_rch_sf %>%
@@ -243,8 +234,8 @@ temp_map_1C_2080 = uww_rch_sf %>%
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank()) +
-  labs(title = "Restoration - 1oC 2080 prediction",
-       color = expression('Temperature (oC)'))
+  labs(title = expression("Hypothetical restoration effect on \n 2080 future scenario (-1"^o*"C)"),
+       color = expression("Temperature ("^o*"C)"))
 
 
 # 2040 comparison
@@ -269,8 +260,8 @@ temp_rel_map_2040 = uww_rch_sf %>%
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank()) +
-  labs(title = "2040 change in temperature",
-       color = expression('Temperature (oC)'))
+  labs(title = "2040 future scenario",
+       color = expression("Temperature ("^o*"C)"))
 
 # 2080 comparison
 temp_rel_map_2080 = uww_rch_sf %>%
@@ -293,8 +284,8 @@ temp_rel_map_2080 = uww_rch_sf %>%
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank()) +
-  labs(title = "2080 prediction",
-       color = expression('Temperature (oC)'))
+  labs(title = "2080 future scenario",
+       color = expression("Temperature ("^o*"C)"))
 
 
 # -1C results
@@ -318,33 +309,31 @@ temp_rel_map_1C_2080 = uww_rch_sf %>%
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank()) +
-  labs(title = "Restoration -1oC 2080 prediction",
-       color = expression('Temperature (oC)'))
+  labs(title = expression("Hypothetical restoration effect on \n 2080 future scenario (-1"^o*"C)"),
+       color = expression("Temperature ("^o*"C)"))
 
 ```
 
-```{r current_temp_fig, fig.cap = "Current NorWest temperature estimate and  predictions for stream temperature with 2040 climate scenario, 2080 climate scenario, and a 2080 climate scenario with restoration action decreasing temperature -1oC."}
+```{r current-temp-maps, fig.cap = "NorWeST average August mean stream temperatures for the Upper Walla Walla."}
 
 ggarrange(temp_map_cur,temp_map_2040,temp_map_2080,temp_map_1C_2080)
 
 ```
 
-```{r temp_comparison_fig, fig.cap = "Current NorWest temperature estimate and for predictions for stream temperature with 2040 & 2080 climate scenarios."}
+```{r temp-comparison-maps, fig.cap = "Comparison of future NorWeST average August mean stream temperatures for  2040, 2080, and 2080 - 1oC to the 2002-2011 historical composite scanerio for the Upper Walla Walla."}
 
 ggarrange(temp_map_cur,temp_rel_map_2040,temp_rel_map_2080, temp_rel_map_1C_2080)
 
 ```
 
-## Fish temperature suitability results
+## Fish Temperature Suitability Results
 
-Chinook
+Chinook map & summary table
 
-Steelhead
+Steelhead map & summary table
 
-Bull trout
+Bull trout map & summary table
 
-Lamprey
-
-# Stream Temperature Summary
+Lamprey map & summary table
 
 # Stream Temperature Discussion
