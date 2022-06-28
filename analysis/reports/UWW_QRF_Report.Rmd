@@ -171,78 +171,69 @@ n.sim = 5000
 set.seed(352)
 #Simulate the required abundances by life stage
 
-#With normal distribution
-# reqs = tibble(Sim_number = rep(1:n.sim,2),
-#               Species = c(rep("Chinook",n.sim),rep("Steelhead",n.sim)),
-#               Escapement = c(rep(target.esc[1],n.sim), rep(target.esc[2],n.sim)),
-#               # Female_escapement = NA,
-#               # Redds = NA,
-#               # Eggs = NA,
-#               # Summer_juv = NA,
-#               # Winter_juv = NA,
-#               f_ratio = c(rnorm(n.sim, params$Value[1],params$SD[1]),
-#                           rnorm(n.sim, params$Value[6],params$SD[6])),
-#               redds_f = c(rnorm(n.sim, params$Value[2],params$SD[2]),
-#                           rnorm(n.sim, params$Value[7],params$SD[7])),
-#               fecund = c(rnorm(n.sim, params$Value[3],params$SD[3]),
-#                           rnorm(n.sim, params$Value[8],params$SD[8])),
-#               egg_to_parr = c(rnorm(n.sim, params$Value[4],params$SD[4]),
-#                           rnorm(n.sim, params$Value[9],params$SD[9])),
-#               parr_to_presmolt = c(rnorm(n.sim, params$Value[5],params$SD[5]),
-#                           rnorm(n.sim, params$Value[10],params$SD[10]))) %>%
-#   mutate(f_ratio = ifelse(f_ratio < params$Min[1] & Species == "Chinook", params$Min[1],
-#                           ifelse(f_ratio > params$Max[1] & Species == "Chinook", params$Max[1],
-#                                  ifelse(f_ratio < params$Min[6] & Species == "Steelhead", params$Min[6],
-#                                         ifelse(f_ratio > params$Max[6] & Species == "Steelhead", params$Max[6], f_ratio)))),
-#          redds_f = ifelse(redds_f < params$Min[2] & Species == "Chinook", params$Min[2],
-#                           ifelse(redds_f > params$Max[2] & Species == "Chinook", params$Max[2],
-#                                  ifelse(redds_f < params$Min[7] & Species == "Steelhead", params$Min[7],
-#                                         ifelse(redds_f > params$Max[7] & Species == "Steelhead", params$Max[7], redds_f)))),
-#          fecund = ifelse(fecund < params$Min[3] & Species == "Chinook", params$Min[3],
-#                           ifelse(fecund > params$Max[3] & Species == "Chinook", params$Max[3],
-#                                  ifelse(fecund < params$Min[8] & Species == "Steelhead", params$Min[8],
-#                                         ifelse(fecund > params$Max[8] & Species == "Steelhead", params$Max[8], fecund)))),
-#          egg_to_parr = ifelse(egg_to_parr < params$Min[4] & Species == "Chinook", params$Min[4],
-#                           ifelse(egg_to_parr > params$Max[4] & Species == "Chinook", params$Max[4],
-#                                  ifelse(egg_to_parr < params$Min[9] & Species == "Steelhead", params$Min[9],
-#                                         ifelse(egg_to_parr > params$Max[9] & Species == "Steelhead", params$Max[9], egg_to_parr)))),
-#          parr_to_presmolt = ifelse(parr_to_presmolt < params$Min[5] & Species == "Chinook", params$Min[5],
-#                           ifelse(parr_to_presmolt > params$Max[5] & Species == "Chinook", params$Max[5],
-#                                  ifelse(parr_to_presmolt < params$Min[10] & Species == "Steelhead", params$Min[10],
-#                                         ifelse(parr_to_presmolt > params$Max[10] & Species == "Steelhead", params$Max[10], parr_to_presmolt))))) %>%
-#   mutate(Female_escapement = Escapement * f_ratio,
-#          Redds = Female_escapement * redds_f,
-#          Eggs = Redds * fecund,
-#          Summer_juv = Eggs * egg_to_parr,
-#          Winter_juv = Summer_juv * parr_to_presmolt
-#            )
-
-
-#With truncated uniform distribution
+#With normal distribution - no stoch for egg:parr, parr:presmolt
 reqs = tibble(Sim_number = rep(1:n.sim,2),
               Species = c(rep("Chinook",n.sim),rep("Steelhead",n.sim)),
               Escapement = c(rep(target.esc[1],n.sim), rep(target.esc[2],n.sim)),
-              # Female_escapement = NA,
-              # Redds = NA,
-              # Eggs = NA,
-              # Summer_juv = NA,
-              # Winter_juv = NA,
-              f_ratio = c(runif(n.sim, params$Value[1]-params$SD[1], params$Value[1]+params$SD[1]),
-                          runif(n.sim, params$Value[6]-params$SD[6], params$Value[6]+params$SD[6])),
-              redds_f = c(runif(n.sim, params$Value[2]-params$SD[2], params$Value[2]+params$SD[2]),
-                          runif(n.sim, params$Value[7]-params$SD[7], params$Value[7]+params$SD[7])),
-              fecund = c(runif(n.sim, params$Value[3]-params$SD[3], params$Value[3]+params$SD[3]),
-                          runif(n.sim, params$Value[8]-params$SD[8],                     params$Value[8]+params$SD[8])),
-              egg_to_parr = c(runif(n.sim, params$Value[4]-params$SD[4], params$Value[4]+params$SD[4]),
-                          runif(n.sim, params$Value[9]-params$SD[9], params$Value[9]+params$SD[9])),
-              parr_to_presmolt = c(runif(n.sim, params$Value[5]-params$SD[5], params$Value[5]+params$SD[5]),
-                          runif(n.sim, params$Value[10]-params$SD[10], params$Value[10]+params$SD[10]))) %>%
+              f_ratio = c(rnorm(n.sim, params$Value[1],params$SD[1]),
+                          rnorm(n.sim, params$Value[6],params$SD[6])),
+              redds_f = c(rnorm(n.sim, params$Value[2],params$SD[2]),
+                          rnorm(n.sim, params$Value[7],params$SD[7])),
+              fecund = c(rnorm(n.sim, params$Value[3],params$SD[3]),
+                          rnorm(n.sim, params$Value[8],params$SD[8])),
+              egg_to_parr = c(rep(params$Value[4],n.sim),
+                          rep(params$Value[9],n.sim)),
+              parr_to_presmolt = c(rep(params$Value[5],n.sim),
+                          rep(params$Value[10],n.sim))) %>%
+  mutate(f_ratio = ifelse(f_ratio < params$Min[1] & Species == "Chinook", params$Min[1],
+                          ifelse(f_ratio > params$Max[1] & Species == "Chinook", params$Max[1],
+                                 ifelse(f_ratio < params$Min[6] & Species == "Steelhead", params$Min[6],
+                                        ifelse(f_ratio > params$Max[6] & Species == "Steelhead", params$Max[6], f_ratio)))),
+         redds_f = ifelse(redds_f < params$Min[2] & Species == "Chinook", params$Min[2],
+                          ifelse(redds_f > params$Max[2] & Species == "Chinook", params$Max[2],
+                                 ifelse(redds_f < params$Min[7] & Species == "Steelhead", params$Min[7],
+                                        ifelse(redds_f > params$Max[7] & Species == "Steelhead", params$Max[7], redds_f)))),
+         fecund = ifelse(fecund < params$Min[3] & Species == "Chinook", params$Min[3],
+                          ifelse(fecund > params$Max[3] & Species == "Chinook", params$Max[3],
+                                 ifelse(fecund < params$Min[8] & Species == "Steelhead", params$Min[8],
+                                        ifelse(fecund > params$Max[8] & Species == "Steelhead", params$Max[8], fecund)))),
+         # egg_to_parr = ifelse(egg_to_parr < params$Min[4] & Species == "Chinook", params$Min[4],
+         #                  ifelse(egg_to_parr > params$Max[4] & Species == "Chinook", params$Max[4],
+         #                         ifelse(egg_to_parr < params$Min[9] & Species == "Steelhead", params$Min[9],
+         #                                ifelse(egg_to_parr > params$Max[9] & Species == "Steelhead", params$Max[9], egg_to_parr)))),
+         # parr_to_presmolt = ifelse(parr_to_presmolt < params$Min[5] & Species == "Chinook", params$Min[5],
+         #                  ifelse(parr_to_presmolt > params$Max[5] & Species == "Chinook", params$Max[5],
+         #                         ifelse(parr_to_presmolt < params$Min[10] & Species == "Steelhead", params$Min[10],
+         #                                ifelse(parr_to_presmolt > params$Max[10] & Species == "Steelhead", params$Max[10], parr_to_presmolt))))
+         ) %>%
   mutate(Female_escapement = Escapement * f_ratio,
          Redds = Female_escapement * redds_f,
          Eggs = Redds * fecund,
          Summer_juv = Eggs * egg_to_parr,
          Winter_juv = Summer_juv * parr_to_presmolt
            )
+
+
+#With truncated uniform distribution
+# reqs = tibble(Sim_number = rep(1:n.sim,2),
+#               Species = c(rep("Chinook",n.sim),rep("Steelhead",n.sim)),
+#               Escapement = c(rep(target.esc[1],n.sim), rep(target.esc[2],n.sim)),
+#               f_ratio = c(runif(n.sim, params$Value[1]-params$SD[1], params$Value[1]+params$SD[1]),
+#                           runif(n.sim, params$Value[6]-params$SD[6], params$Value[6]+params$SD[6])),
+#               redds_f = c(runif(n.sim, params$Value[2]-params$SD[2], params$Value[2]+params$SD[2]),
+#                           runif(n.sim, params$Value[7]-params$SD[7], params$Value[7]+params$SD[7])),
+#               fecund = c(runif(n.sim, params$Value[3]-params$SD[3], params$Value[3]+params$SD[3]),
+#                           runif(n.sim, params$Value[8]-params$SD[8],                     params$Value[8]+params$SD[8])),
+#               egg_to_parr = c(runif(n.sim, params$Value[4], params$Value[4]),
+#                           runif(n.sim, params$Value[9], params$Value[9])),
+#               parr_to_presmolt = c(runif(n.sim, params$Value[5], params$Value[5]),
+#                           runif(n.sim, params$Value[10], params$Value[10]))) %>%
+#   mutate(Female_escapement = Escapement * f_ratio,
+#          Redds = Female_escapement * redds_f,
+#          Eggs = Redds * fecund,
+#          Summer_juv = Eggs * egg_to_parr,
+#          Winter_juv = Summer_juv * parr_to_presmolt
+#            )
 
 
 #Summarize sim results
@@ -335,7 +326,7 @@ rec_goals = tibble(Species = c("Chinook", "Steelhead"),
   mutate(`90% CI, upper` = c(NA,as.numeric(select(reqs_summary, ends_with("90U"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("90U"))[2,])))
 ```
 
-Life-stage specific capacity requirements were estimated using a Generalized Capacity Model described in Appendix C of @IdahoOSCTeam2019. The model uses a combination of empirical and literature-based parameter estimates (Table \@ref(tab:param-tab)) to determine the capacity required to achieve a given adult abundance goal. We used adult escapement goals of `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Chinook" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for Chinook salmon and `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Steelhead" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for steelhead. These escapement goals are considered high-range goals and are intended to represent *"healthy and harvestable abundance levels that would sustain very high levels of species viability, significant fishery opportunities and harvest, and a fuller range of ecological values"* [@CBPTF2020]. The required capacities to reach these goals were estimated using a simulation approach, where applicable parameters were repeatedly drawn from normal distributions with means and standard deviations defined in Table \@ref(tab:param-tab) and constrained within the range of observed values. Then, adult escapement goals were multiplied step-wise through the applicable parameter values to obtain capacity requirements by life-stage. For example, the number of redds necessary for recovery was calculated by multiplying the adult escapement goal by the female ratio and the estimated redds per female.  We conducted 5,000 required capacity simulations, resulting in a range of capacity requirements that were summarized to provide the mean required capacity by life-stage with associated confidence intervals. Sources for each parameter estimate are provided in Table \@ref(tab:param-tab); however, those values can be modified if updated or in-basin estimates with empirical support are available.
+Life-stage specific capacity requirements were estimated using a Generalized Capacity Model described in Appendix C of @IdahoOSCTeam2019. The model uses a combination of empirical and literature-based parameter estimates (Table \@ref(tab:param-tab)) to determine the capacity required to achieve a given adult abundance goal. We used adult escapement goals of `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Chinook" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for Chinook salmon and `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Steelhead" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for steelhead. These escapement goals are considered high-range goals and are intended to represent *"healthy and harvestable abundance levels that would sustain very high levels of species viability, significant fishery opportunities and harvest, and a fuller range of ecological values"* [@CBPTF2020]. The required capacities to reach these goals were estimated using a simulation approach, where applicable parameters were repeatedly drawn from normal distributions with means and standard deviations defined in Table \@ref(tab:param-tab) and constrained within the range of observed values. Standard deviations were not included fo Egg to parr and parr to presmolt survival parameters due to small sample sizes, high variability, and potential bias.  Then, adult escapement goals were multiplied step-wise through the applicable parameter values to obtain capacity requirements by life-stage. For example, the number of redds necessary for recovery was calculated by multiplying the adult escapement goal by the female ratio and the estimated redds per female.  We conducted 5,000 required capacity simulations, resulting in a range of capacity requirements that were summarized to provide the mean required capacity by life-stage with associated confidence intervals. Sources for each parameter estimate are provided in Table \@ref(tab:param-tab); however, those values can be modified if updated or in-basin estimates with empirical support are available.
   
 
 
@@ -423,7 +414,6 @@ gaa_hab_dict %>%
 ### QRF Capacity Estimates
 
 ```{r calc-chnk-capacity}
-#These will need to be updated using the new QRF & extrap models - MR 6/22/22
 
 source(here("R/calc_watershed_cap.R"))
 
@@ -841,7 +831,6 @@ chnk_def_p
                                   face = "bold"),
         legend.position = "right")
 
-chnk_def_line
 
 
 ```
