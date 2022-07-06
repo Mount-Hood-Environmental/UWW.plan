@@ -176,27 +176,29 @@ reqs = tibble(Sim_number = rep(1:n.sim,2),
               Species = c(rep("Chinook",n.sim),rep("Steelhead",n.sim)),
               Escapement = c(rep(target.esc[1],n.sim), rep(target.esc[2],n.sim)),
               f_ratio = c(rnorm(n.sim, params$Value[1],params$SD[1]),
-                          rnorm(n.sim, params$Value[6],params$SD[6])),
-              redds_f = c(rnorm(n.sim, params$Value[2],params$SD[2]),
                           rnorm(n.sim, params$Value[7],params$SD[7])),
-              fecund = c(rnorm(n.sim, params$Value[3],params$SD[3]),
+              redds_f = c(rnorm(n.sim, params$Value[2],params$SD[2]),
                           rnorm(n.sim, params$Value[8],params$SD[8])),
+              fecund = c(rnorm(n.sim, params$Value[3],params$SD[3]),
+                          rnorm(n.sim, params$Value[9],params$SD[9])),
               egg_to_parr = c(rep(params$Value[4],n.sim),
-                          rep(params$Value[9],n.sim)),
+                          rep(params$Value[10],n.sim)),
               parr_to_presmolt = c(rep(params$Value[5],n.sim),
-                          rep(params$Value[10],n.sim))) %>%
+                          rep(params$Value[11],n.sim)),
+              egg_to_smolt = c(rep(params$Value[6],n.sim),
+                               rep(params$Value[12],n.sim))) %>%
   mutate(f_ratio = ifelse(f_ratio < params$Min[1] & Species == "Chinook", params$Min[1],
                           ifelse(f_ratio > params$Max[1] & Species == "Chinook", params$Max[1],
-                                 ifelse(f_ratio < params$Min[6] & Species == "Steelhead", params$Min[6],
-                                        ifelse(f_ratio > params$Max[6] & Species == "Steelhead", params$Max[6], f_ratio)))),
+                                 ifelse(f_ratio < params$Min[7] & Species == "Steelhead", params$Min[7],
+                                        ifelse(f_ratio > params$Max[7] & Species == "Steelhead", params$Max[7], f_ratio)))),
          redds_f = ifelse(redds_f < params$Min[2] & Species == "Chinook", params$Min[2],
                           ifelse(redds_f > params$Max[2] & Species == "Chinook", params$Max[2],
-                                 ifelse(redds_f < params$Min[7] & Species == "Steelhead", params$Min[7],
-                                        ifelse(redds_f > params$Max[7] & Species == "Steelhead", params$Max[7], redds_f)))),
+                                 ifelse(redds_f < params$Min[8] & Species == "Steelhead", params$Min[8],
+                                        ifelse(redds_f > params$Max[8] & Species == "Steelhead", params$Max[8], redds_f)))),
          fecund = ifelse(fecund < params$Min[3] & Species == "Chinook", params$Min[3],
                           ifelse(fecund > params$Max[3] & Species == "Chinook", params$Max[3],
-                                 ifelse(fecund < params$Min[8] & Species == "Steelhead", params$Min[8],
-                                        ifelse(fecund > params$Max[8] & Species == "Steelhead", params$Max[8], fecund)))),
+                                 ifelse(fecund < params$Min[9] & Species == "Steelhead", params$Min[9],
+                                        ifelse(fecund > params$Max[9] & Species == "Steelhead", params$Max[9], fecund)))),
          # egg_to_parr = ifelse(egg_to_parr < params$Min[4] & Species == "Chinook", params$Min[4],
          #                  ifelse(egg_to_parr > params$Max[4] & Species == "Chinook", params$Max[4],
          #                         ifelse(egg_to_parr < params$Min[9] & Species == "Steelhead", params$Min[9],
@@ -210,7 +212,8 @@ reqs = tibble(Sim_number = rep(1:n.sim,2),
          Redds = Female_escapement * redds_f,
          Eggs = Redds * fecund,
          Summer_juv = Eggs * egg_to_parr,
-         Winter_juv = Summer_juv * parr_to_presmolt
+         Winter_juv = Summer_juv * parr_to_presmolt,
+         Smolts = Eggs * egg_to_smolt
            )
 
 
@@ -268,7 +271,11 @@ reqs_summary = reqs %>%
             Winter_juv_80L = quantile(Winter_juv, .1),
             Winter_juv_80U = quantile(Winter_juv, .9),
             Winter_juv_90L = quantile(Winter_juv, 0.05),
-            Winter_juv_90U = quantile(Winter_juv, 0.95)
+            Winter_juv_90U = quantile(Winter_juv, 0.95),
+            Mean_Smolts = mean(Smolts),
+            Smolts_se = sd(Smolts),
+            Smolts_90L = quantile(Smolts, 0.1),
+            Smolts_90U = quantile(Smolts, 0.9)
             )
 
 reqs_plotdat = reqs %>%
@@ -299,6 +306,16 @@ winter_juvsplot = ggplot(reqs_plotdat)+
   theme(axis.ticks.y = element_blank(),
         axis.text.y = element_blank())
 
+smoltsplot = ggplot(reqs_plotdat)+
+  geom_density(aes(x=Smolts))+
+  geom_vline(aes(xintercept=Smolts_90L), linetype = 'dotted')+
+  geom_vline(aes(xintercept=Smolts_90U), linetype = 'dotted')+
+  facet_wrap(~Species) +
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank())
+
+sar_req = target.esc/reqs_summary$Mean_Smolts
+
 rec_goals = tibble(Species = c("Chinook", "Steelhead"),
                    Scenario = "CBPTF 2020",
                    Escapement = target.esc) %>%
@@ -308,7 +325,8 @@ rec_goals = tibble(Species = c("Chinook", "Steelhead"),
                                          "Redds/Female" = "redd_per_fem",
                                          "Fecundity" = "fecund",
                                          "Egg:Parr" = "egg_to_parr",
-                                         "Parr:Presmolt" = "parr_to_presmolt")) %>%
+                                         "Parr:Presmolt" = "parr_to_presmolt",
+                                         "Egg:Smolt" = "egg_to_smolt")) %>%
                pivot_wider(id_cols = "Species",
                            names_from = "Parameter",
                            values_from = "Value")) %>%
@@ -316,9 +334,10 @@ rec_goals = tibble(Species = c("Chinook", "Steelhead"),
          Redds = reqs_summary$Mean_Redds,
          Eggs = reqs_summary$Mean_Eggs,
          `Summer Juveniles` = reqs_summary$Mean_Summer_juv,
-         `Winter Juveniles` = reqs_summary$Mean_Winter_juv) %>%
-  select(-c(prop_fem:parr_to_presmolt)) %>%
-  pivot_longer(cols = c(Escapement, `Female Escapement`:`Winter Juveniles`),
+         `Winter Juveniles` = reqs_summary$Mean_Winter_juv,
+         Smolts = reqs_summary$Mean_Smolts) %>%
+  select(-c(prop_fem:egg_to_smolt)) %>%
+  pivot_longer(cols = c(Escapement, `Female Escapement`:Smolts),
                names_to = "LifeStage",
                values_to = "Abundance") %>%
   mutate(SE = c(NA,as.numeric(select(reqs_summary, ends_with("se"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("se"))[2,]))) %>%
@@ -326,7 +345,7 @@ rec_goals = tibble(Species = c("Chinook", "Steelhead"),
   mutate(`90% CI, upper` = c(NA,as.numeric(select(reqs_summary, ends_with("90U"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("90U"))[2,])))
 ```
 
-Life-stage specific capacity requirements were estimated using a Generalized Capacity Model (GCM) described in Appendix C of @IdahoOSCTeam2019. The model uses a combination of empirical and literature-based parameter estimates (Table \@ref(tab:param-tab)) to determine the capacity required to achieve a given adult abundance goal. We used adult escapement goals of `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Chinook" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for Chinook salmon and `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Steelhead" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for steelhead. These escapement goals are considered high-range goals and are intended to represent *"healthy and harvestable abundance levels that would sustain very high levels of species viability, significant fishery opportunities and harvest, and a fuller range of ecological values"* [@CBPTF2020]. The required capacities to reach these goals were estimated using the GCM with a simulation approach to account for expected interannual variation in life history parameters. The simulation was conducted by repeatedly drawing applicable parameters from normal distributions with means and standard deviations defined in Table \@ref(tab:param-tab) and constrained within the range of observed values. Standard deviations for Egg to parr and parr to presmolt survival parameters were set to zero due to small sample sizes, high variability, and potential bias leading to potentially unreliable results. Then, adult escapement goals were multiplied step-wise through the applicable parameter values to obtain capacity requirements by life-stage. For example, the number of redds necessary for recovery was calculated by multiplying the adult escapement goal by the female ratio and the estimated redds per female.  We conducted 5,000 simulations, resulting in a range of capacity requirements that were summarized to provide the mean required capacity by life-stage with associated confidence intervals. Sources for each parameter estimate are provided in Table \@ref(tab:param-tab); however, those values can be modified if updated or in-basin estimates with empirical support are available.
+Life-stage specific capacity requirements were estimated using a Generalized Capacity Model (GCM) described in Appendix C of @IdahoOSCTeam2019. The model uses a combination of empirical and literature-based parameter estimates (Table \@ref(tab:param-tab)) to determine the capacity required to achieve a given adult abundance goal. We used adult escapement goals of `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Chinook" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for Chinook salmon and `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Steelhead" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for steelhead. These escapement goals are considered high-range goals and are intended to represent *"healthy and harvestable abundance levels that would sustain very high levels of species viability, significant fishery opportunities and harvest, and a fuller range of ecological values"* [@CBPTF2020]. The required capacities to reach these goals were estimated using the GCM with a simulation approach to account for expected interannual variation in life history parameters. The simulation was conducted by repeatedly drawing applicable parameters from normal distributions with means and standard deviations defined in Table \@ref(tab:param-tab) and constrained within the range of observed values. Standard deviations for Egg to parr and parr to presmolt survival parameters were set to zero due to small sample sizes, high variability, and potential bias leading to potentially unreliable results. Then, adult escapement goals were multiplied step-wise through the applicable parameter values to obtain capacity requirements by life-stage. For example, the number of redds necessary for recovery was calculated by multiplying the adult escapement goal by the female ratio and the estimated redds per female. We conducted 5,000 simulations, resulting in a range of capacity requirements that were summarized to provide the mean required capacity by life-stage with associated confidence intervals. Sources for each parameter estimate are provided in Table \@ref(tab:param-tab); however, those values can be modified if updated or in-basin estimates with empirical support are available.
   
 
 
@@ -696,6 +715,7 @@ rec_goals %>%
   left_join(cap_totals %>%
               select(-n_rchs,
                      -tot_length)) %>%
+  filter(LifeStage != "Smolts") %>%
   mutate(Deficit = Abundance - tot_cap,
          `Relative Deficit` = Deficit / tot_cap) %>%
   rename(`Required Capacity` = Abundance,
@@ -801,7 +821,7 @@ chnk_def_p
                y = value),
            color = "black",
            stat = "identity") +
-  #scale_x_discrete(limits = rev) +
+  scale_x_discrete(limits = rev) +
   scale_fill_manual(name = "Capacity",
                     values = c("gray30", "forestgreen")) +
   coord_flip() +
@@ -905,6 +925,8 @@ sthd_def_p
   <!-- * Parameter estimates provided in Table \@ref(tab:param-tab) were used in @IdahoOSCTeam2019 for planning in the Upper Salmon Subbasin, Idaho. Some values were calculated using data local to the Upper Salmon Subbasin while others could be considered out-dated. If in-basin or more recent appropriate parameter estimates (with uncertainty) are available, those values could be updated. -->
   * Parameter estimates in Table \@ref(tab:param-tab) were calculated using data local to the Upper Salmon Subbasin when available. However, in-basin estimates were not available for all parameters and some of the out-of-basin parameter values could be considered outdated or biased. This is particularly evident for the egg to parr and parr to presmolt survival parameters. These parameters were often generated with small sample sizes and are the result of model predictions given assumptions about other life history parameters such as redds per female and fecundity. We found that these survival parameters may be unreliable due to these potential issues and others, and as a result did not include measures of uncertainty for these parameters. Possible solutions for this issue include additional literature searches and data compilation to obtain more reliable parameters or using widely available data for survival to smoltification to estimate absolute lower bounds for required habitat capacity.
   
+  * To support the analysis, we used the GCM to predict the number of smolts produced at spawner escapement goals. For the predicted smolt abundances to result in spawner escapement targets being met in successive generations, smolt-to-adult return rates would have to average `r round(sar_req[1],3)*100` % for Chinook and `r round(sar_req[2],3)*100` % for steelhead.
+  
 * Similarly, current available habitat capacity estimates from the QRF and extrapolation models are considered tentative:
 
   <!-- * Improvements to the QRF model are scheduled for spring/summer 2022, including modifications to the list of QRF covariates (Table \@ref(tab:cov-tab)) used in each. Potential changes to QRF model covariates will accommodate: 1)   using metrics collected by drone-supported stream habitat monitoring protocols currently in place [e.g., DASH, @Carmichael2019], 2) using metrics that are useful or meaningful for project design or target conditions, and/or 3) using covariates with predictive power for estimating capacity. -->
@@ -934,7 +956,6 @@ Finally, a NorWeST summer stream temperature model was used to describe changes 
 # Limited Species and Life-Stages
 
 What are the limited species and life-stages and why? Include results from a literature review, the habitat capacity assessment, and the stream temperature assessment.
-
 
 ## Target Conditions to Address Limiting Factors
 
