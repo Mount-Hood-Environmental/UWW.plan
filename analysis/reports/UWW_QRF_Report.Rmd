@@ -511,6 +511,27 @@ cap_totals = list(chnk_sum = chnk_sum_cap,
          everything(),
          -StreamName,
          -type)
+
+
+#Estimating available capacity in terms of spawners
+availcap_spawners = tibble(Species = c(rep("Chinook",3), rep("Steelhead",3)),
+                            LifeStage = rep(c("Summer Juveniles","Winter Juveniles","Redds"),2),
+                            LifeStage_Cap = cap_totals$tot_cap,
+                           Pred_Spawners = NA)
+#chnk
+availcap_spawners$Pred_Spawners[1] = availcap_spawners$LifeStage_Cap[1]/(params$Value[1]*params$Value[2]*params$Value[3]*params$Value[4])
+                                                                         
+availcap_spawners$Pred_Spawners[2] = availcap_spawners$LifeStage_Cap[2]/(params$Value[1]*params$Value[2]*params$Value[3]*params$Value[4]*params$Value[5])
+
+availcap_spawners$Pred_Spawners[3] = availcap_spawners$LifeStage_Cap[3]/(params$Value[1]*params$Value[2])
+
+#sthd
+availcap_spawners$Pred_Spawners[4] = availcap_spawners$LifeStage_Cap[4]/(params$Value[7]*params$Value[8]*params$Value[9]*params$Value[10])
+                                                                         
+availcap_spawners$Pred_Spawners[5] = availcap_spawners$LifeStage_Cap[5]/(params$Value[7]*params$Value[8]*params$Value[9]*params$Value[10]*params$Value[11])
+
+availcap_spawners$Pred_Spawners[6] = availcap_spawners$LifeStage_Cap[6]/(params$Value[7]*params$Value[8])
+
 ```
 
 Estimates of total habitat capacity for the Upper Walla Walla by species and life-stage are shown in Table \@ref(tab:cap-table). Estimates were made using the anadromous spatial domain defined in [StreamNet](https://www.streamnet.org/home/data-maps/gis-data-sets/) for Chinook salmon and steelhead. Capacity was extrapolated within these domains for `r unique(cap_totals$n_rchs[cap_totals$Species == "Chinook"])` reaches totaling `r round(unique(cap_totals$tot_length[cap_totals$Species == "Chinook"]) / 1000)` km in length for Chinook salmon and `r prettyNum(unique(cap_totals$n_rchs[cap_totals$Species == "Steelhead"]), big.mark = ",")` reaches totaling `r round(unique(cap_totals$tot_length[cap_totals$Species == "Steelhead"]) / 1000)` km in length for steelhead. Different spatial domains could be used for both Chinook salmon and steelhead if deemed appropriate. Capacity estimates for individual streams by species and life stage are provided in [Supplemental Tables and Figures](#supplemental-tables-and-figures). 
@@ -917,6 +938,25 @@ sthd_def_p
 ```
 
 
+Available capacity deficits can also be evaluated in terms of spawning escapement abundance using the GCM (Table \@ref(tab:cap-spawnconv-tbl)). For example, predicted redd capacity is divided by the estimated number of redds per female and the female ratio to provide an estimate of the spawner abundance supported given the particular life stage.
+
+```{r cap-spawnconv-tbl}
+availcap_spawners %>%
+  #rename(`Life Stage` = LifeStage,
+  #       `Available Capacity` = LifeStage_Cap,
+  #       `Predicted Spawners` = Pred_Spawners) %>%
+  kable(booktabs = T,
+        digits = c(0,0,0,0),
+        align = "cccc",
+        format.args = list(big.mark = ","),
+        col.names = c("Species","Life-stage","Available Capacity","Predicted Spawners"),
+        caption = "Estimated capacity by life-stage and the predicted abundance of spawners supported.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
+
+```
+
 ## Further Considerations
 
 * The current required capacity estimates from the Generalized Capacity Model are considered tentative and any interpretations should consider:
@@ -925,7 +965,7 @@ sthd_def_p
   <!-- * Parameter estimates provided in Table \@ref(tab:param-tab) were used in @IdahoOSCTeam2019 for planning in the Upper Salmon Subbasin, Idaho. Some values were calculated using data local to the Upper Salmon Subbasin while others could be considered out-dated. If in-basin or more recent appropriate parameter estimates (with uncertainty) are available, those values could be updated. -->
   * Parameter estimates in Table \@ref(tab:param-tab) were calculated using data local to the Upper Salmon Subbasin when available. However, in-basin estimates were not available for all parameters and some of the out-of-basin parameter values could be considered outdated or biased. This is particularly evident for the egg to parr and parr to presmolt survival parameters. These parameters were often generated with small sample sizes and are the result of model predictions given assumptions about other life history parameters such as redds per female and fecundity. We found that these survival parameters may be unreliable due to these potential issues and others, and as a result did not include measures of uncertainty for these parameters. Possible solutions for this issue include additional literature searches and data compilation to obtain more reliable parameters or using widely available data for survival to smoltification to estimate absolute lower bounds for required habitat capacity.
   
-  * To support the analysis, we used the GCM to predict the number of smolts produced at spawner escapement goals. For the predicted smolt abundances to result in spawner escapement targets being met in successive generations, smolt-to-adult return rates would have to average `r round(sar_req[1],3)*100` % for Chinook and `r round(sar_req[2],3)*100` % for steelhead.
+  * To support the analysis, we used the GCM to predict the number of smolts produced at spawner escapement goals. For the predicted smolt abundances to result in spawner escapement targets being met in successive generations, smolt-to-adult return rates would have to average `r round(sar_req[1],3)*100` % for Chinook and `r round(sar_req[2],3)*100` % for steelhead before accounting for potential iteroparity.
   
 * Similarly, current available habitat capacity estimates from the QRF and extrapolation models are considered tentative:
 
