@@ -141,6 +141,78 @@ The focal species for the stream temeprature suitability models are:
 -   Columbia River bull trout (*Salvelinus confluentus*; ESA-listed threatened)
 -   Pacific lamprey (*Lampetra tridentata*)
 
+<!-- Okay, I'm going to write out my thoughts/outline for a temperature assessment. Not because I think you're off-base by any means, mostly to get them written down and available for reference... -->
+
+<!-- -   **Summer** stream temperature assessment -->
+
+<!--     -   Start w/ a simple temperature assessment ignoring any information on fish -->
+
+<!--     -   This will have to be a summer stream assessment as spatially and temporally continuous datasets are unavailable to our knowledge. -->
+
+<!--     -   Evaluate 4 scenarios: -->
+
+<!--         -   1\. Contemporary: Based on historical scenario S2_02_11 representing 10-year average August mean stream temperatures for 2022 - 2011. -->
+
+<!--             -   realize this is already somewhat historic, but perhaps the best contemporary dataset we have -->
+
+<!--         -   2\. 2040 scenario -->
+
+<!--         -   3\. 2080 scenario -->
+
+<!--         -   4\. Contemporary minus 1: This is **scenario #1** minus 1C. I realize this is pretty unrealistic, but subtracting 1 from the 2080 scenario generally just results in something that looks like the 2040 scenario. This is just a holy grail, what if we could do something about climate change scenario. Would reducing temps from current actually make a difference? -->
+
+<!--     -   I think the overall spatial scale could be reduced i.e., not necessarily the entire stream length available from NHDplusV2. Maybe something like: -->
+
+<!--         -   ***Some extent used in the hydrology assessment by Rio? You might lean on Rio to define the upper extents so that it overlaps with their analysis.*** -->
+
+<!--         -   The maximum extents among the QRF scenarios? -->
+
+<!--         -   The maximum extents available for steelhead, Chinook, lamprey, bull trout defined in StreamNet? -->
+
+<!--         -   Some extent defined by CTUIR as relevant to First Foods? -->
+
+<!--     -   Because the scale is so large, you might make these 1 column of 4 maps rather than 2x2 as it currently is. -->
+
+<!--     -   Summarized as maps, but perhaps also as box/violin plots. Spatial scale would need to be considered for summaries and perhaps use the stream partitions that will be later defined by the group. -->
+
+<!--     -   Export these shapefiles for additional mapping and including in the report elsewhere. -->
+
+<!-- -   Introduce temperature threshholds by species, focusing on summer life-stages\ -->
+
+<!--     -   Chinook salmon (spawning and summer parr)\ -->
+
+<!--     -   Steelhead (summer parr)\ -->
+
+<!--     -   Lamprey (???) -->
+
+<!--     -   Bull trout (???) -->
+
+<!--     -   The lamprey and bull trout could just be more general temperature thresholds -->
+
+<!--     -   Summarized in tables -->
+
+<!-- -   Merge temperature scenarios with threshold information. -->
+
+<!--     -   Would include maps similar to those included in Appendix A of the IRA that show the proportion of time that a water temperature was "within" a given life-stage specific threshold. -->
+
+<!--     -   focus only on summer or general life-stages -->
+
+<!--     -   also across the 4 temperature scenarios -->
+
+<!--     -   We should think about how to summarize this in tabular form or as figures (box plots, bar plots?) form as well. -->
+
+<!-- -   QRF assessment -->
+
+<!--     -   Re-run capacity extrapolations, except changing the Avg August covariate to temp scenarios #2, #3, and #4. -->
+
+<!--     -   Only needs to be done for Chinook (spawning, summer rearing) and steelhead (summer rearing) -->
+
+<!--     -   Maybe no maps necessary? -->
+
+<!--     -   just summarize relative changes to capacity -->
+
+<!--     -   This is in "beta mode"...if it fails, we can fall back on all of the above -->
+
 # Results
 
 ## Stream Temperature Results
