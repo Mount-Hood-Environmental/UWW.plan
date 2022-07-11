@@ -1,0 +1,19 @@
+Strm_Name,Reach ID,From RKM,To RKM,From RM,To RM
+North Fork Walla Walla River,NF1,0.0,5.7,0.0,3.5
+North Fork Walla Walla River,NF2,5.7,9.2,3.5,5.7
+North Fork Walla Walla River,NF3,9.2,14.1,5.7,8.8
+North Fork Walla Walla River,NF4,14.1,18.3,8.8,11.4
+North Fork Walla Walla River,NF5,18.3,19.2,11.4,11.9
+North Fork Walla Walla River,NF6,19.2,20.6,11.9,12.8
+North Fork Walla Walla River,NF7,20.6,21.4,12.8,13.3
+North Fork Walla Walla River,NF8,21.4,24.6,13.3,15.3
+North Fork Walla Walla River,NF9,24.6,25.3,15.3,15.7
+North Fork Walla Walla River,NF10,25.3,30.5,15.7,19.0
+South Fork Walla Walla River,SF1,0.0,13.3,0.0,8.3
+South Fork Walla Walla River,SF2,13.3,20.8,8.3,12.9
+South Fork Walla Walla River,SF3,20.8,24.6,12.9,15.3
+South Fork Walla Walla River,SF4,24.6,28.5,15.3,17.7
+South Fork Walla Walla River,SF5,28.5,32.8,17.7,20.4
+South Fork Walla Walla River,SF6,32.8,34.3,20.4,21.3
+South Fork Walla Walla River,SF7,34.3,40.5,21.3,25.2
+South Fork Walla Walla River,SF8,40.5,44.6,25.2,27.7
