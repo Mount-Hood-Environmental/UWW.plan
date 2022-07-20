@@ -31,9 +31,9 @@ huc12_sf = st_read(paste0(nas_prefix, "main/data/habitat/watershed_boundaries/WB
 # use Morgan Bond's spatially continuous, 200m linear network layer
 # use random forest extrapolation model
 
-sum_juv_sf = st_read(paste0(nas_prefix, "main/data/qrf/gitrepo_data/output/gpkg/Rch_Cap_RF_Dash_juv_summer.gpkg")) %>% st_transform(uww_crs)
-win_juv_sf = st_read(paste0(nas_prefix, "main/data/qrf/gitrepo_data/output/gpkg/Rch_Cap_RF_Dash_juv_winter.gpkg")) %>% st_transform(uww_crs)
-redd_sf = st_read(paste0(nas_prefix, "main/data/qrf/gitrepo_data/output/gpkg/Rch_Cap_RF_Dash_redds.gpkg")) %>% st_transform(uww_crs)
+sum_juv_sf = st_read(paste0(nas_prefix, "main/data/qrf/gitrepo_data/output/gpkg/Rch_Cap_RF_No_elev_juv_summer.gpkg")) %>% st_transform(uww_crs)
+win_juv_sf = st_read(paste0(nas_prefix, "main/data/qrf/gitrepo_data/output/gpkg/Rch_Cap_RF_No_elev_juv_winter.gpkg")) %>% st_transform(uww_crs)
+redd_sf = st_read(paste0(nas_prefix, "main/data/qrf/gitrepo_data/output/gpkg/Rch_Cap_RF_No_elev_redds.gpkg")) %>% st_transform(uww_crs)
 
 # if needed, these .gpkg files can be saved locally to decrease read times, e.g.,
 # on Mike's machine...
