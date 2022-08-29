@@ -110,21 +110,21 @@ Water is the cornerstone of First Foods production and inherently tied to the fi
 
 This assessment will be focused on the alluvial channel of the Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North and South forks of the Walla Walla River. The primary study area includes approximately 70 miles of stream. The secondary study area includes the catchment of the primary study area which encompasses approximately 885 square miles.
 
-# Stream Temperature Assessment
+# Summer Stream Temperature Assessment
 
-The primary objectives of the Upper Walla Walla stream temperature assessment is to:
+The primary objectives of the Upper Walla Walla summer stream temperature assessment is to:
 
--   Summarize current stream temperatures for the Upper Walla Walla using NorWest stream temperature data (CITE)
+-   Summarize historic composite scenario summer stream temperatures for the Upper Walla Walla using NorWest stream temperature data (CITE)
 
--   Compare predictions of stream temperatures in the Upper Walla Walla for 2040 and 2080 climate scenarios.
+-   Compare predictions of summer stream temperatures in the Upper Walla Walla for 2040 and 2080 climate scenarios.
+
+-   Run a hypothetical scenario were restoration efforts over the next \~60 years decrease summer stream temperatures by -1^o^ C.
 
 -   Summarize temperature suitability based solely on species-specific temperature models for the Upper Walla Walla.
 
--   Run a hypothetical scenario were restoration efforts over the next \~60 years help decrease stream temperatures by -1^o^ C
-
 ## Stream Temperature Data
 
-NorWest August stream temperature estimates -- 2002-2011, 2040, and 2080 summaries. Additionally, -1^o^ C temperature scenario.
+NorWest August stream temperature estimates for historic composite scenario (2002-2011), projected 2040 stream temperatures, and projected 2080 stream temperatures summaries.
 
 -   S2_02_11 Historical composite scenario representing 10 year average August mean stream temperatures for 2002-2011
 
@@ -134,84 +134,18 @@ NorWest August stream temperature estimates -- 2002-2011, 2040, and 2080 summari
 
 ## Fish Temperature Thresholds
 
-The focal species for the stream temeprature suitability models are:
+The focal species for the summer stream temperature suitability models are:
 
 -   Spring-run Chinook salmon (*Oncorhynchus tshawytscha*; hereafter Chinook salmon)
+    -   thresholds - Carter (2005) - spawning and summer parr
 -   Middle Columbia River summer steelhead (*O. mykiss*; hereafter steelhead; ESA-listed threatened)
+    -   thresholds - Carter (2005) - summer parr
 -   Columbia River bull trout (*Salvelinus confluentus*; ESA-listed threatened)
+    -   thresholds - need to find
 -   Pacific lamprey (*Lampetra tridentata*)
+    -   thresholds - need to find
 
-<!-- Okay, I'm going to write out my thoughts/outline for a temperature assessment. Not because I think you're off-base by any means, mostly to get them written down and available for reference... -->
-
-<!-- -   **Summer** stream temperature assessment -->
-
-<!--     -   Start w/ a simple temperature assessment ignoring any information on fish -->
-
-<!--     -   This will have to be a summer stream assessment as spatially and temporally continuous datasets are unavailable to our knowledge. -->
-
-<!--     -   Evaluate 4 scenarios: -->
-
-<!--         -   1\. Contemporary: Based on historical scenario S2_02_11 representing 10-year average August mean stream temperatures for 2022 - 2011. -->
-
-<!--             -   realize this is already somewhat historic, but perhaps the best contemporary dataset we have -->
-
-<!--         -   2\. 2040 scenario -->
-
-<!--         -   3\. 2080 scenario -->
-
-<!--         -   4\. Contemporary minus 1: This is **scenario #1** minus 1C. I realize this is pretty unrealistic, but subtracting 1 from the 2080 scenario generally just results in something that looks like the 2040 scenario. This is just a holy grail, what if we could do something about climate change scenario. Would reducing temps from current actually make a difference? -->
-
-<!--     -   I think the overall spatial scale could be reduced i.e., not necessarily the entire stream length available from NHDplusV2. Maybe something like: -->
-
-<!--         -   ***Some extent used in the hydrology assessment by Rio? You might lean on Rio to define the upper extents so that it overlaps with their analysis.*** -->
-
-<!--         -   The maximum extents among the QRF scenarios? -->
-
-<!--         -   The maximum extents available for steelhead, Chinook, lamprey, bull trout defined in StreamNet? -->
-
-<!--         -   Some extent defined by CTUIR as relevant to First Foods? -->
-
-<!--     -   Because the scale is so large, you might make these 1 column of 4 maps rather than 2x2 as it currently is. -->
-
-<!--     -   Summarized as maps, but perhaps also as box/violin plots. Spatial scale would need to be considered for summaries and perhaps use the stream partitions that will be later defined by the group. -->
-
-<!--     -   Export these shapefiles for additional mapping and including in the report elsewhere. -->
-
-<!-- -   Introduce temperature threshholds by species, focusing on summer life-stages\ -->
-
-<!--     -   Chinook salmon (spawning and summer parr)\ -->
-
-<!--     -   Steelhead (summer parr)\ -->
-
-<!--     -   Lamprey (???) -->
-
-<!--     -   Bull trout (???) -->
-
-<!--     -   The lamprey and bull trout could just be more general temperature thresholds -->
-
-<!--     -   Summarized in tables -->
-
-<!-- -   Merge temperature scenarios with threshold information. -->
-
-<!--     -   Would include maps similar to those included in Appendix A of the IRA that show the proportion of time that a water temperature was "within" a given life-stage specific threshold. -->
-
-<!--     -   focus only on summer or general life-stages -->
-
-<!--     -   also across the 4 temperature scenarios -->
-
-<!--     -   We should think about how to summarize this in tabular form or as figures (box plots, bar plots?) form as well. -->
-
-<!-- -   QRF assessment -->
-
-<!--     -   Re-run capacity extrapolations, except changing the Avg August covariate to temp scenarios #2, #3, and #4. -->
-
-<!--     -   Only needs to be done for Chinook (spawning, summer rearing) and steelhead (summer rearing) -->
-
-<!--     -   Maybe no maps necessary? -->
-
-<!--     -   just summarize relative changes to capacity -->
-
-<!--     -   This is in "beta mode"...if it fails, we can fall back on all of the above -->
+*NOTE: Possibly adjust spatial scale to match Rio reaches, StreamNet, CTUIR? Also, export these shapefiles for additional mapping and including in the report elsewhere.*
 
 # Results
 
@@ -288,7 +222,7 @@ temp_map_2080 = uww_rch_sf %>%
        color = expression("Temperature ("^o*"C)"))
 
 # -1C results
-temp_map_1C_2080 = uww_rch_sf %>%
+temp_map_1C = uww_rch_sf %>%
   ggplot() +
   geom_sf(data = uww_huc_sf %>%
             st_union() %>%
@@ -297,8 +231,8 @@ temp_map_1C_2080 = uww_rch_sf %>%
           color = "gray50") +
   geom_sf(color = river_color) +
   geom_sf(data = uww_rch_sf %>%
-            mutate(S32_2080D = replace(S32_2080D, S32_2080D == -9999.00, NA)),
-          aes(color = (S32_2080D-1)),
+            mutate(S2_02_11 = replace(S2_02_11, S2_02_11 == -9999.00, NA)),
+          aes(color = (S2_02_11-1)),
           size = 1) +
   scale_color_viridis_c(direction = 1, limits = c(5,25)) +
   #theme_bw() +
@@ -306,7 +240,7 @@ temp_map_1C_2080 = uww_rch_sf %>%
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank()) +
-  labs(title = expression("Hypothetical restoration effect on \n 2080 future scenario (-1"^o*"C)"),
+  labs(title = expression("Hypothetical restoration effect on \n historic composite scenario (-1"^o*"C)"),
        color = expression("Temperature ("^o*"C)"))
 
 
@@ -325,7 +259,7 @@ temp_rel_map_2040 = uww_rch_sf %>%
                    temp_dif = S30_2040D - S2_02_11),
           aes(color = temp_dif),
           size = 1) +
-  scale_color_viridis_c(direction = 1,limits = c(0,2.5)) +
+  scale_color_viridis_c(direction = 1,limits = c(-1,2.5)) +
 #scale_fill_gradientn(limits = c(1,3)) +
   #theme_bw() +
   theme(legend.position = "bottom",
@@ -350,7 +284,7 @@ temp_rel_map_2080 = uww_rch_sf %>%
                    temp_dif = S32_2080D - S2_02_11),
           aes(color = temp_dif),
           size = 1) +
-  scale_color_viridis_c(direction = 1,limits = c(0,2.5)) +
+  scale_color_viridis_c(direction = 1,limits = c(-1,2.5)) +
   #theme_bw() +
   theme(legend.position = "bottom",
         axis.text.x = element_blank(),
@@ -361,7 +295,7 @@ temp_rel_map_2080 = uww_rch_sf %>%
 
 
 # -1C results
-temp_rel_map_1C_2080 = uww_rch_sf %>%
+temp_rel_map_1C = uww_rch_sf %>%
   ggplot() +
   geom_sf(data = uww_huc_sf %>%
             st_union() %>%
@@ -370,42 +304,97 @@ temp_rel_map_1C_2080 = uww_rch_sf %>%
           color = "gray50") +
   geom_sf(color = river_color) +
   geom_sf(data = uww_rch_sf %>%
-            mutate(S32_2080D = replace(S32_2080D, S32_2080D == -9999.00, NA),
-                   S2_02_11 = replace(S2_02_11, S2_02_11 == -9999.00, NA),
-                   temp_dif = S32_2080D - S2_02_11),
-          aes(color = (temp_dif-1)),
+            mutate(S2_02_11 = replace(S2_02_11, S2_02_11 == -9999.00, NA)),
+          aes(color = (S2_02_11-1)),
           size = 1) +
-  scale_color_viridis_c(direction = 1,limits = c(0,2.5)) +
+  scale_color_viridis_c(direction = 1,limits = c(-1,2.5)) +
   #theme_bw() +
   theme(legend.position = "bottom",
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank()) +
-  labs(title = expression("Hypothetical restoration effect on \n 2080 future scenario (-1"^o*"C)"),
+  labs(title = expression("Hypothetical restoration effect on \n historic composite scenario (-1"^o*"C)"),
        color = expression("Temperature ("^o*"C)"))
 
 ```
 
 ```{r current-temp-maps, fig.cap = "NorWeST average August mean stream temperatures for the Upper Walla Walla."}
 
-ggarrange(temp_map_cur,temp_map_2040,temp_map_2080,temp_map_1C_2080)
+temp_map_cur
 
 ```
 
-```{r temp-comparison-maps, fig.cap = "Comparison of future NorWeST average August mean stream temperatures for  2040, 2080, and 2080 - 1oC to the 2002-2011 historical composite scanerio for the Upper Walla Walla."}
+```{r 2040-temp-maps, fig.cap = "NorWeST average August mean stream temperatures for the Upper Walla Walla."}
 
-ggarrange(temp_map_cur,temp_rel_map_2040,temp_rel_map_2080, temp_rel_map_1C_2080)
+temp_map_2040
+
+```
+
+```{r 2080-temp-maps, fig.cap = "NorWeST average August mean stream temperatures for the Upper Walla Walla."}
+
+temp_map_2080
+
+```
+
+```{r 1C-temp-maps, fig.cap = "NorWeST average August mean stream temperatures for the Upper Walla Walla."}
+temp_map_1C
+
+```
+
+```{r 2040-temp-comparison-maps, fig.cap = "Difference in projected NorWeST average August mean stream temperatures for 2040relative to the 2002-2011 historical composite scanerio for the Upper Walla Walla."}
+
+ggarrange(temp_rel_map_2040)
+
+```
+
+```{r 2080-temp-comparison-maps, fig.cap = "Difference in projected NorWeST average August mean stream temperatures for 2080 relative to the 2002-2011 historical composite scanerio for the Upper Walla Walla."}
+
+ggarrange(temp_rel_map_2080)
+
+```
+
+```{r 1C-temp-comparison-maps, fig.cap = "Difference in projected NorWeST average August mean stream temperatures for - 1oC scenario relative to the 2002-2011 historical composite scanerio for the Upper Walla Walla."}
+
+ggarrange(temp_rel_map_1C)
 
 ```
 
 ## Fish Temperature Suitability Results
 
-Chinook map & summary table
+-   Chinook map, summary table, violin plots
 
-Steelhead map & summary table
+    -   redds and summer parr
 
-Bull trout map & summary table
+-   Steelhead map, summary table, violin plots
 
-Lamprey map & summary table
+    -   summer parr
+
+-   Bull trout map, summary table, violin plots
+
+    -   general temp thresholds
+
+-   Lamprey map, summary table, violin plots
+
+    -   general temp thresholds
+
+    *Would include maps similar to those included in Appendix A of the IRA that show the proportion of time that a water temperature was "within" a given life-stage specific threshold.*
+
+    *Also across the 4 temperature scenarios*
+
+    *We should think about how to summarize this in tabular form or as figures (box plots, bar plots?) form as well.*
+
+## RF capacity estimates
+
+-   Re-run RF capacity estimates with scenarios 2, 3, and 4
+
+-   Chinook map, summary table, violin plots
+
+    -   redds and summer parr
+
+-   Steelhead map, summary table, violin plots
+
+    -   summer parr
+
+Compare relative changes in capacity
 
 # Stream Temperature Discussion
