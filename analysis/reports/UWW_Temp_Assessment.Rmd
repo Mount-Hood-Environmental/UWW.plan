@@ -184,6 +184,17 @@ norwest_p
 
 ```
 
+```{r norwest-bp, fig.cap = "Boxplot showing distributions of recent mean (2002-2011) and projected (2040 and 2080) August mean stream temperatures from NorWeST (Isaak et al. 2017) for the Upper Walla Walla watershed."}
+norwest_bp = norwest_df %>%
+  ggplot() +
+  geom_boxplot(aes(x = scenario,
+                   y = temp_c),
+               fill = "gray50") +
+  theme_bw()
+norwest_bp
+
+```
+
 
 ## Fish Temperature Threshholds
 
