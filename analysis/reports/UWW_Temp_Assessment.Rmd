@@ -90,40 +90,54 @@ load(here("analysis/data/derived_data/uww_spatial.rda"))
 
 ```
 
-<!--
+
 # Background
 
-Water is the cornerstone of First Foods production and inherently tied to the five fundamental touchstones: hydrology, geomorphology, habitat and network connectivity, riverine biotic community, and riparian vegetation [@Jones2008]. These touchstones form the Umatilla River Vision, a holistic approach to water quality restoration. Add description of stream assessment
+Water is the cornerstone of First Foods production and inherently tied to the five fundamental touchstones: hydrology, geomorphology, habitat and network connectivity, riverine biotic community, and riparian vegetation [@Jones2008]. These touchstones form the Umatilla River Vision, a holistic approach to water quality restoration. Stream water temperature is a critical component of the hydrology of the Upper Walla Walla watershed directly affecting the fish community and the connectivity of their habitat. <!-- add a bit more context to lead into the temp assessment -->
 
-## Study Area
 
-This assessment will be focused on the alluvial channel of the Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North and South forks of the Walla Walla River. The primary study area includes approximately 70 miles of stream. The secondary study area includes the catchment of the primary study area which encompasses approximately 885 square miles.
--->
-
-# Background and Objectives
+## Objectives
 
 The primary objectives of the Upper Walla Walla summer stream temperature assessment is to:
 
--   Summarize historic composite scenario summer stream temperatures for the Upper Walla Walla using NorWest stream temperature data (CITE)
-
--   Compare predictions of summer stream temperatures in the Upper Walla Walla for 2040 and 2080 climate scenarios.
-
--   Run a hypothetical scenario were restoration efforts over the next \~60 years decrease summer stream temperatures by -1^o^ C.
-
--   Summarize temperature suitability based solely on species-specific temperature models for the Upper Walla Walla.
+1. Summarize contemporary composite and future projected summer stream temperature scenarios for the Upper Walla Walla available from the NorWeST dataset [Isaak2017a].
+2. Compare current and projected summer stream temperature scenarios in the Upper Walla Walla to life-stage specific temperature thresholds for Chinook salmon and steelhead [@Carter2005] to evaluate whether temperatures may hinder summer life-stages of those species.
+3. Evaluate a hypothetical scenario where restoration efforts (e.g., riparian planting, improved grazing practices) over the next \~60 years decrease summer stream temperatures relative to current temperatures by -1^o^ C.
 
 
-# Approach
+# Assessment Approach
 
-We used a combination of modeled NorWeST summer stream temperature predictions [@Isaak2017a] for the Upper Walla Walla River watershed plus life-stage specific temperature thresholds (Table \@ref(tab:temp-thresh)) [@Carter2005] to evaluate whether current of future projected stream temperatures might hinder the ability of Chinook salmon and steelhead to use available habitat during summer months. Three NorWeST temperature scenarios were considered:
+We used a combination of modeled NorWeST summer stream temperature predictions [@Isaak2017a] for the Upper Walla Walla River watershed plus life-stage specific temperature thresholds (Table \@ref(tab:temp-thresh)) [@Carter2005] to evaluate whether current or future project summer stream temperatures might hinder the ability of the target species to use available habitat during summer months. To accomplish this, we calculated whether recent and projected August mean stream temperatures exceeded the optimum range (Table \@ref(tab:temp-thresh)) for life-stages present during summer months for the target species.
 
-* **S2_02_11**: A historical composite scenario representing the 10-year average August mean stream temperatures for 2002-2011.
 
-* **S30_2040D**: A future August mean stream temperature scenario based on global ensemble average projected changes in August air temperature and stream discharge for A1B warming trajectory in the 2040s (2030-2059). Future stream deltas within a NorWeST unit account for differential sensitivity among streams so that cold stream warm less than warm streams.
+## Target Species
 
-* **S32_2080D**: A future August mean stream temperature scenario based on global ensemble average project changes in August air temperature and stream discharge for A1B warming trajectory in the 2080s (2070-2099). Future stream deltas within a NorWeST unit account for differential sensitivity among streams so that cold streams warm less than warm streams.
+The focal species for the summer stream temperature assessment include:
 
-```{r norwest, fig.cap = "Current (S2_02_11) and projected (S30_2040D and S32_2080D) August mean stream temperature scenarios available from NorWeST (Isaak et al. 2017) for the Upper Walla Walla watershed."}
+* Spring-run Chinook salmon (*Oncorhynchus tshawytscha*; hereafter Chinook salmon)
+* Middle Columbia River summer steelhead (*O. mykiss*; hereafter steelhead; ESA-listed threatened)
+<!--
+* Columbia River bull trout (*Salvelinus confluentus*; ESA-listed threatened)
+* Pacific lamprey (*Lampetra tridentata*)
+-->
+
+
+## Study Area
+
+This summer stream temperature assessment will be focused on the upper Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North and South forks of the Walla Walla River and include streams and tributaries modeled as part of the NorWeST dataset [@Isaak2017a].
+
+
+## Summer Stream Temperature Data
+
+Three NorWeST temperature scenarios were considered:
+
+* **Historic Composite** (S2_02_11): A historical composite scenario representing the 10-year average August mean stream temperatures for 2002-2011.
+
+* **2040 Projected** (S30_2040D): A future August mean stream temperature scenario based on global ensemble average projected changes in August air temperature and stream discharge for A1B warming trajectory in the 2040s (2030-2059). Future stream deltas within a NorWeST unit account for differential sensitivity among streams so that cold stream warm less than warm streams.
+
+* **2080 Projected** (S32_2080D): A future August mean stream temperature scenario based on global ensemble average project changes in August air temperature and stream discharge for A1B warming trajectory in the 2080s (2070-2099). Future stream deltas within a NorWeST unit account for differential sensitivity among streams so that cold streams warm less than warm streams.
+
+```{r norwest, fig.cap = "Recent mean (2002-2011) and projected (2040 and 2080) August mean stream temperature scenarios available from NorWeST (Isaak et al. 2017) for the Upper Walla Walla watershed."}
 river_color = "lightskyblue1"
 norwest_df = uww_rch_sf %>%
   select(S2_02_11,
@@ -132,11 +146,19 @@ norwest_df = uww_rch_sf %>%
   mutate(S2_02_11 = replace(S2_02_11, S2_02_11 == -9999.00, NA),
          S30_2040D = replace(S30_2040D, S30_2040D == -9999.00, NA),
          S32_2080D = replace(S32_2080D, S32_2080D == -9999.00, NA)) %>%
-  pivot_longer(cols = c("S2_02_11",
-                        "S30_2040D",
-                        "S32_2080D"),
+  rename(`Recent Mean` = S2_02_11,
+         `2040 Projected` = S30_2040D,
+         `2080 Projected` = S32_2080D) %>%
+  pivot_longer(cols = c("Recent Mean",
+                        "2040 Projected",
+                        "2080 Projected"),
                names_to = "scenario",
                values_to = "temp_c")
+  # pivot_longer(cols = c("S2_02_11",
+  #                       "S30_2040D",
+  #                       "S32_2080D"),
+  #              names_to = "scenario",
+  #              values_to = "temp_c")
 
 norwest_p = norwest_df %>%
   ggplot() +
@@ -150,17 +172,22 @@ norwest_p = norwest_df %>%
           size = 1) +
   scale_color_viridis_c(option = "turbo") +
   facet_wrap(~ scenario,
-             ncol = 3) +
-  theme_classic() +
+             ncol = 2) +
+  theme_bw() +
   theme(legend.position = "bottom",
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank()) +
-  labs(title = "NorWeST Stream Temperature Predictions",
+  labs(title = "NorWeST Summer Stream Temperatures",
        color = expression("Temperature ("^o*"C)"))
 norwest_p
 
 ```
+
+
+## Fish Temperature Threshholds
+
+For Chinook salmon, we considered the spawning and summer parr life-stages, and for steelhead, the summer parr life-stage was considered (Figure \@ref(fig:thresh-map)).
 
 ```{r temp-thresh}
 temp_thresh_tab = tibble(Species = c("Chinook", "Chinook", "Steelhead"),
@@ -180,16 +207,19 @@ temp_thresh_tab
 
 ```
 
-We calculated whether current and projected August mean stream temperatures exceeded the optimum range (Table \@ref(tab:temp-thresh)) for summer life-stages of Chinook salmon and steelhead. For Chinook salmon, we considered the spawning and summer parr life-stages, and for steelhead, the summer parr life-stage was considered (Figure \@ref(fig:thresh-map)).
 
-```{r thresh-map, out.width = "100%", fig.cap = "Maps depicting whether current (S2_02_11) and projected (S30_2040D and S32_2080D) August mean stream temperatures exceed (TRUE) or are below (FALSE) the optimal range for summer life-stages of Chinook salmon and steelhead and within the Upper Walla Walla watershed."}
+# Results
+
+## Stream Temperature Suitability
+
+```{r thresh-map, out.width = "100%", fig.cap = "Maps depicting whether recent mean (2002-2011) and projected (2040 and 2080) August mean stream temperatures exceed (TRUE) or are below (FALSE) the optimal range for summer life-stages of Chinook salmon and steelhead and within the Upper Walla Walla watershed."}
 thresh_df = norwest_df %>%
   mutate(`Chinook Spawning` = ifelse(temp_c > 14.5, T, F),
-         `Chinook Rearing` = ifelse(temp_c > 16, T, F),
-         `Steelhead Rearing` = ifelse(temp_c > 18, T, F)) %>%
+         `Chinook Parr` = ifelse(temp_c > 16, T, F),
+         `Steelhead Parr` = ifelse(temp_c > 18, T, F)) %>%
   pivot_longer(cols = c("Chinook Spawning",
-                        "Chinook Rearing",
-                        "Steelhead Rearing"),
+                        "Chinook Parr",
+                        "Steelhead Parr"),
                names_to = "spec_ls",
                values_to = "above_optimum") %>%
   mutate(above_optimum = replace_na(above_optimum, F)) %>%
@@ -211,7 +241,7 @@ thresh_p = thresh_df %>%
   scale_color_manual(values = c("FALSE" = river_color,
                                 "TRUE" = "red")) +
   facet_grid(spec_ls ~ scenario) +
-  theme_classic() +
+  theme_bw() +
   theme(legend.position = "top",
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
@@ -222,35 +252,27 @@ thresh_p
 ```
 
 
-## Stream Temperature Data
+## Habitat Capacity Results
 
-NorWest August stream temperature estimates for historic composite scenario (2002-2011), projected 2040 stream temperatures, and projected 2080 stream temperatures summaries.
+Describe changes in QRF relative habitat capacities using the 2040, 2080, and -1 scenarios using the RF extrapolation model. Do we see decreases in capacity under projected climate change scenarios? Alternatively, could some habitat capacity limitations be rectified through rehabilitation actions to cool stream temperatures by 1C.
+<!--
+* Re-run the RF extrapolations for the UWW also using the 2040, 2080, and -1 scenarios.
+* Compare relative changes in capacity for those scenarios relative to the Recent Mean scenario
+-->
 
--   S2_02_11 Historical composite scenario representing 10 year average August mean stream temperatures for 2002-2011
 
--   S30_2040D Future August mean stream temperature scenario based on global climate model ensemble average projected changes in August air temperature and stream discharge for the A1B warming trajectory in the 2040s (2030-2059). Future stream deltas within a NorWeST unit account for differential sensitivity among streams so that cold streams warm less than warm streams.
+# Discussion
 
--   S32_2080D Future August mean stream temperature scenario based on global climate model ensemble average projected changes in August air temperature and stream discharge for the A1B warming trajectory in the 2080s (2070-2099). Future stream deltas within a NorWeST unit account for differential sensitivity among streams so that cold streams warm less than warm streams.
+Discussion text...
 
-## Fish Temperature Thresholds
 
-The focal species for the summer stream temperature suitability models are:
+# Literature Cited
 
--   Spring-run Chinook salmon (*Oncorhynchus tshawytscha*; hereafter Chinook salmon)
-    -   thresholds - Carter (2005) - spawning and summer parr
--   Middle Columbia River summer steelhead (*O. mykiss*; hereafter steelhead; ESA-listed threatened)
-    -   thresholds - Carter (2005) - summer parr
--   Columbia River bull trout (*Salvelinus confluentus*; ESA-listed threatened)
-    -   thresholds - need to find
--   Pacific lamprey (*Lampetra tridentata*)
-    -   thresholds - need to find
+<!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
+<div id="refs"></div>
 
-*NOTE: Possibly adjust spatial scale to match Rio reaches, StreamNet, CTUIR? Also, export these shapefiles for additional mapping and including in the report elsewhere.*
 
-# Results
-
-## Stream Temperature Results
-
+<!-- misc deprecated code and figures 
 ```{r current_temp_map}
 
 river_color = "lightskyblue1"
@@ -458,43 +480,4 @@ ggarrange(temp_rel_map_2080)
 ggarrange(temp_rel_map_1C)
 
 ```
-
-## Fish Temperature Suitability Results
-
--   Chinook map, summary table, violin plots
-
-    -   redds and summer parr
-
--   Steelhead map, summary table, violin plots
-
-    -   summer parr
-
--   Bull trout map, summary table, violin plots
-
-    -   general temp thresholds
-
--   Lamprey map, summary table, violin plots
-
-    -   general temp thresholds
-
-    *Would include maps similar to those included in Appendix A of the IRA that show the proportion of time that a water temperature was "within" a given life-stage specific threshold.*
-
-    *Also across the 4 temperature scenarios*
-
-    *We should think about how to summarize this in tabular form or as figures (box plots, bar plots?) form as well.*
-
-## RF capacity estimates
-
--   Re-run RF capacity estimates with scenarios 2, 3, and 4
-
--   Chinook map, summary table, violin plots
-
-    -   redds and summer parr
-
--   Steelhead map, summary table, violin plots
-
-    -   summer parr
-
-Compare relative changes in capacity
-
-# Stream Temperature Discussion
+-->
