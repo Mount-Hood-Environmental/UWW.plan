@@ -93,15 +93,17 @@ load(here("analysis/data/derived_data/uww_spatial.rda"))
 
 # Background
 
-Water is the cornerstone of First Foods production and inherently tied to the five fundamental touchstones: hydrology, geomorphology, habitat and network connectivity, riverine biotic community, and riparian vegetation [@Jones2008]. These touchstones form the Umatilla River Vision, a holistic approach to water quality restoration. Stream water temperature is a critical component of the hydrology of the Upper Walla Walla watershed directly affecting the fish community and the connectivity of their habitat. <!-- add a bit more context to lead into the temp assessment -->
+Water is the cornerstone of First Foods production and inherently tied to the five fundamental touchstones: hydrology, geomorphology, habitat and network connectivity, riverine biotic community, and riparian vegetation [@Jones2008]. These touchstones form the Umatilla River Vision, a holistic approach to water quality restoration. Stream water temperature is a critical component of the hydrology of the Upper Walla Walla watershed directly affecting the fish community and the connectivity of their habitat. *Add a bit additional context to lead into the stream temperature assessment.*
 
 
 ## Objectives
 
-The primary objectives of the Upper Walla Walla summer stream temperature assessment is to:
+The primary objectives of the Upper Walla Walla summer stream temperature assessment are to:
 
 1. Summarize contemporary composite and future projected summer stream temperature scenarios for the Upper Walla Walla available from the NorWeST dataset [Isaak2017a].
+
 2. Compare current and projected summer stream temperature scenarios in the Upper Walla Walla to life-stage specific temperature thresholds for Chinook salmon and steelhead [@Carter2005] to evaluate whether temperatures may hinder summer life-stages of those species.
+
 3. Evaluate a hypothetical scenario where restoration efforts (e.g., riparian planting, improved grazing practices) over the next \~60 years decrease summer stream temperatures relative to current temperatures by -1^o^ C.
 
 
@@ -121,6 +123,7 @@ The focal species for the summer stream temperature assessment include:
 * Pacific lamprey (*Lampetra tridentata*)
 -->
 
+* Consider adding lamprey and bull trout later if appropriate temperature threshholds for summer life-stages are available*
 
 ## Study Area
 
@@ -153,12 +156,8 @@ norwest_df = uww_rch_sf %>%
                         "2040 Projected",
                         "2080 Projected"),
                names_to = "scenario",
-               values_to = "temp_c")
-  # pivot_longer(cols = c("S2_02_11",
-  #                       "S30_2040D",
-  #                       "S32_2080D"),
-  #              names_to = "scenario",
-  #              values_to = "temp_c")
+               values_to = "temp_c") %>%
+  mutate(scenario = factor(scenario, levels = c("Recent Mean", "2040 Projected", "2080 Projected")))
 
 norwest_p = norwest_df %>%
   ggplot() +
@@ -171,7 +170,7 @@ norwest_p = norwest_df %>%
           aes(color = temp_c),
           size = 1) +
   scale_color_viridis_c(option = "turbo") +
-  facet_wrap(~ scenario,
+  facet_wrap(~scenario, 
              ncol = 2) +
   theme_bw() +
   theme(legend.position = "bottom",
@@ -184,13 +183,19 @@ norwest_p
 
 ```
 
-```{r norwest-bp, fig.cap = "Boxplot showing distributions of recent mean (2002-2011) and projected (2040 and 2080) August mean stream temperatures from NorWeST (Isaak et al. 2017) for the Upper Walla Walla watershed."}
+```{r norwest-bp, out.width = "70%", fig.align = "center", fig.cap = "Boxplot showing distributions of recent mean (2002-2011) and projected (2040 and 2080) August mean stream temperatures from NorWeST (Isaak et al. 2017) for the Upper Walla Walla watershed."}
 norwest_bp = norwest_df %>%
   ggplot() +
-  geom_boxplot(aes(x = scenario,
+  geom_boxplot(aes(x = reorder(scenario, temp_c),
                    y = temp_c),
-               fill = "gray50") +
-  theme_bw()
+               fill = "coral1") +
+  theme_bw() +
+  labs(y = expression("Temperature ("^o*"C)")) +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_text(size = 11,
+                                   color = "black"),
+        axis.text.y = element_text(size = 11,
+                                   color = "black"))
 norwest_bp
 
 ```
