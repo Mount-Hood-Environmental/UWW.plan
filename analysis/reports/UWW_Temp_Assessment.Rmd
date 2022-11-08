@@ -205,17 +205,21 @@ norwest_p
 
 ```{r norwest-bp, out.width = "70%", fig.cap = "Boxplots showing distributions of recent mean (2002-2011) and projected (2040 and 2080) August mean stream temperatures from NorWeST (Isaak et al. 2017) for the Upper Walla Walla watershed."}
 norwest_bp = norwest_df %>%
-  ggplot() +
-  geom_boxplot(aes(x = reorder(scenario, temp_c),
-                   y = temp_c),
-               fill = "coral1") +
+  group_by(scenario) %>%
+  mutate(avg_temp = mean(temp_c, na.rm = T)) %>%
+  ggplot(aes(x = reorder(scenario, temp_c),
+             y = temp_c)) +
+  geom_boxplot(aes(fill = avg_temp)) +
+  scale_fill_viridis_c(option = "turbo",
+                       name = expression("Mean Temp ("^o*"C)")) +
   theme_bw() +
   labs(y = expression("Temperature ("^o*"C)")) +
   theme(axis.title.x = element_blank(),
         axis.text.x = element_text(size = 12,
                                    color = "black"),
         axis.text.y = element_text(size = 12,
-                                   color = "black"))
+                                   color = "black"),
+        legend.position = "none")
 norwest_bp
 
 ```
@@ -249,10 +253,150 @@ temp_thresh_tab
 
 # Results
 
-## Stream Temperature Suitability
-
 ```{r temp-suit-tab}
-#temp_suit_tab = norwest_df
+spec_ls = c("Chinook Spawning", "Chinook Parr", "Steelhead Parr", "Bull Trout", "Pacific Lamprey")
+thresh = c("Within Optimum", "Above Optimum", "Above Maximum", "Above Acute")
+
+temp_suit_tab = uww_rch_sf %>%
+  select(S2_02_11,
+         S30_2040D,
+         S32_2080D,
+         reach_leng) %>%
+  mutate(S2_02_11 = replace(S2_02_11, S2_02_11 == -9999.00, NA),
+         S30_2040D = replace(S30_2040D, S30_2040D == -9999.00, NA),
+         S32_2080D = replace(S32_2080D, S32_2080D == -9999.00, NA),
+        `Recent Minus 1` = S2_02_11 - 1) %>%
+  rename(`Recent Mean` = S2_02_11,
+         `2040 Projected` = S30_2040D,
+         `2080 Projected` = S32_2080D) %>%
+  pivot_longer(cols = c("Recent Minus 1",
+                        "Recent Mean",
+                        "2040 Projected",
+                        "2080 Projected"),
+               names_to = "scenario",
+               values_to = "temp_c") %>%
+  mutate(scenario = factor(scenario, levels = c("Recent Minus 1",
+                                                "Recent Mean", 
+                                                "2040 Projected", 
+                                                "2080 Projected"))) %>%
+  group_by(scenario) %>%
+  expand_grid(spec_ls, thresh) %>%
+  mutate(value = case_when(
+    spec_ls == "Chinook Spawning" & thresh == "Within Optimum" & temp_c >= 5.6 & temp_c <= 14.5 ~ T,
+    spec_ls == "Chinook Parr" & thresh == "Within Optimum" & temp_c >= 10 & temp_c <= 16 ~ T,
+    spec_ls == "Steelhead Parr" & thresh == "Within Optimum" & temp_c >= 10 & temp_c <= 18 ~ T,
+    spec_ls == "Bull Trout" & thresh == "Within Optimum" & temp_c >= 10.2 & temp_c <= 16 ~ T,
+    spec_ls == "Pacific Lamprey" & thresh == "Within Optimum" & temp_c >= 10 & temp_c <= 17 ~ T,
+    spec_ls == "Chinook Spawning" & thresh == "Above Optimum" & temp_c >= 14.5 ~ T,
+    spec_ls == "Chinook Parr" & thresh == "Above Optimum" & temp_c >= 16 ~ T,
+    spec_ls == "Steelhead Parr" & thresh == "Above Optimum" & temp_c >= 18 ~ T,
+    spec_ls == "Bull Trout" & thresh == "Above Optimum" & temp_c >= 16 ~ T,
+    spec_ls == "Pacific Lamprey" & thresh == "Above Optimum" & temp_c >= 17 ~ T,
+    spec_ls == "Chinook Spawning" & thresh == "Above Maximum" & temp_c >= 17.7 ~ T,
+    spec_ls == "Chinook Parr" & thresh == "Above Maximum" & temp_c >= 19 ~ T,
+    spec_ls == "Steelhead Parr" & thresh == "Above Maximum" & temp_c >= 19 ~ T,
+    spec_ls == "Bull Trout" & thresh == "Above Maximum" & temp_c >= 18 ~ T,
+    spec_ls == "Pacific Lamprey" & thresh == "Above Maximum" & temp_c >= 20 ~ T,
+    spec_ls == "Chinook Spawning" & thresh == "Above Acute" & temp_c >= 20 ~ T,
+    spec_ls == "Chinook Parr" & thresh == "Above Acute" & temp_c >= 22 ~ T,
+    spec_ls == "Steelhead Parr" & thresh == "Above Acute" & temp_c >= 22 ~ T,
+    spec_ls == "Bull Trout" & thresh == "Above Acute" & temp_c >= 20 ~ T,
+    spec_ls == "Pacific Lamprey" & thresh == "Above Acute" & temp_c >= 25 ~ T,
+    TRUE ~ F
+  )) %>%
+  filter(value == T) %>%
+  group_by(scenario, spec_ls, thresh) %>%
+  summarize(length_km = sum(reach_leng) / 1000) %>%
+  mutate(perc = round((length_km / 852.2079) * 100, 1),
+         length_km = round(length_km, 1)) %>%
+  select(`Life Stage` = spec_ls,
+         Scenario = scenario,
+         Threshold = thresh,
+         perc) %>%
+  pivot_wider(names_from = Threshold,
+              values_from = perc) %>%
+  select(`Life Stage`,
+         `Scenario`,
+         `Within Optimum`,
+         `Above Optimum`,
+         `Above Maximum`,
+         `Above Acute`) %>%
+  arrange(match(`Life Stage`, c("Chinook Spawning", 
+                                "Chinook Parr", 
+                                "Steelhead Parr", 
+                                "Bull Trout", 
+                                "Pacific Lamprey"))) %>%
+  mutate(`Above Acute` = replace_na(`Above Acute`, 0)) %>%
+  kable(booktabs = T,
+        align = "cccccc",
+        caption = "The percentage of stream length within the Upper Walla Walla watershed that falls within optimum, above optimum, above maximum, and above acute temperature thresholds for each species, life stage combination and under recent mean and projected summer stream temperature scenarios.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
+temp_suit_tab   
+
+```
+
+```{r temp-suit-tab-2, eval = F}
+spec_ls = c("Chinook Spawning", "Chinook Parr", "Steelhead Parr", "Bull Trout", "Pacific Lamprey")
+thresh = c("Within Optimum", "Above Optimum", "Above Maximum", "Above Acute")
+
+temp_suit_tab = norwest_df %>%
+  group_by(scenario) %>%
+  expand_grid(spec_ls, thresh) %>%
+  mutate(value = case_when(
+    spec_ls == "Chinook Spawning" & thresh == "Within Optimum" & temp_c >= 5.6 & temp_c <= 14.5 ~ T,
+    spec_ls == "Chinook Parr" & thresh == "Within Optimum" & temp_c >= 10 & temp_c <= 16 ~ T,
+    spec_ls == "Steelhead Parr" & thresh == "Within Optimum" & temp_c >= 10 & temp_c <= 18 ~ T,
+    spec_ls == "Bull Trout" & thresh == "Within Optimum" & temp_c >= 10.2 & temp_c <= 16 ~ T,
+    spec_ls == "Pacific Lamprey" & thresh == "Within Optimum" & temp_c >= 10 & temp_c <= 17 ~ T,
+    spec_ls == "Chinook Spawning" & thresh == "Above Optimum" & temp_c >= 14.5 ~ T,
+    spec_ls == "Chinook Parr" & thresh == "Above Optimum" & temp_c >= 16 ~ T,
+    spec_ls == "Steelhead Parr" & thresh == "Above Optimum" & temp_c >= 18 ~ T,
+    spec_ls == "Bull Trout" & thresh == "Above Optimum" & temp_c >= 16 ~ T,
+    spec_ls == "Pacific Lamprey" & thresh == "Above Optimum" & temp_c >= 17 ~ T,
+    spec_ls == "Chinook Spawning" & thresh == "Above Maximum" & temp_c >= 17.7 ~ T,
+    spec_ls == "Chinook Parr" & thresh == "Above Maximum" & temp_c >= 19 ~ T,
+    spec_ls == "Steelhead Parr" & thresh == "Above Maximum" & temp_c >= 19 ~ T,
+    spec_ls == "Bull Trout" & thresh == "Above Maximum" & temp_c >= 18 ~ T,
+    spec_ls == "Pacific Lamprey" & thresh == "Above Maximum" & temp_c >= 20 ~ T,
+    spec_ls == "Chinook Spawning" & thresh == "Above Acute" & temp_c >= 20 ~ T,
+    spec_ls == "Chinook Parr" & thresh == "Above Acute" & temp_c >= 22 ~ T,
+    spec_ls == "Steelhead Parr" & thresh == "Above Acute" & temp_c >= 22 ~ T,
+    spec_ls == "Bull Trout" & thresh == "Above Acute" & temp_c >= 20 ~ T,
+    spec_ls == "Pacific Lamprey" & thresh == "Above Acute" & temp_c >= 25 ~ T,
+    TRUE ~ F
+  )) %>%
+  filter(value == T) %>%
+  group_by(scenario, spec_ls, thresh) %>%
+  summarize(length_km = sum(reach_leng) / 1000) %>%
+  mutate(perc = round((length_km / 852.2079) * 100, 1),
+         length_km = round(length_km, 1)) %>%
+  select(`Life Stage` = spec_ls,
+         Scenario = scenario,
+         Threshold = thresh,
+         perc) %>%
+  pivot_wider(names_from = Threshold,
+              values_from = perc) %>%
+  select(`Life Stage`,
+         `Scenario`,
+         `Within Optimum`,
+         `Above Optimum`,
+         `Above Maximum`,
+         `Above Acute`) %>%
+  arrange(match(`Life Stage`, c("Chinook Spawning", 
+                                "Chinook Parr", 
+                                "Steelhead Parr", 
+                                "Bull Trout", 
+                                "Pacific Lamprey"))) %>%
+  mutate(`Above Acute` = replace_na(`Above Acute`, 0)) %>%
+  kable(booktabs = T,
+        align = "cccccc",
+        caption = "The percentage of stream length that falls within optimum, above optimum, above maximum, and above acute temperature thresholds for each species, life stage combination and under recent mean and projected summer stream temperature scenarios.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
+temp_suit_tab   
 
 ```
 
@@ -346,11 +490,11 @@ maximum_p
 
 ```
 
-
+<!--
 ## Habitat Capacity Results
 
 Describe changes in QRF relative habitat capacities using the 2040, 2080, and -1 scenarios using the RF extrapolation model. Do we see decreases in capacity under projected climate change scenarios? Alternatively, could some habitat capacity limitations be rectified through rehabilitation actions to cool stream temperatures by 1C.
-<!--
+
 * Re-run the RF extrapolations for the UWW also using the 2040, 2080, and -1 scenarios.
 * Compare relative changes in capacity for those scenarios relative to the Recent Mean scenario
 -->
