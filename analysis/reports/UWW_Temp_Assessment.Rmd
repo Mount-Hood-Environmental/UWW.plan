@@ -37,7 +37,7 @@ bibliography:
 always_allow_html: yes
 ---
 
-<!-- the following inserts MHE logo into header -->
+<!-- the following inserts MHE logo into header and justifies text throughout -->
 
 ```{=html}
 <script>
@@ -46,6 +46,11 @@ always_allow_html: yes
      $head.prepend('<img src=\"logo.jpg\" style=\"float: right;width: 150px;\"/>')
    });
 </script>
+
+<style>
+body {
+text-align: justify}
+</style>
 ```
 
 ```{r setup, echo = FALSE, message = FALSE}
@@ -157,6 +162,8 @@ Three NorWeST summer stream tempature scenarios were considered:
 
 * **2080 Projected** (S32_2080D): A future August mean stream temperature scenario based on global ensemble average project changes in August air temperature and stream discharge for A1B warming trajectory in the 2080s (2070-2099). Future stream deltas within a NorWeST unit account for differential sensitivity among streams so that cold streams warm less than warm streams.
 
+In addition, we evaluated a hypothetical scenario (**Recent Minus 1**) where summer stream temperatures were reduced by 1^o^C relative to the recent mean scenario. This hypothetical represents a scenario where restoration actions such as riparian planting or improved grazing practices to increase stream shading was able to reduce August stream temperatures.
+
 ```{r norwest, fig.cap = "Recent mean (2002-2011) and projected (2040 and 2080) August mean stream temperature scenarios available from NorWeST (Isaak et al. 2017) for the Upper Walla Walla watershed."}
 river_color = "lightskyblue1"
 norwest_df = uww_rch_sf %>%
@@ -229,9 +236,9 @@ norwest_bp
 
 ## Fish Temperature Threshholds
 
-For Chinook salmon, we considered the spawning and summer parr life-stages, and for steelhead, the summer parr life-stage was considered (Table \@ref(tab:temp-thresh)). Temperature thresholds were from a literature review conducted by @Carter2005 and are expressed as the maximum weekly maximum temperature (MWMT). Chinook spawning has been observed in a wide range of temperatures (5.6 - 17.7^o^C); however, a majority of temperature observations cite maximum temperatures below 14.5^o^C. For juvenile Chinook salmon rearing, 10-16^o^C represents an optimal range for growth and rearing. Temperatures above 19^o^C generally do not support Chinook salmon parr growth and temperatures above 22^o^C typically limits their presence. Juvenile steelhead temperature tolerances are similar to those of Chinook salmon, but instead have a higher end to their optimal range of 18^o^C for growth and rearing.
+For Chinook salmon, we considered the spawning and summer parr life-stages, and for steelhead, the summer parr life-stage was considered (Table \@ref(tab:temp-thresh)). Temperature thresholds were from a literature review conducted by @Carter2005 and are expressed as the maximum weekly maximum temperature (MWMT). Chinook spawning has been observed in a wide range of temperatures (5.6 - 17.7^o^C); however, a majority of temperature observations cite maximum temperatures below 14.5^o^C. For juvenile Chinook salmon rearing, 10 - 16^o^C represents an optimal range for growth and rearing. Temperatures above 19^o^C generally do not support Chinook salmon parr growth and temperatures above 22^o^C typically limits their presence. Juvenile steelhead temperature tolerances are similar to those of Chinook salmon, but instead have a higher end to their optimal range of 18^o^C for growth and rearing.
 
-Bull trout tend to have more specific habitat requirements compared to other salmonids, typically needing colder stream temperatures. Although bull trout have been reported in stream temperatures above 20^o^C, they are seldom found in waters where temperatures exceed 15-16^o^C. Temperatures above 16^o^C are detrimental for bull trout feeding and growth and are unlikely to be suitable for their long-term survival [@Selong2001 and references therein]. At temperatures greater than 18^o^C, bull trout exhibit reduced consumption, growth, and survival [@Selong2001]. Pacific lamprey can tolerate temperature range of 5-25^o^C [@Clemens2017]. Pacific lamprey spawning typically occurs at 10-18^o^C with early development from about 14-19^o^C and preferred temperatures by adults of 16-17^o^C [@Clemens2016; @Clemens2017]. Temperatures of 20^o^C and higher are typically associated with stress, tissue damage, and potential mortality in Pacific lamprey [@Clemens2016].
+Bull trout tend to have more specific habitat requirements compared to other salmonids, typically needing colder stream temperatures. Although bull trout have been reported in stream temperatures above 20^o^C, they are seldom found in waters where temperatures exceed 15 - 16^o^C. Temperatures above 16^o^C are detrimental for bull trout feeding and growth and are unlikely to be suitable for their long-term survival [@Selong2001 and references therein]. At temperatures greater than 18^o^C, bull trout exhibit reduced consumption, growth, and survival [@Selong2001]. Pacific lamprey can tolerate temperature range of 5 - 25^o^C [@Clemens2017]. Pacific lamprey spawning typically occurs at 10 - 18^o^C with early development from about 14 - 19^o^C and preferred temperatures by adults of 16 - 17^o^C [@Clemens2016; @Clemens2017]. Temperatures of 20^o^C and higher are typically associated with stress, tissue damage, and potential mortality in Pacific lamprey [@Clemens2016].
 
 ```{r temp-thresh}
 temp_thresh_tab = tibble(Species = c("Chinook", "Chinook", "Steelhead", "Bull Trout", "Pacific Lamprey"),
@@ -255,24 +262,25 @@ temp_thresh_tab
 
 # Results
 
-In general, a larger percentage of stream length within the Upper Walla 
+In nearly every case, a larger percentage of stream length within the Upper Walla Walla Watershed exceeded optimum, maximum, and acute temperature thresholds (Table \@ref(tab:temp-thresh)) when transitioning from recent mean to projected 2040 and 2080 climate warming scenarios (Table \@ref(tab:temp-suit-tab)). The single exception was for Pacific Lamprey where stream temperatures didn't exceed their acute (lethal) temperature threshold of 25^o^C under any scenario. Given recent mean modeled stream temperatures, the percentage of stream length that exceeds optimum temperatures is between 11.5 - 39.5% depending on species and life stage, with Chinook spawning being of most concern. In other words, 39.5% of average modeled August stream temperatures within the Upper Walla Walla watershed are estimated to exceed optimal temperatures for Chinook salmon spawning (5.6 - 14.5^o^) currently. The percentage of stream length that exceeds optimum temperatures increases to 24.9 - 45.6% under the 2040 projected scenario and 33.1 - 48.8% under the 2080 projected scenario. Patterns for the percentage of stream length exceeding maximum temperatures were similar to those observed for optimum temperatures. Using recent mean modeled temperatures, we estimate that only 1.7% of the stream length currently exceeds acute thresholds for Chinook salmon spawning and for bull trout. However, at least for Chinook salmon, steelhead, and bull trout, the percentage of stream length exceeding acute temperatures increases to 1.0 - 6.9% and 3.2 - 14.5% under the projected 2040 and 2080 climate warming scenarios, respectively (Table \@ref(tab:temp-suit-tab)).
+
+Within optimum results...
+
+Not surprisingly, the hypothetical scenario where summer stream temperatures are decreased by 1^o^C relative to the recent mean reduced the percentage of stream length that exceeded optimum, maximum, and acute temperature thresholds for target species and life stages. A reduction of 1^o^C relative to the recent mean scenario resulted in between 5.6 - 10.0% less stream length that exceeded optimum temperatures and 0.9 - 7.5% that exceeded maximum temperatures.
 
 ```{r temp-suit-tab}
 spec_ls = c("Chinook Spawning", "Chinook Parr", "Steelhead Parr", "Bull Trout", "Pacific Lamprey")
 thresh = c("Within Optimum", "Above Optimum", "Above Maximum", "Above Acute")
 
 temp_suit_tab = uww_rch_sf %>%
-  select(S2_02_11,
-         S30_2040D,
-         S32_2080D,
-         reach_leng) %>%
-  mutate(S2_02_11 = replace(S2_02_11, S2_02_11 == -9999.00, NA),
-         S30_2040D = replace(S30_2040D, S30_2040D == -9999.00, NA),
-         S32_2080D = replace(S32_2080D, S32_2080D == -9999.00, NA),
-        `Recent Minus 1` = S2_02_11 - 1) %>%
-  rename(`Recent Mean` = S2_02_11,
+  select(`Recent Mean` = S2_02_11,
          `2040 Projected` = S30_2040D,
-         `2080 Projected` = S32_2080D) %>%
+         `2080 Projected` = S32_2080D,
+         reach_leng) %>%
+  mutate(`Recent Mean` = replace(`Recent Mean`, `Recent Mean` == -9999.00, NA),
+         `2040 Projected` = replace(`2040 Projected`, `2040 Projected` == -9999.00, NA),
+         `2080 Projected` = replace(`2080 Projected`, `2080 Projected` == -9999.00, NA),
+        `Recent Minus 1` = `Recent Mean` - 1) %>%
   pivot_longer(cols = c("Recent Minus 1",
                         "Recent Mean",
                         "2040 Projected",
@@ -312,13 +320,17 @@ temp_suit_tab = uww_rch_sf %>%
   group_by(scenario, spec_ls, thresh) %>%
   summarize(length_km = sum(reach_leng) / 1000) %>%
   mutate(perc = round((length_km / 852.2079) * 100, 1),
-         length_km = round(length_km, 1)) %>%
+         length_km = round(length_km, 1),
+         `km (%)` = paste0(length_km,
+                           " (",
+                           perc,
+                           "%)")) %>%
   select(`Life Stage` = spec_ls,
          Scenario = scenario,
          Threshold = thresh,
-         perc) %>%
+         `km (%)`) %>%
   pivot_wider(names_from = Threshold,
-              values_from = perc) %>%
+              values_from = `km (%)`) %>%
   select(`Life Stage`,
          `Scenario`,
          `Within Optimum`,
@@ -330,14 +342,14 @@ temp_suit_tab = uww_rch_sf %>%
                                 "Steelhead Parr", 
                                 "Bull Trout", 
                                 "Pacific Lamprey"))) %>%
-  mutate(`Above Acute` = replace_na(`Above Acute`, 0)) %>%
+  mutate(`Above Acute` = replace_na(`Above Acute`, "0 (0%)")) %>%
   kable(booktabs = T,
         align = "cccccc",
-        caption = "The percentage of stream length within the Upper Walla Walla watershed that falls within optimum, above optimum, above maximum, and above acute temperature thresholds for each species, life stage combination and under recent mean and projected summer stream temperature scenarios.") %>%
+        caption = "The length (percentage) of stream within the Upper Walla Walla watershed (852.2 km total) that falls within optimum, above optimum, above maximum, and above acute temperature thresholds for each species, life stage combination and under recent mean and projected summer stream temperature scenarios.") %>%
   kable_styling(full_width = F,
                 position = "center",
                 bootstrap_options = c("striped", "condensed"))
-temp_suit_tab   
+temp_suit_tab 
 
 ```
 
