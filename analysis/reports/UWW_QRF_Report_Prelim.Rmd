@@ -1,5 +1,5 @@
 ---
-title: "Upper Walla Walla Watershed - Habitat Capacity Assessment *PRELIMINARY RESULTS*"
+title: "Habitat Capacity Assessment, Upper Walla Walla Watershed - *PRELIMINARY*"
 author:
   - Bryce N. Oldemeyer:
       email: bryce.oldemeyer@mthoodenvironmental.com
@@ -15,7 +15,7 @@ author:
       correspondence: false
   - Joshua P. Egan:
       email: joshua.egan@mthoodenvironmental.com
-      institute: [mhe_mccall]
+      institute: [mhe_sandy]
       correspondence: false
   - Michael W. Ackerman:
       email: mike.ackerman@mthoodenvironmental.com
@@ -92,30 +92,44 @@ theme_set(theme_pubr(x.text.angle = 45,
 
 ```
 
+
 # Background
 
-Water is the cornerstone of First Foods production and inherently tied to the five fundamental touchstones: hydrology, geomorphology, habitat and network connectivity, riverine biotic community, and riparian vegetation [@Jones2008]. These touchstones form the Umatilla River Vision, a holistic approach to water quality restoration. In support of the Vision, population status and habitat use of riverine fishes defined as First Foods (including Endangered Species Act [ESA] listed middle Columbia River summer-run steelhead, spring-run Chinook salmon, bull trout, and Pacific lamprey) lack critical data needed for the assessment of biotic communities [@Jones2008]. The decline of anadromous Pacific salmonid populations (*Oncorhynchus* spp.) across the Pacific Northwest, USA, has prompted numerous actions aimed at reversing that trend. These actions are often categorized into four 'H's' - harvest modification, habitat rehabilitation, hydroelectric operations, and hatchery practices. While these actions can influence salmonid survival, predicting the potential magnitude of population uplift and developing the most cost-effective and sustainable solutions to protect and improve populations is a complex task. Recovery plans (e.g., @NOAA2009) have identified adult escapement targets at the population scale, providing a benchmark against which habitat rehabilitation actions can be measured. Here, we apply a novel approach to estimating life-stage specific habitat capacity for spring-run Chinook salmon (hereafter Chinook salmon) and summer-run steelhead (hereafter steelhead) to quantify the magnitude and types of tributary habitat restoration needed to achieve recovery goals in the Upper Walla Walla watershed. The necessity of tributary habitat restoration actions can now be demonstrated, and the magnitude of required change can be placed in context with the other 'H's'.
+Water is the cornerstone of First Foods production and inherently tied to the five fundamental touchstones: hydrology, geomorphology, habitat and network connectivity, riverine biotic community, and riparian vegetation [@Jones2008]. These touchstones form the Umatilla River Vision, a holistic approach to water quality restoration. In support of the Vision, population status and habitat use of riverine fishes defined as First Foods lack critical data needed for the assessment of biotic communities [@Jones2008]. First Food fishes within the Vision include spring-run Chinook salmon, middle Columbia River summer-run steelhead, bull trout, and Pacific lamprey.
+
+The decline of anadromous Pacific salmonid populations (*Oncorhynchus* spp.) across the Pacific Northwest, USA, has prompted numerous actions aimed at reversing that trend. These actions are often categorized into four 'H's' - harvest modification, habitat rehabilitation, hydroelectric operations, and hatchery practices. While these actions can influence salmonid productivity and survival, predicting the potential magnitude of population uplife and developing the most cost-effective and sustainable solutions to protect and improve populations is a complex task. Recovery plans (e.g., @NOAA2009; @CBPTF2020) have identified adult escapement targets at the population scale, providing a benchmark against which habitat rehabilitation actions can be measured.
+
+Here, we apply a novel approach [@See2021] to estimating life stage specific habitat capacity for spring-run Chinook salmon and summer-run steelhead to quantify available habitat in the Upper Walla Walla watershed. Information herein can be used to quantify the magnitude and types of tributary habitat restoration needed to achieve given recovery goals in the watershed. The necessity of tributray restoration actions can then be demonstrated, and the magnitude of required change can be placed in context with the other 'H's'.
+
 
 ## Focal Species
 
-The focal species for the QRF habitat capacity assessment are:
+The focal species for the habitat capacity assessment include:
 
 -   Spring-run Chinook salmon (*Oncorhynchus tshawytscha*; hereafter Chinook salmon)
 -   Middle Columbia River summer steelhead (*O. mykiss*; hereafter steelhead; ESA-listed threatened)
 
-While our habitat capacity models specifically address Chinook salmon and steelhead, any uplift in habitat for these species are also expected to uplift:
+While our habitat capacity models specifically address Chinook salmon and steelhead, any uplift in habitat for these species are also expected to benefit (or do no harm to) habitat for Columbia River bull trout (*Salvelinus confluentus*; ESA-listed threatened) and Pacific lamprey (*Lampetra tridentata*). Additionally, we provide a qualitative assessment of historic and contemporary population status and habitat use for these species.
 
--   Columbia River bull trout (*Salvelinus confluentus*; ESA-listed threatened)
--   Pacific lamprey (*Lampetra tridentata*)
 
 ## Study Area
 
-This assessment will be focused on the alluvial channel of the Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North and South forks of the Walla Walla River. The primary study area includes approximately 70 miles of stream. The secondary study area includes the catchment of the primary study area which encompasses approximately 885 square miles.
+This assessment will be focused on the alluvial channel of the Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North and South forks of the Walla Walla River. *Update as necessary, specific to the habitat capacity assessment.*
 
-# Biological Assessment
 
--   This section is in development and will cover information regarding fish habitat use, background on fish population dynamics in the system, current status of chinook, steelhead, bull trout and lamprey, etc.
--   Potentially a small literature review and summary of relevant data.
+## Objectives
+
+-   Bulleted list of objectives, if necessary.
+
+
+## Fish Status and Use
+
+This section is in development and will cover information regarding fish habitat use, background on fish population dynamics in the system, current status of chinook, steelhead, bull trout and lamprey, etc. Potentially a small literature review and summary of relevant data.
+
+### Historical
+
+### Contemporary
+
 
 # Habitat Capacity Assessment
 
@@ -140,8 +154,6 @@ uww_redd_df = uww_redd_sf %>%
   as_tibble()
 
 ```
-
-## Approach Overview
 
 The habitat capacity assessment is focused on Chinook salmon and steelhead. Habitat capacity deficits (e.g., Figure \@ref(fig:capacity-schematic)) resulting from limitations in habitat quantity and/or quality were assessed for three life stages of Chinook salmon and steelhead: 1) spawning (redd) capacity, 2) juvenile summer rearing capacity, and 3) juvenile winter rearing capacity. First, the capacity required to meet adult abundance escapement goals was estimated for each of the three life-stages using a Generalized Capacity Model framework [see Appendix C in @IdahoOSCTeam2019]. Then, the currently available habitat capacity was estimated using a quantile random forest (QRF) approach [@See2021] applied at each life-stage. Next, capacity limitations were quantified by subtracting required capacity from available capacity, providing an estimate of habitat capacity deficit by species and life-stage. Finally, these results can determine the target conditions required to achieve adult escapement goals, and inform prioritization by identifying species and life-stage specific bottlenecks to population productivity in the Upper Walla Walla watershed.
 
@@ -415,7 +427,7 @@ gaa_hab_dict %>%
 
 ```
 
-### QRF Capacity Estimates
+## QRF Capacity Estimates
 
 ```{r calc-chnk-capacity}
 
@@ -940,6 +952,8 @@ availcap_spawners %>%
 ```
 
 # Discussion
+
+General discussion text...
 
 ## Limited Species and Life-Stages
 

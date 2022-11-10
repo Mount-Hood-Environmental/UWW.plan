@@ -1,5 +1,5 @@
 ---
-title: "Summer Stream Temperature Assessment, Upper Walla Walla Watershed"
+title: "Summer Stream Temperature Assessment, Upper Walla Walla Watershed - *PRELIMINARY*"
 author:
   - Michael W. Ackerman:
       email: mike.ackerman@mthoodenvironmental.com
@@ -37,7 +37,7 @@ bibliography:
 always_allow_html: yes
 ---
 
-<!-- the following inserts MHE logo into header and justifies text throughout -->
+<!-- the following inserts MHE logo into header -->
 
 ```{=html}
 <script>
@@ -47,10 +47,6 @@ always_allow_html: yes
    });
 </script>
 
-<style>
-body {
-text-align: justify}
-</style>
 ```
 
 ```{r setup, echo = FALSE, message = FALSE}
@@ -262,11 +258,11 @@ temp_thresh_tab
 
 # Results
 
-In nearly every case, a larger percentage of stream length within the Upper Walla Walla Watershed exceeded optimum, maximum, and acute temperature thresholds (Table \@ref(tab:temp-thresh)) when transitioning from recent mean to projected 2040 and 2080 climate warming scenarios (Table \@ref(tab:temp-suit-tab)). The single exception was for Pacific Lamprey where stream temperatures didn't exceed their acute (lethal) temperature threshold of 25^o^C under any scenario. Given recent mean modeled stream temperatures, the percentage of stream length that exceeds optimum temperatures is between 11.5 - 39.5% depending on species and life stage, with Chinook spawning being of most concern. In other words, 39.5% of average modeled August stream temperatures within the Upper Walla Walla watershed are estimated to exceed optimal temperatures for Chinook salmon spawning (5.6 - 14.5^o^) currently. The percentage of stream length that exceeds optimum temperatures increases to 24.9 - 45.6% under the 2040 projected scenario and 33.1 - 48.8% under the 2080 projected scenario. Patterns for the percentage of stream length exceeding maximum temperatures were similar to those observed for optimum temperatures. Using recent mean modeled temperatures, we estimate that only 1.7% of the stream length currently exceeds acute thresholds for Chinook salmon spawning and for bull trout. However, at least for Chinook salmon, steelhead, and bull trout, the percentage of stream length exceeding acute temperatures increases to 1.0 - 6.9% and 3.2 - 14.5% under the projected 2040 and 2080 climate warming scenarios, respectively (Table \@ref(tab:temp-suit-tab)).
+In nearly every case, a larger portion of stream length within the Upper Walla Walla watershed exceeded optimum, maximum, and acute temperature thresholds (Table \@ref(tab:temp-thresh)) when moving from recent mean to projected 2040 and 2080 climate change scenarios (Table \@ref(tab:temp-suit-tab)). The single exception was for Pacific Lamprey where stream temperatures didn't exceed their acute (lethal) temperature threshold of 25^o^C under any scenario. Given recent mean modeled stream temperatures, the length of stream that exceeds optimum temperatures is between 97.6 - 336.5 km (11.5 - 39.5%) depending on species and life stage, with Chinook spawning being of most concern. In other words, 39.5% of average modeled August stream temperatures, representing 336.5 km of habitat, within the Upper Walla Walla watershed are estimated to exceed optimal temperatures for Chinook salmon spawning (5.6 - 14.5^o^) currently. The length of stream that exceeds optimum temperatures increases to 212.6 - 388.3 km (24.9 - 45.6%) under the 2040 projected scenario and 281.9 -  416.1 (33.1 - 48.8%) under the 2080 projected scenario. Patterns for the percentage of stream length exceeding maximum temperatures were similar to those observed for optimum temperatures. Using recent mean modeled temperatures, we estimate that only 14.4 km (1.7%) of the stream length currently exceeds acute thresholds for Chinook salmon and for bull trout. However, at least for Chinook salmon, steelhead, and bull trout, the portion of stream length that exceeds acute temperatures increases to 8.6 - 58.7 km (1.0 - 6.9%) and 27.4 - 123.5 km (3.2 - 14.5%) under the projected 2040 and 2080 climate warming scenarios, respectively (Table \@ref(tab:temp-suit-tab)).
 
-Within optimum results...
+The amount of stream within the optimum range for Chinook salmon spawning decreases from 494.5 (58.0%) under the recent mean scenario to 459.8 (54.0%) and 430.7 (50.5%) under the 2040 and 2080 projected scenarios, respectively. Conversely, the amount of stream within the optimum range increases under the 2040 and 2080 warming scenarios for Chinook parr, steelhead parr, bull trout, and Pacific lamprey. This result is discussed further below.
 
-Not surprisingly, the hypothetical scenario where summer stream temperatures are decreased by 1^o^C relative to the recent mean reduced the percentage of stream length that exceeded optimum, maximum, and acute temperature thresholds for target species and life stages. A reduction of 1^o^C relative to the recent mean scenario resulted in between 5.6 - 10.0% less stream length that exceeded optimum temperatures and 0.9 - 7.5% that exceeded maximum temperatures.
+Unsurprisingly, the hypothetical scenario where summer stream temperatures are decreased by 1^o^C relative to the recent mean reduced the stream length that exceeded optimum, maximum, and acute temperature thresholds for target species and life stages. A reduction of 1^o^C relative to the recent mean scenario resulted in between 47.6 - 85.3 km (5.6 - 10.0%) less stream length that exceeded optimum temperatures and 7.4 - 64.1 km (0.9 - 7.5%) that exceeded maximum temperatures.
 
 ```{r temp-suit-tab}
 spec_ls = c("Chinook Spawning", "Chinook Parr", "Steelhead Parr", "Bull Trout", "Pacific Lamprey")
@@ -352,6 +348,8 @@ temp_suit_tab = uww_rch_sf %>%
 temp_suit_tab 
 
 ```
+
+Figures \@ref(fig:optimum-map) and \@ref(fig:max-map) show reaches in the Upper Walla Walla watershed that exceed optimum and maximum temperature thresholds for the target species and life stages and under each climate scenario. In general, additional upstream reaches become unsuitable moving to the 2040 and 2080 warming scenarios, depicted by the brightly colored "New Yes" reaches under those scenarios (Figures \@ref(fig:optimum-map) and \@ref(fig:max-map)).
 
 ```{r optimum-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting whether recent mean (2002-2011) and projected (2040) August mean stream temperatures exceed ('Yes' and 'New Yes') or are below ('No') the top optimal temperature for summer life stages of target species within the Upper Walla Walla watershed. 'New Yes' indicates that the stream length did not exceed optimal temperatures in the previous climate scenario."}
 optimum_df = norwest_df %>%
@@ -513,7 +511,9 @@ Describe changes in QRF relative habitat capacities using the 2040, 2080, and -1
 
 # Discussion
 
-Discussion text...
+An evaluation of modeled, recent (2002 - 2011) mean August stream temperatures showed that greater than 10% of the Upper Walla Walla watershed exceeds optimum temperatures for the species and summer life stages of interest, and that value increased to greater than 24% and 33% under projected 2040 and 2080 climate warming scenarios, respectively. Chinook salmon spawning, which typically occurs mid-August to mid-September for Snake River populations, was of most concern. We estimated that greater than 330 km of the watershed currently exceeds optimum temperatures for Chinook salmon spawning; that value increased to greater than 400 km or nearly half of the watershed under the 2080 projected scenario.
+
+Actions to reduce peak summer water temperatures, such as riparian restoration, improved grazing practices, and channel narrowing should be considered in the Upper Walla Walla watershed, particularly in reaches identified in Figures \@ref(fig:optimum-map) and \@ref(fig:max-map). @Justice2017 similarly evaluated a 2080s climate change scenario and demonstrated that despite substantial increases in summer stream temperatures, basin-wide restoration of riparian vegetation and channel width could offset climate impacts in the Upper Grande Ronde and Catherine Creek watersheds in eastern Oregon.
 
 
 # Literature Cited
