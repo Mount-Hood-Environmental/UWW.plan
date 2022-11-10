@@ -184,11 +184,12 @@ norwest_p = norwest_df %>%
   geom_sf(data = uww_huc_sf %>%
             st_union(),
           fill = NA,
-          color = "gray50") +
+          color = "gray50",
+          size = 0.5) +
   geom_sf(color = river_color) +
   geom_sf(data = norwest_df,
           aes(color = temp_c),
-          size = 1) +
+          size = 0.5) +
   scale_color_viridis_c(option = "turbo") +
   facet_wrap(~scenario, 
              ncol = 2) +
@@ -196,7 +197,8 @@ norwest_p = norwest_df %>%
   theme(legend.position = "bottom",
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
-        axis.ticks = element_blank()) +
+        axis.ticks = element_blank(),
+        panel.grid.major = element_line(color = "transparent")) +
   labs(title = "NorWeST Summer Stream Temperatures",
        color = expression("Temperature ("^o*"C)"))
 norwest_p
@@ -252,6 +254,8 @@ temp_thresh_tab
 
 
 # Results
+
+In general, a larger percentage of stream length within the Upper Walla 
 
 ```{r temp-suit-tab}
 spec_ls = c("Chinook Spawning", "Chinook Parr", "Steelhead Parr", "Bull Trout", "Pacific Lamprey")
@@ -337,70 +341,177 @@ temp_suit_tab
 
 ```
 
-```{r temp-suit-tab-2, eval = F}
-spec_ls = c("Chinook Spawning", "Chinook Parr", "Steelhead Parr", "Bull Trout", "Pacific Lamprey")
-thresh = c("Within Optimum", "Above Optimum", "Above Maximum", "Above Acute")
-
-temp_suit_tab = norwest_df %>%
-  group_by(scenario) %>%
-  expand_grid(spec_ls, thresh) %>%
-  mutate(value = case_when(
-    spec_ls == "Chinook Spawning" & thresh == "Within Optimum" & temp_c >= 5.6 & temp_c <= 14.5 ~ T,
-    spec_ls == "Chinook Parr" & thresh == "Within Optimum" & temp_c >= 10 & temp_c <= 16 ~ T,
-    spec_ls == "Steelhead Parr" & thresh == "Within Optimum" & temp_c >= 10 & temp_c <= 18 ~ T,
-    spec_ls == "Bull Trout" & thresh == "Within Optimum" & temp_c >= 10.2 & temp_c <= 16 ~ T,
-    spec_ls == "Pacific Lamprey" & thresh == "Within Optimum" & temp_c >= 10 & temp_c <= 17 ~ T,
-    spec_ls == "Chinook Spawning" & thresh == "Above Optimum" & temp_c >= 14.5 ~ T,
-    spec_ls == "Chinook Parr" & thresh == "Above Optimum" & temp_c >= 16 ~ T,
-    spec_ls == "Steelhead Parr" & thresh == "Above Optimum" & temp_c >= 18 ~ T,
-    spec_ls == "Bull Trout" & thresh == "Above Optimum" & temp_c >= 16 ~ T,
-    spec_ls == "Pacific Lamprey" & thresh == "Above Optimum" & temp_c >= 17 ~ T,
-    spec_ls == "Chinook Spawning" & thresh == "Above Maximum" & temp_c >= 17.7 ~ T,
-    spec_ls == "Chinook Parr" & thresh == "Above Maximum" & temp_c >= 19 ~ T,
-    spec_ls == "Steelhead Parr" & thresh == "Above Maximum" & temp_c >= 19 ~ T,
-    spec_ls == "Bull Trout" & thresh == "Above Maximum" & temp_c >= 18 ~ T,
-    spec_ls == "Pacific Lamprey" & thresh == "Above Maximum" & temp_c >= 20 ~ T,
-    spec_ls == "Chinook Spawning" & thresh == "Above Acute" & temp_c >= 20 ~ T,
-    spec_ls == "Chinook Parr" & thresh == "Above Acute" & temp_c >= 22 ~ T,
-    spec_ls == "Steelhead Parr" & thresh == "Above Acute" & temp_c >= 22 ~ T,
-    spec_ls == "Bull Trout" & thresh == "Above Acute" & temp_c >= 20 ~ T,
-    spec_ls == "Pacific Lamprey" & thresh == "Above Acute" & temp_c >= 25 ~ T,
-    TRUE ~ F
+```{r optimum-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting whether recent mean (2002-2011) and projected (2040) August mean stream temperatures exceed ('Yes' and 'New Yes') or are below ('No') the top optimal temperature for summer life stages of target species within the Upper Walla Walla watershed. 'New Yes' indicates that the stream length did not exceed optimal temperatures in the previous climate scenario."}
+optimum_df = norwest_df %>%
+  mutate(`Chinook Spawning` = ifelse(temp_c > 14.5, "New Yes", "No"),
+         `Chinook Parr` = ifelse(temp_c > 16, "New Yes", "No"),
+         `Steelhead Parr` = ifelse(temp_c > 18, "New Yes", "No"),
+         `Bull Trout` = ifelse(temp_c > 16, "New Yes", "No"),
+         `Pacific Lamprey` = ifelse(temp_c > 17, "New Yes", "No")) %>%
+  mutate(geom_text = as.character(st_geometry(.))) %>%
+  group_by(geom_text) %>%
+  mutate(`Chinook Spawning` = case_when(
+    lag(`Chinook Spawning`) == "New Yes" ~ "Yes",
+    is.na(lead(`Chinook Spawning`)) ~ `Chinook Spawning`,
+    TRUE ~ `Chinook Spawning`
   )) %>%
-  filter(value == T) %>%
-  group_by(scenario, spec_ls, thresh) %>%
-  summarize(length_km = sum(reach_leng) / 1000) %>%
-  mutate(perc = round((length_km / 852.2079) * 100, 1),
-         length_km = round(length_km, 1)) %>%
-  select(`Life Stage` = spec_ls,
-         Scenario = scenario,
-         Threshold = thresh,
-         perc) %>%
-  pivot_wider(names_from = Threshold,
-              values_from = perc) %>%
-  select(`Life Stage`,
-         `Scenario`,
-         `Within Optimum`,
-         `Above Optimum`,
-         `Above Maximum`,
-         `Above Acute`) %>%
-  arrange(match(`Life Stage`, c("Chinook Spawning", 
-                                "Chinook Parr", 
-                                "Steelhead Parr", 
-                                "Bull Trout", 
-                                "Pacific Lamprey"))) %>%
-  mutate(`Above Acute` = replace_na(`Above Acute`, 0)) %>%
-  kable(booktabs = T,
-        align = "cccccc",
-        caption = "The percentage of stream length that falls within optimum, above optimum, above maximum, and above acute temperature thresholds for each species, life stage combination and under recent mean and projected summer stream temperature scenarios.") %>%
-  kable_styling(full_width = F,
-                position = "center",
-                bootstrap_options = c("striped", "condensed"))
-temp_suit_tab   
+  mutate(`Chinook Parr` = case_when(
+    lag(`Chinook Parr`) == "New Yes" ~ "Yes",
+    is.na(lead(`Chinook Parr`)) ~ `Chinook Parr`,
+    TRUE ~ `Chinook Parr`
+  )) %>%
+  mutate(`Steelhead Parr` = case_when(
+    lag(`Steelhead Parr`) == "New Yes" ~ "Yes",
+    is.na(lead(`Steelhead Parr`)) ~ `Steelhead Parr`,
+    TRUE ~ `Steelhead Parr`
+  )) %>%
+  mutate(`Bull Trout` = case_when(
+    lag(`Bull Trout`) == "New Yes" ~ "Yes",
+    is.na(lead(`Bull Trout`)) ~ `Bull Trout`,
+    TRUE ~ `Bull Trout`
+  )) %>%
+  mutate(`Pacific Lamprey` = case_when(
+    lag(`Pacific Lamprey`) == "New Yes" ~ "Yes",
+    is.na(lead(`Pacific Lamprey`)) ~ `Pacific Lamprey`,
+    TRUE ~ `Pacific Lamprey`
+  )) %>%
+  select(-geom_text) %>%
+  pivot_longer(cols = c("Chinook Spawning",
+                        "Chinook Parr",
+                        "Steelhead Parr",
+                        "Bull Trout",
+                        "Pacific Lamprey"),
+               names_to = "spec_ls",
+               values_to = "above_optimum") %>%
+  mutate(spec_ls = factor(spec_ls, levels = c("Chinook Spawning",
+                                              "Chinook Parr",
+                                              "Steelhead Parr",
+                                              "Bull Trout",
+                                              "Pacific Lamprey")))
+
+optimum_p = optimum_df %>%
+  ggplot() +
+  geom_sf(data = uww_huc_sf %>%
+            st_union(),
+          fill = NA,
+          color = "gray50",
+          size = 0.5) +
+  #geom_sf(color = river_color) +
+  geom_sf(data = optimum_df,
+          aes(color = above_optimum),
+          size = 0.5) +
+  scale_color_manual(values = c("Yes" = "gray",
+                                "New Yes" = "orangered",
+                                "No" = river_color)) +
+  facet_grid(spec_ls ~ scenario) +
+  theme_bw() +
+  theme(legend.position = "top",
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_line(color = "transparent")) +
+  labs(color = "Above Optimum Range")
+optimum_p
 
 ```
 
-```{r optimum-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting whether recent mean (2002-2011) and projected (2040 and 2080) August mean stream temperatures exceed (TRUE) or are below (FALSE) the top optimal temperature for summer life-stages of target species within the Upper Walla Walla watershed."}
+```{r max-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting whether recent mean (2002-2011) and projected (2040) August mean stream temperatures exceed ('Yes' and 'New Yes') or are below ('No') the maximum temperatures for summer life stages of target species within the Upper Walla Walla watershed. 'New Yes' indicates that the stream length did not exceed maximum temperatures in the previous climate scenario."}
+maximum_df = norwest_df %>%
+  mutate(`Chinook Spawning` = ifelse(temp_c > 17.7, "New Yes", "No"),
+         `Chinook Parr` = ifelse(temp_c > 19, "New Yes", "No"),
+         `Steelhead Parr` = ifelse(temp_c > 19, "New Yes", "No"),
+         `Bull Trout` = ifelse(temp_c > 18, "New Yes", "No"),
+         `Pacific Lamprey` = ifelse(temp_c > 20, "New Yes", "No")) %>%
+  mutate(geom_text = as.character(st_geometry(.))) %>%
+  group_by(geom_text) %>%
+  mutate(`Chinook Spawning` = case_when(
+    lag(`Chinook Spawning`) == "New Yes" ~ "Yes",
+    is.na(lead(`Chinook Spawning`)) ~ `Chinook Spawning`,
+    TRUE ~ `Chinook Spawning`
+  )) %>%
+  mutate(`Chinook Parr` = case_when(
+    lag(`Chinook Parr`) == "New Yes" ~ "Yes",
+    is.na(lead(`Chinook Parr`)) ~ `Chinook Parr`,
+    TRUE ~ `Chinook Parr`
+  )) %>%
+  mutate(`Steelhead Parr` = case_when(
+    lag(`Steelhead Parr`) == "New Yes" ~ "Yes",
+    is.na(lead(`Steelhead Parr`)) ~ `Steelhead Parr`,
+    TRUE ~ `Steelhead Parr`
+  )) %>%
+  mutate(`Bull Trout` = case_when(
+    lag(`Bull Trout`) == "New Yes" ~ "Yes",
+    is.na(lead(`Bull Trout`)) ~ `Bull Trout`,
+    TRUE ~ `Bull Trout`
+  )) %>%
+  mutate(`Pacific Lamprey` = case_when(
+    lag(`Pacific Lamprey`) == "New Yes" ~ "Yes",
+    is.na(lead(`Pacific Lamprey`)) ~ `Pacific Lamprey`,
+    TRUE ~ `Pacific Lamprey`
+  )) %>%
+  select(-geom_text) %>%
+  pivot_longer(cols = c("Chinook Spawning",
+                        "Chinook Parr",
+                        "Steelhead Parr",
+                        "Bull Trout",
+                        "Pacific Lamprey"),
+               names_to = "spec_ls",
+               values_to = "above_maximum") %>%
+  mutate(spec_ls = factor(spec_ls, levels = c("Chinook Spawning",
+                                              "Chinook Parr",
+                                              "Steelhead Parr",
+                                              "Bull Trout",
+                                              "Pacific Lamprey")))
+
+maximum_p = maximum_df %>%
+  ggplot() +
+  geom_sf(data = uww_huc_sf %>%
+            st_union(),
+          fill = NA,
+          color = "gray50",
+          size = 0.5) +
+  #geom_sf(color = river_color) +
+  geom_sf(data = maximum_df,
+          aes(color = above_maximum),
+          size = 0.5) +
+  scale_color_manual(values = c("Yes" = "gray",
+                                "New Yes" = "red",
+                                "No" = river_color)) +
+  facet_grid(spec_ls ~ scenario) +
+  theme_bw() +
+  theme(legend.position = "top",
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_line(color = "transparent")) +
+  labs(color = "Above Maximum Temperature")
+maximum_p
+
+```
+
+<!--
+## Habitat Capacity Results
+
+Describe changes in QRF relative habitat capacities using the 2040, 2080, and -1 scenarios using the RF extrapolation model. Do we see decreases in capacity under projected climate change scenarios? Alternatively, could some habitat capacity limitations be rectified through rehabilitation actions to cool stream temperatures by 1C.
+
+* Re-run the RF extrapolations for the UWW also using the 2040, 2080, and -1 scenarios.
+* Compare relative changes in capacity for those scenarios relative to the Recent Mean scenario
+-->
+
+
+# Discussion
+
+Discussion text...
+
+
+# Literature Cited
+
+<!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
+<div id="refs"></div>
+
+
+<!-- misc deprecated code and figures 
+```{r optimum-map2, eval = F, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting whether recent mean (2002-2011) and projected (2040 and 2080) August mean stream temperatures exceed (TRUE) or are below (FALSE) the top optimal temperature for summer life-stages of target species within the Upper Walla Walla watershed."}
 optimum_df = norwest_df %>%
   mutate(`Chinook Spawning` = ifelse(temp_c > 14.5, T, F),
          `Chinook Parr` = ifelse(temp_c > 16, T, F),
@@ -445,73 +556,6 @@ optimum_p
 
 ```
 
-```{r max-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting whether recent mean (2002-2011) and projected (2040 and 2080) August mean stream temperatures exceed (TRUE) or are below (FALSE) the maximum temperature for summer life-stages of target species within the Upper Walla Walla watershed."}
-maximum_df = norwest_df %>%
-  mutate(`Chinook Spawning` = ifelse(temp_c > 17.7, T, F),
-         `Chinook Parr` = ifelse(temp_c > 19, T, F),
-         `Steelhead Parr` = ifelse(temp_c > 19, T, F),
-         `Bull Trout` = ifelse(temp_c > 18, T, F),
-         `Pacific Lamprey` = ifelse(temp_c > 20, T, F)) %>%
-  pivot_longer(cols = c("Chinook Spawning",
-                        "Chinook Parr",
-                        "Steelhead Parr",
-                        "Bull Trout",
-                        "Pacific Lamprey"),
-               names_to = "spec_ls",
-               values_to = "above_maximum") %>%
-  mutate(above_maximum = replace_na(above_maximum, F)) %>%
-  mutate(spec_ls = factor(spec_ls, levels = c("Chinook Spawning",
-                                              "Chinook Parr",
-                                              "Steelhead Parr",
-                                              "Bull Trout",
-                                              "Pacific Lamprey")))
-
-maximum_p = maximum_df %>%
-  ggplot() +
-  geom_sf(data = uww_huc_sf %>%
-            st_union(),
-          fill = NA,
-          color = "gray50",
-          size = 0.5) +
-  #geom_sf(color = river_color) +
-  geom_sf(data = maximum_df,
-          aes(color = above_maximum),
-          size = 0.5) +
-  scale_color_manual(values = c("FALSE" = river_color,
-                                "TRUE" = "red")) +
-  facet_grid(spec_ls ~ scenario) +
-  theme_bw() +
-  theme(legend.position = "top",
-        axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks = element_blank()) +
-  labs(color = "Above Maximum Temperature")
-maximum_p
-
-```
-
-<!--
-## Habitat Capacity Results
-
-Describe changes in QRF relative habitat capacities using the 2040, 2080, and -1 scenarios using the RF extrapolation model. Do we see decreases in capacity under projected climate change scenarios? Alternatively, could some habitat capacity limitations be rectified through rehabilitation actions to cool stream temperatures by 1C.
-
-* Re-run the RF extrapolations for the UWW also using the 2040, 2080, and -1 scenarios.
-* Compare relative changes in capacity for those scenarios relative to the Recent Mean scenario
--->
-
-
-# Discussion
-
-Discussion text...
-
-
-# Literature Cited
-
-<!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
-<div id="refs"></div>
-
-
-<!-- misc deprecated code and figures 
 ```{r current_temp_map}
 
 river_color = "lightskyblue1"
