@@ -430,7 +430,9 @@ Chinook salmon and steelhead redd data were graciously provided by multiple coll
 
 ### QRF Model
 
-The QRF model is a novel approach to estimate the carrying capacity of wadable streams to support spawning and rearing Chinook salmon and steelhead. The approach involves fitting a QRF [@Meinshausen2006; @Cade2003] model to paired fish and habitat data across hundreds of sites in seven watersheds within the Columbia River Basin. Habitat data from the Columbia Habitat Monitoring Program (CHaMP) were paired to juvenile fish and redd survey data to develop fish-habitat relationships [@See2021]. Importantly, the QRF model places no constraints on possible fish-habitat relationships; instead, relationships are estimated from the empirical data regardless of being positive, negative, linear, non-linear, etc. The QRF approach enables spatially continuous estimates of available habitat capacity given existing conditions at key life-stages for Chinook salmon and steelhead. Currently, available QRF models allow evaluation of three anadromous life stages: 1) spawning (redd) capacity, 2) juvenile (parr) summer rearing capacity, and 3) juvenile (presmolt) winter rearing capacity. Using the observed fish-habitat relationships, we can predict habitat capacity at any location with habitat data for all model covariates (e.g., at all CHaMP sites) (Table \@ref(tab:cov-tab)). The random forest model produces a distribution of predictions, one for each tree in the forest, and we chose the 90th quantile of that distribution as a proxy for carrying capacity. The QRF models used to estimate available habitat capacity, including data inputs, are described in further detail in Appendix B of @IdahoOSCTeam2019.
+A crucial step in developing a QRF model to predict habitat capacity is selecting the habitat covariates to include in the model. Random forest models naturally incorporate interactions between correlated covariates, which is essential because nearly all CHaMP habitat variables are correlated to one degree or another. However, we aimed to avoid including redundant variables (i.e., variables that measure similar aspects of the habitat) as including too many habitat covariates can result in overfitting of the model (e.g., including as many covariates as data points). Additional details on the covariate selection process can be found [here](https://github.com/Mount-Hood-Environmental/QRF_extrapolation) and in Appendix B of @IdahoOSCTeam2019. Table \@ref(tab:cov-tab) summarizes the covariates used in each of the QRF models.
+
+In total, six QRF models were fit [@Meinshausen2006; @Cade2003] including the combinations of two species (Chinook salmon and steelhead) and three life stages (summer rearing [parr], winter rearing [presmolts], and spawning [redds]) using the paired fish-habitat datasets. Importantly, the QRF models place no constraints on possible fish-habitat relationships; instead, relationships are estimated from the empirical data regardless of being positive, negative, linear, non-linear, etc [@See2021]. Each of the QRF models were fit using the selected habitat covariates (Table \@ref(tab:cov-tab)) and using the *quantregForest* function and package  [@Meinshausen2006] in R software [@RCoreTeam2021]. The individual predictions from each tree, viewed collectively, describe the entire distribution of the predicted response. The 90th quantile of the predicted distribution was used as a proxy for habitat carrying capacity. We chose to use the 90th quantile, instead of something higher, to avoid using predictions that are aimed at the very upper tails of observed fish density, which may be influenced by sampling issues. @See2021 and @IdahoOSCTeam2019 provide additional details on QRF model fitting.  
 
 ```{r cov-tab}
 load(here("analysis/data/raw_data/QRF_new_hab_cov_tbl.rda"))
@@ -445,11 +447,14 @@ QRF_new_hab_cov_tbl %>%
 
 ```
 
+After model fitting, each QRF model can then be used to predict habitat capacity at any location with habitat data for all model covariates (e.g., at all CHaMP sites) (Table \@ref(tab:cov-tab)), using the observed fish-habitat relationships. Unfortunately, there are no CHaMP sites in the Upper Walla Walla watershed; therefore, we must use an associated random forest extrapolation model to estimate available habitat capacity.
+
+
 ### Extrapolation Model
 
-Although we have hundreds of sites across the Columbia River basin with detailed habitat data (e.g., CHaMP sites) that were used to estimate capacity with the QRF model, this only covers a small percentage of the anadromous zone within each watershed. Additionally, many watersheds, including the Walla Walla, do not contain any sites. Therefore, we extrapolated our capacity predictions to the areas between CHaMP sites using a [stream layer](https://www.nwfsc.noaa.gov/research/datatech/data/col_basin_hist_project/index.cfm) available from NOAA fisheries. This layer consists of a polyline shapefile divided into 200m reaches with various attributes associated with each reach. We refer to these as globally available attributes (GAAs) because they are associated with every reach across all watersheds in the Columbia River Basin. The shapefile is derived from the [National Hydrography Dataset High Resolution](https://www.usgs.gov/core-science-systems/ngp/national-hydrography/nhdplus-high-resolution) (NHDPlus HR) dataset, which has a high resolution, 1:24,000.
+Although we have hundreds of sites across the Columbia River basin with detailed habitat data (e.g., CHaMP sites) to predict habitat capacity using QRF models, this only covers a small percentage of the anadromous zone within each watershed. Additionally, many watersheds, including the Upper Walla Walla, do not contain any sites. Therefore, capacity predictions were made in the Upper Walla Walla watershed using an associated random forest extrapolation model and a spatially continuous, linear [stream layer](https://www.nwfsc.noaa.gov/research/datatech/data/col_basin_hist_project/index.cfm) available from NOAA fisheries. The layer is a polyline shapefile divided into 200 m reaches with various attributes associated with each reach. We refer to these as globally available attributes (GAAs) because they are associated with every reach across all watersheds in the Columbia River Basin. The shapefile is derived from the [National Hydrography Dataset High Resolution](https://www.usgs.gov/core-science-systems/ngp/national-hydrography/nhdplus-high-resolution) (NHDPlus HR) dataset, which has a high resolution, 1:24,000.
 
-We estimated capacity in the Upper Walla Wala River watershed by quantifying the relationships between GAAs and QRF capacity predictions at all of the sites used the populate the QRF model. This was conducted using a second random forest model, with GAAs as covariates and QRF-predicted densities (linear or areal) as the response. The random forest approach allows for non-linear associations between capacity and GAAs, and constricts capacity predictions within the estimated range from the initial QRF model. Densities predictions for the Upper Walla Walla River watershed were calculated for 200m reach segments using the random forest model with GAA inputs, and reach capacity was calculated by multiplying the predicted fish/m by the length of the reach. Capacity for specific regions were then calculated by summing capacities for all reaches within the region.
+We estimated capacity in stream reaches of the Upper Walla Walla watershed by quantifying the relationships between GAAs and QRF capacity predictions at all of the sites used to populate the QRF model. This was conducted using the second random forest extrapolation model, with GAAs as covariates and QRF-predicted densities (linear or areal) as the response. The random forest extrapolation approach allows for non-linear associates between capacity and GAAs, and constricts capacity predictions within the estimated range from the initial QRF model. Density predictions for the Upper Walla Walla watershed were calculated for each 200 m reach segment using the random forest model with GAA inputs, and reach capacity was calculated by multiplying the predicted fish per meter by the length of the reach. Capacity for specific reaches, streams, or regions were then calculated by summing capacities for all reaches within the group. The GAAs used in the random forest extrapolation model are summarized in Table \@ref(tab:gaa-tbl).
 
 ```{r gaa-tbl}
 load(here("analysis/data/raw_data/gaa_hab_dict.rda"))
@@ -467,7 +472,8 @@ gaa_hab_dict %>%
 
 ```
 
-## QRF Capacity Estimates
+
+## Capacity Estimates
 
 ```{r calc-chnk-capacity}
 
@@ -571,7 +577,7 @@ availcap_spawners$Pred_Spawners[6] = availcap_spawners$LifeStage_Cap[6]/(params$
 
 ```
 
-Estimates of total habitat capacity for the Upper Walla Walla by species and life-stage are shown in Table \@ref(tab:cap-table). Estimates were made using the anadromous spatial domain defined in [StreamNet](https://www.streamnet.org/home/data-maps/gis-data-sets/) for Chinook salmon and steelhead. Capacity was extrapolated within these domains for `r unique(cap_totals$n_rchs[cap_totals$Species == "Chinook"])` reaches totaling `r round(unique(cap_totals$tot_length[cap_totals$Species == "Chinook"]) / 1000)` km in length for Chinook salmon and `r prettyNum(unique(cap_totals$n_rchs[cap_totals$Species == "Steelhead"]), big.mark = ",")` reaches totaling `r round(unique(cap_totals$tot_length[cap_totals$Species == "Steelhead"]) / 1000)` km in length for steelhead. Different spatial domains could be used for both Chinook salmon and steelhead if deemed appropriate. Capacity estimates for individual streams by species and life stage are provided in [Supplemental Tables and Figures](#supplemental-tables-and-figures).
+Estimates of total available habitat capacity in the Upper Walla Walla watershed by species and life stage are provided in Table \@ref(tab:cap-table). Estimates were made using the anadromous spatial domain defined by [StreamNet](https://www.streamnet.org/home/data-maps/gis-data-sets/) for Chinook salmon and steelhead. Capacity was extrapolated within these domains for `r unique(cap_totals$n_rchs[cap_totals$Species == "Chinook"])` reaches totaling `r round(unique(cap_totals$tot_length[cap_totals$Species == "Chinook"]) / 1000)` km in length for Chinook salmon and `r prettyNum(unique(cap_totals$n_rchs[cap_totals$Species == "Steelhead"]), big.mark = ",")` reaches totaling `r round(unique(cap_totals$tot_length[cap_totals$Species == "Steelhead"]) / 1000)` km in length for steelhead. Different spatial domains could be used for both Chinook salmon and steelhead if deemed appropriate. Capacity estimates for individual streams by species and life stage are provided in [Supplemental Tables and Figures](#supplemental-tables-and-figures).
 
 ```{r cap-table}
 cap_totals %>%
@@ -603,7 +609,7 @@ cap_totals %>%
 
 ```
 
-Maps depicting capacity extrapolations are useful to visualize low- versus high-capacity areas and can inform prioritization efforts. Data used to generate these maps have been exported in geopackage file format and are available in the [UWW.plan GitHub repository](https://github.com/Mount-Hood-Environmental/UWW.plan). Chinook salmon and steelhead capacity extrapolations are shown in Figures \@ref(fig:chnk-maps) and \@ref(fig:sthd-maps), respectively.
+Maps depicting habitat capacity extrapolations can be useful to visualize low- versus high-capacity areas and can inform project prioritization efforts. The spatial data used to create these maps have been exported and are available in the [UWW.plan GitHub repository](https://github.com/Mount-Hood-Environmental/UWW.plan). Chinook salmon and steelhead habitat capacity extrapolations for the Upper Walla Walla watershed are shown in Figures \@ref(fig:chnk-maps) and \@ref(fig:sthd-maps), respectively.
 
 ```{r create-chnk-maps}
 # pick a background river color
@@ -763,9 +769,10 @@ ggarrange(sthd_sum_map,
 
 ```
 
+
 ## Capacity Limitations
 
-Finally, habitat capacity limitations were quantified by subtracting required capacity from available capacity (Table \@ref(tab:cap-limits)). When required capacity exceeded available capacity, this represented a habitat capacity deficit in the Upper Walla Walla watershed. Deficits can be used to identify potential species and life-stage limitations in physical habitat quantity and/or quality. Relative habitat capacity deficits were also calculated as available capacity divided by required capacity (Table \@ref(tab:cap-limits)) to provide guidance on species and life-stages where rehabilitation efforts could be targeted. In addition, capacity deficits relative to the 90% confidence interval for required capacity were calculated.
+Potential habitat capacity limitations were quantified by subtracting the required capacity from available habitat capacity (Table \@ref(tab:cap-limits)). When required capacity exceeds the available capacity, this represents an estimated habitat capacity deficit. Contrary, a "negative deficit" indicates that the available capacity is sufficient to meet adult escapement goals. Deficits can be used to identify potential species and life stage limitations in physical habitat quantity and/or quality. Relative habitat capacity deficits were also calculated as available capacity divided by required capacity (Table \@ref(tab:cap-limits)) to provide guidance on species and life stages where rehabilitation efforts could be targeted.
 
 ```{r cap-limits}
 rec_goals %>%
@@ -783,7 +790,7 @@ rec_goals %>%
         digits = c(0,0,0,0,0,0,0,0,2),
         align = "cccccccccccc",
         format.args = list(big.mark = ","),
-        col.names = c("Species","Scenario","Life-stage","Required Capacity", "Required Capacity SE","Available Capacity","Available Capacity SE","Deficit","Relative Deficit"),
+        col.names = c("Species","Scenario","Life Stage","Required Capacity", "Required Capacity SE","Available Capacity","Available Capacity SE","Deficit","Relative Deficit"),
         caption = "Capacity deficits and relative deficits based on recovery goals.") %>%
   kable_styling(full_width = F,
                 position = "center",
@@ -791,9 +798,9 @@ rec_goals %>%
 
 ```
 
-Comparisons of available and required capacity by life-stage are shown in Figures \@ref(fig:chnk-def-fig) and \@ref(fig:sthd-def-fig).
+Comparisons of available and required habitat capacities by life stage for Chinook salmon and steelhead are shown in Figures \@ref(fig:chnk-def-fig) and \@ref(fig:sthd-def-fig), respectively.
 
-```{r chnk-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for Chinook salmon at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals. Error bars represent 90% confidence intervals."}
+```{r chnk-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for Chinook salmon at three life stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest approach, and required capacity was calculated using a generalized capacity model with adult escapement goals. Error bars represent 90% confidence intervals."}
 chnk_def_p = rec_goals %>%
   select(-Scenario) %>%
   filter(Species == "Chinook",
@@ -853,8 +860,8 @@ chnk_def_p
 
 ```
 
-```{r chnk-dens-req-fig, fig.cap = "Comparison of model predictions for available and required habitat capacities"}
- chnk_def_line = rec_goals %>%
+```{r chnk-dens-req-fig, eval = F, fig.cap = "Comparison of model predictions for available and required habitat capacities"}
+chnk_def_line = rec_goals %>%
   select(-Scenario) %>%
   filter(Species == "Chinook",
          LifeStage %in% c("Redds",
@@ -908,11 +915,9 @@ chnk_def_p
                                   face = "bold"),
         legend.position = "right")
 
-
-
 ```
 
-```{r sthd-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for steelhead at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals. Error bars represent 90% confidence intervals."}
+```{r sthd-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for steelhead at three life stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest approach, and required capacity was calculated using a generalized capacity model with adult escapement goals. Error bars represent 90% confidence intervals."}
 sthd_def_p = rec_goals %>%
   select(-Scenario) %>%
   filter(Species == "Steelhead",
@@ -972,7 +977,7 @@ sthd_def_p
 
 ```
 
-Available capacity deficits can also be evaluated in terms of spawning escapement abundance using the GCM (Table \@ref(tab:cap-spawnconv-tbl)). For example, predicted redd capacity is divided by the estimated number of redds per female and the female ratio to provide an estimate of the spawner abundance supported given the particular life stage.
+Alternatively, available habitat capacity deficits can be evaluated in terms of the spawner abundance that a given life stage could support using the GCM (Table \@ref(tab:cap-spawnconv-tbl)). For example, predicted redd capacity can be divided by the estimated number of redds per female and female sex ratio (Table \@ref(tab:cov-tab)) to provide an estimate of the spawner abundance that can be supported by the estimated redd capacity. 
 
 ```{r cap-spawnconv-tbl}
 availcap_spawners %>%
@@ -991,17 +996,23 @@ availcap_spawners %>%
 
 ```
 
+<!-- Somewhere we need to provide available capacity results at the same spatial scale used by collaborators e.g., geomorphic reaches or HUC12s. -->
+
+
 # Discussion
 
-General discussion text...
+*General discussion text...*
+
 
 ## Limited Species and Life-Stages
 
-Section in progress
+*Section in progress*
+
 
 ## Target Conditions to Address Limiting Factors
 
-Section in progress
+*Section in progress*
+
 
 # Literature Cited
 
@@ -1025,11 +1036,17 @@ chnk_sum_cap %>%
          `Stream Length (km)` = tot_length,
          Capacity = tot_cap,
          `Capacity SE` = tot_cap_se) %>%
+  mutate(`Capacity / km` = Capacity / `Stream Length (km)`) %>%
   kable(booktabs = T,
-        digits = c(0,0,1,0,0),
-        align = "lcccc",
+        digits = c(0,0,1,0,0,1),
+        align = "lccccc",
         format.args = list(big.mark = ","),
-        col.names = c("Stream Name","Reaches","Stream Length (km)", "Capacity","Capacity SE"),
+        col.names = c("Stream Name",
+                      "Reaches",
+                      "Stream Length (km)", 
+                      "Capacity",
+                      "Capacity SE",
+                      "Capacity / km"),
         caption = "Estimated available habitat for **juvenile summer rearing** Chinook salmon in the Upper Walla Walla watershed.") %>%
   kable_styling(full_width = F,
                 position = "center",
@@ -1046,11 +1063,17 @@ chnk_win_cap %>%
          `Stream Length (km)` = tot_length,
          Capacity = tot_cap,
          `Capacity SE` = tot_cap_se) %>%
+  mutate(`Capacity / km` = Capacity / `Stream Length (km)`) %>%
   kable(booktabs = T,
-        digits = c(0,0,1,0,0),
-        align = "lcccc",
+        digits = c(0,0,1,0,0,1),
+        align = "lccccc",
         format.args = list(big.mark = ","),
-        col.names = c("Stream Name","Reaches","Stream Length (km)", "Capacity","Capacity SE"),
+        col.names = c("Stream Name",
+                      "Reaches",
+                      "Stream Length (km)", 
+                      "Capacity",
+                      "Capacity SE",
+                      "Capacity / km"),
         caption = "Estimated available habitat for **juvenile winter rearing** Chinook salmon in the Upper Walla Walla watershed.") %>%
   kable_styling(full_width = F,
                 position = "center",
@@ -1067,11 +1090,17 @@ chnk_redd_cap %>%
          `Stream Length (km)` = tot_length,
          Capacity = tot_cap,
          `Capacity SE` = tot_cap_se) %>%
+  mutate(`Capacity / km` = Capacity / `Stream Length (km)`) %>%
   kable(booktabs = T,
-        digits = c(0,0,1,0,0),
-        align = "lcccc",
+        digits = c(0,0,1,0,0,1),
+        align = "lccccc",
         format.args = list(big.mark = ","),
-        col.names = c("Stream Name","Reaches","Stream Length (km)", "Capacity","Capacity SE"),
+        col.names = c("Stream Name",
+                      "Reaches",
+                      "Stream Length (km)", 
+                      "Capacity",
+                      "Capacity SE",
+                      "Capacity / km"),
         caption = "Estimated available **spawning (redds)** habitat for Chinook salmon in the Upper Walla Walla watershed.") %>%
   kable_styling(full_width = F,
                 position = "center",
@@ -1090,11 +1119,17 @@ sthd_sum_cap %>%
          `Stream Length (km)` = tot_length,
          Capacity = tot_cap,
          `Capacity SE` = tot_cap_se) %>%
+  mutate(`Capacity / km` = Capacity / `Stream Length (km)`) %>%
   kable(booktabs = T,
-        digits = c(0,0,1,0,0),
-        align = "lcccc",
+        digits = c(0,0,1,0,0,1),
+        align = "lccccc",
         format.args = list(big.mark = ","),
-        col.names = c("Stream Name","Reaches","Stream Length (km)", "Capacity","Capacity SE"),
+        col.names = c("Stream Name",
+                      "Reaches",
+                      "Stream Length (km)", 
+                      "Capacity",
+                      "Capacity SE",
+                      "Capacity / km"),
         caption = "Estimated available habitat for **juvenile summer rearing** steelhead in the Upper Walla Walla watershed.") %>%
   kable_styling(full_width = F,
                 position = "center",
@@ -1111,11 +1146,17 @@ sthd_win_cap %>%
          `Stream Length (km)` = tot_length,
          Capacity = tot_cap,
          `Capacity SE` = tot_cap_se) %>%
+  mutate(`Capacity / km` = Capacity / `Stream Length (km)`) %>%
   kable(booktabs = T,
-        digits = c(0,0,1,0,0),
-        align = "lcccc",
+        digits = c(0,0,1,0,0,1),
+        align = "lccccc",
         format.args = list(big.mark = ","),
-        col.names = c("Stream Name","Reaches","Stream Length (km)", "Capacity","Capacity SE"),
+        col.names = c("Stream Name",
+                      "Reaches",
+                      "Stream Length (km)", 
+                      "Capacity",
+                      "Capacity SE",
+                      "Capacity / km"),
         caption = "Estimated available habitat for **juvenile winter rearing** steelhead in the Upper Walla Walla watershed.") %>%
   kable_styling(full_width = F,
                 position = "center",
@@ -1133,11 +1174,17 @@ sthd_redd_cap %>%
          `Stream Length (km)` = tot_length,
          Capacity = tot_cap,
          `Capacity SE` = tot_cap_se) %>%
+  mutate(`Capacity / km` = Capacity / `Stream Length (km)`) %>%
   kable(booktabs = T,
-        digits = c(0,0,1,0,0),
-        align = "lcccc",
+        digits = c(0,0,1,0,0,1),
+        align = "lccccc",
         format.args = list(big.mark = ","),
-        col.names = c("Stream Name","Reaches","Stream Length (km)", "Capacity","Capacity SE"),
+        col.names = c("Stream Name",
+                      "Reaches",
+                      "Stream Length (km)", 
+                      "Capacity",
+                      "Capacity SE",
+                      "Capacity / km"),
         caption = "Estimated available **spawning (redds)** habitat for steelhead in the Upper Walla Walla watershed.") %>%
   kable_styling(full_width = F,
                 position = "center",
