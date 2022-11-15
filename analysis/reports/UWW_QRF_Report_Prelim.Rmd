@@ -105,7 +105,7 @@ In this assessment, we apply a novel approach [@See2021] to estimating life stag
 
 ## Study Area
 
-This assessment will be focused on the alluvial channel of the Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North and South forks of the Walla Walla River. The habitat data used to populate the habitat capacity models were collected by the CHaMP Monitoring Program (CHaMP; @ISEMP-CHaMP2017). CHaMP sites are 200-600 m reaches within wadable streams across select watersheds within the interior Columbia River basin, and thus, model results are applicable to wadable portions of the Upper Walla Walla watershed. The upstream extents of the assessment are determined by the spatial domain of Chinook salmon and steelhead in the Upper Walla Walla watershed, as defined by (StreamNet)[https://www.streamnet.org/].
+This assessment will be focused on the alluvial channel of the Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North and South forks of the Walla Walla River. The habitat data used to populate the habitat capacity models were collected by the CHaMP Monitoring Program (CHaMP; @ISEMP-CHaMP2017). CHaMP sites are 200-600 m reaches within wadable streams across select watersheds within the interior Columbia River basin, and thus, model results are applicable to wadable portions of the Upper Walla Walla watershed. The upstream extents of the assessment are determined by the spatial domain of Chinook salmon and steelhead in the Upper Walla Walla watershed, as defined by [StreamNet](https://www.streamnet.org/).
 
 
 ## Focal Species
@@ -384,7 +384,7 @@ params %>%
 
 ```
 
-The resulting estimated habitat capacity requirements are shown in Table \@ref(tab:require-tab) and represent the necessary abundance at each life-stage to achieve adult escapement goals.
+The resulting estimated habitat capacity requirements are shown in Table \@ref(tab:require-tab) and represent the necessary abundance at each life-stage to achieve the adult escapement goals.
 
 ```{r require-tab}
 rec_goals %>%
@@ -407,9 +407,26 @@ rec_goals %>%
 
 ```
 
+
 ## Available Capacity
 
-We define the available habitat carrying capacity as the maximal abundance or load the habitat can support for a given species and life-stage with current resources and habitat quantity and quality. Within fisheries research and management, it has been recognized that biotic and abiotic factors limit productivity within and across life-stages. However, we assume that observed fish density is a poor predictor of habitat capacity due to both a paucity of individuals (e.g., low spawner abundance) and the existence of unmeasured biotic or abiotic variables that may limit capacity. Therefore, available habitat capacity estimates were generated using a QRF framework developed by @See2021.
+We define available habitat carrying capacity as the maximal abundance or biomass the habitat can support for a given species and life stage given current resources and habitat quantity and quality. Within fisheries research and management, it has been recognized that biotic and abiotic factors limit productivity within and across life stages. However, we assume that observed fish densities are a poor predictor or habitat capacity due to both a paucity of individuals (e.g., low spawner abundance), especially in recent decades, and the existence of unmeasured biotic (e.g., competition or predation) or abiotic variables that may limit capacity. Therefore, available habitat capacity estimates for the Upper Walla Walla watershed were generated using a QRF framework described in @See2021.
+
+
+### Data
+
+#### Habitat Data
+
+Habitat data used in the QRF model were collected by CHaMP [@ISEMP-CHaMP2017] and were downloaded from the [CHaMP website](https://www.champmonitoring.org/). CHaMP sites are 200- to 500-meter reaches within wadeable streams across select watersheds within the interior Columbia River Basin and were selected based on a spatially balanced Generalized Random Tesselation Stratified (GRTS) sample selection algorithm (Stevens and Olsen 1999, 2004). Habitat data within CHaMP sites are collected using the CHaMP protocol [@CHaMP2016]. CHaMP habitat data include, but are not limited to, measurements describing channel complexity, channel units, disturbance, fish cover, large woody debris, riparian cover, size (depth, width, discharge), substrate, temperature, and water quality.
+
+#### Juvenile Fish Data
+
+Juvenile fish surveys were conducted for Chinook salmon and steelhead during the summer and winter base flow seasons at many of the same sites that were surveyed for habitat using the CHaMP protocol. Juvenile fish survey methods to estimate juvenile abundance included mark-recapture, three-pass removal, two-pass removal, and single-pass electrofishing, as well as snorkeling. Survey data were used to estimate juvenile abundance at all sites where data were available. @See2017 provide further detail on methods used to generate juvenile abundance estimates.
+
+#### Redd Data
+
+Chinook salmon and steelhead redd data were graciously provided by multiple collaborating agencies [@See2017; @IdahoOSCTeam2019], spanning the years 1995 - 2016 and were available from the following CHaMP watersheds: Asotin, Entiat, John Day, Lemhi, Methow, Minam, Secesh, Tucannon, upper Grande Ronde, Wenatchee, and Yankee Fork. To pair the redd and CHaMP habitat data, the number of redds that occurred within a 1 river kilometer buffer of the central point  for each CHaMP site were tallied. I.e., the latitude and longitude of each CHaMP site and each redd were snapped to a route in ArcGIS and the number of redds that occurred within 500 meters upstream or downstream of each CHaMP site for each year in which redds were observed were counted and transformed into linear densities (redds/m). For each CHaMP site, we identified the year in which the maximum number of redds were observed since we are ultimately interested in redd capacity [@See2021; @See2017; @IdahoOSCTeam2019].
+
 
 ### QRF Model
 
