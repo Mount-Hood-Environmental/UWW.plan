@@ -56,6 +56,7 @@ always_allow_html: yes
    });
 </script>
 ```
+
 ```{r setup, echo = FALSE, message = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -95,40 +96,48 @@ theme_set(theme_pubr(x.text.angle = 45,
 
 # Background
 
-Water is the cornerstone of First Foods production and inherently tied to the five fundamental touchstones: hydrology, geomorphology, habitat and network connectivity, riverine biotic community, and riparian vegetation [@Jones2008]. These touchstones form the Umatilla River Vision, a holistic approach to water quality restoration. In support of the Vision, population status and habitat use of riverine fishes defined as First Foods lack critical data needed for the assessment of biotic communities [@Jones2008]. First Food fishes within the Vision include spring-run Chinook salmon, middle Columbia River summer-run steelhead, bull trout, and Pacific lamprey.
+Water is the cornerstone of First Foods production and inherently tied to the five fundamental touchstones: hydrology, geomorphology, habitat and network connectivity, riverine biotic community, and riparian vegetation [@Jones2008]. These touchstones form the Umatilla River Vision, a holistic approach to water quality restoration. In support of the Vision, population status and habitat use of riverine fishes defined as First Foods lack critical data needed for the assessment of biotic communities [@Jones2008]. First Foods within the Visions includes "salmon" which covers salmon species themselves, as well as lampreys and trout.
 
-The decline of anadromous Pacific salmonid populations (*Oncorhynchus* spp.) across the Pacific Northwest, USA, has prompted numerous actions aimed at reversing that trend. These actions are often categorized into four 'H's' - harvest modification, habitat rehabilitation, hydroelectric operations, and hatchery practices. While these actions can influence salmonid productivity and survival, predicting the potential magnitude of population uplife and developing the most cost-effective and sustainable solutions to protect and improve populations is a complex task. Recovery plans (e.g., @NOAA2009; @CBPTF2020) have identified adult escapement targets at the population scale, providing a benchmark against which habitat rehabilitation actions can be measured.
+The decline of anadromous Pacific salmonid populations (*Oncorhynchus* spp.) across the Pacific Northwest, USA, has prompted numerous actions aimed at reversing that trend. These actions are often categorized into four 'H's': harvest modification, habitat rehabilitation, hydroelectric operations, and hatchery practices. While these actions can influence salmonid productivity and survival, predicting the potential magnitude of population uplift and developing the most cost-effective and sustainable solutions to protect and improve populations is a complex task. Recent recovery plans (e.g., @NOAA2009; @CBPTF2020), however, have identified adult escapement targets at the population scale, providing a benchmark against which habitat rehabilitation actions can be measured.
 
-Here, we apply a novel approach [@See2021] to estimating life stage specific habitat capacity for spring-run Chinook salmon and summer-run steelhead to quantify available habitat in the Upper Walla Walla watershed. Information herein can be used to quantify the magnitude and types of tributary habitat restoration needed to achieve given recovery goals in the watershed. The necessity of tributray restoration actions can then be demonstrated, and the magnitude of required change can be placed in context with the other 'H's'.
+In this assessment, we apply a novel approach [@See2021] to estimating life stage specific habitat capacity for Chinook salmon and steelhead to quantify available habitat in the Upper Walla Walla watershed. We additionally estimate habitat required within the watershed to achieve desired adult escapement goals. Combined, estimates of available and required habitat capacities can be used to identify potential limitations for Chinook salmon and steelhead to be addressed. Information herein can be used to quantify the magnitude and types of tributary habitat restoration actions necessary to achieve given recovery goals in the watershed. Fish-habitat relationships derived from the capacity models are also useful towards describing target conditions to address identified limitations. The necessity of tributary actions can then be demonstrated, and the magnitude of required change can be places in context with the other 'H's'.
+
+
+## Study Area
+
+This assessment will be focused on the alluvial channel of the Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North and South forks of the Walla Walla River. The habitat data used to populate the habitat capacity models were collected by the CHaMP Monitoring Program (CHaMP; @ISEMP-CHaMP2017). CHaMP sites are 200-600 m reaches within wadable streams across select watersheds within the interior Columbia River basin, and thus, model results are applicable to wadable portions of the Upper Walla Walla watershed. The upstream extents of the assessment are determined by the spatial domain of Chinook salmon and steelhead in the Upper Walla Walla watershed, as defined by (StreamNet)[https://www.streamnet.org/].
 
 
 ## Focal Species
 
 The focal species for the habitat capacity assessment include:
 
--   Spring-run Chinook salmon (*Oncorhynchus tshawytscha*; hereafter Chinook salmon)
--   Middle Columbia River summer steelhead (*O. mykiss*; hereafter steelhead; ESA-listed threatened)
+* Spring-run Chinook salmon (*Oncorhynchus tshawytscha*; hereafter Chinook salmon)
+* Middle Columbia River summer steelhead (*O. mykiss*; hereafter steelhead; ESA-listed threatened)
 
 While our habitat capacity models specifically address Chinook salmon and steelhead, any uplift in habitat for these species are also expected to benefit (or do no harm to) habitat for Columbia River bull trout (*Salvelinus confluentus*; ESA-listed threatened) and Pacific lamprey (*Lampetra tridentata*). Additionally, we provide a qualitative assessment of historic and contemporary population status and habitat use for these species.
 
 
-## Study Area
-
-This assessment will be focused on the alluvial channel of the Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North and South forks of the Walla Walla River. *Update as necessary, specific to the habitat capacity assessment.*
-
-
 ## Objectives
 
--   Bulleted list of objectives, if necessary.
+1. Describe historic and contemporary population status and habitat use of target fishes in the Upper Walla Walla watershed to place in context identified limiting factors.
+2. Estimate life stage specific habitat capacities required for Chinook salmon and steelhead to achieve target adult escapement goals in the Upper Walla Walla watershed.
+3. Quantify the available habitat capacities in the Upper Walla Walla watershed to support summer rearing, winter rearing, and spawning (redds) for Chinook salmon and steelhead.
+4. Estimate potential capacity limitations for Chinook salmon and steelhead as available minus required capacity.
+5. Describe the locations and types of stream rehabilitation actions that could be used to address potential identified capacity limitations identified herein.
 
 
-## Fish Status and Use
+# *Fish Status and Use*
 
-This section is in development and will cover information regarding fish habitat use, background on fish population dynamics in the system, current status of chinook, steelhead, bull trout and lamprey, etc. Potentially a small literature review and summary of relevant data.
+*This section is in development and will cover information regarding fish habitat use, background on fish population dynamics in the system, current status of chinook, steelhead, bull trout and lamprey, etc. Potentially a small literature review and summary of relevant data.*
 
-### Historical
+## *Historical*
 
-### Contemporary
+*Description of historical population status and habitat use.*
+
+## *Contemporary*
+
+*Description of contemporary population status and habitat use.*
 
 
 # Habitat Capacity Assessment
@@ -155,17 +164,25 @@ uww_redd_df = uww_redd_sf %>%
 
 ```
 
-The habitat capacity assessment is focused on Chinook salmon and steelhead. Habitat capacity deficits (e.g., Figure \@ref(fig:capacity-schematic)) resulting from limitations in habitat quantity and/or quality were assessed for three life stages of Chinook salmon and steelhead: 1) spawning (redd) capacity, 2) juvenile summer rearing capacity, and 3) juvenile winter rearing capacity. First, the capacity required to meet adult abundance escapement goals was estimated for each of the three life-stages using a Generalized Capacity Model framework [see Appendix C in @IdahoOSCTeam2019]. Then, the currently available habitat capacity was estimated using a quantile random forest (QRF) approach [@See2021] applied at each life-stage. Next, capacity limitations were quantified by subtracting required capacity from available capacity, providing an estimate of habitat capacity deficit by species and life-stage. Finally, these results can determine the target conditions required to achieve adult escapement goals, and inform prioritization by identifying species and life-stage specific bottlenecks to population productivity in the Upper Walla Walla watershed.
+
+## Overview
+
+Restoring salmonid carrying capacity through tributary rehabilitation actions has been identified as a key component of recovery efforts for salmon and steelhead in the Pacific Northwest, USA. Efforts have included increasing and improving existing habitat for both spawning adults and rearing juveniles. However, estimating habitat carrying capacity for various life stages of Pacific salmon, as well as identifying important habitat characteristics that influence capacity, has been and ongoing but necessary challenge [@Bond2019; @Hinrichsen2020]. Reliable methods to better understand fish-habitat relationships and estimate capacity are necessary to identify those salmon and steelhead life stages that are limited by habitat capacity to better direct tributary rehabilitation efforts.
+
+We define carrying capacity as the maximum number of individuals that can be supported given the quantity and quality of habitat available at a given life stage. Our assumption is that higher observed relative densities within a given life stage are a function of habitat quantity and quality. Furthermore, we assert that observed fish density is a poor proxy of habitat capacity owing to both a paucity of spawning adults, especially for listed species, and the existed of unmeasured variables that may limit capacity [@See2021]. To address these concerns, we use a model developed to estimate habitat capacity [@See2021] for Chinook salmon and steelhead in wadeable streams based on quantile random forest [QRF; @Meinshausen2006] models using measurements of fish abundance and density, and habitat characteristics [@ISEMP-CHaMP2017]. QRF models combine the theory and justification of quantile regression mdoels [@Koenker1978; @Cade2003] with the flexibility and framework of random forest models [@Breiman2001]. They account for unmeasured variables and can be used to describe the entire distribution of predicted fish densities, not just the mean expected density. Random forest models have been shown to outperform more standard parametric models in predicting fish-habitat relationships in other contexts [@Knudby2010]. Quantile random forests share many of the benefits of random forest models, such as the ability to capture non-linear relationships between independent and dependent variables, naturally incorporate interactions between covariates, and work with untransformed data while being robust to outliers [@Prasad2006]. In addition, quantile regression models have been used in a variety of ecological systems to estimate the effect of limiting factors [@Terrell1996; @Cade2003; @See2021].
+
+In this habitat capacity assessment, we estimate available habitat capacity in the Upper Walla Walla watershed to support given life-stages of Chinook salmon and steelhead using the QRF framework [@See2021; @IdahoOSCTeam2019. Combined with estimates of required capacity to support target adult escapement goals, the QRF framework can be useful towards identifying limited life stages for Chinook salmon and steelhead. Potential habitat capacity deficits (e.g., Figure \@ref(fig:capacity-schematic)) resulting from limitations in habitat quantity and/or quality were assessed for three life stages of Chinook salmon and steelhead: 1) spawning (redd) capacity, 2) juvenile summer rearing capacity, and 3) juvenile winter rearing capacity. First, the capacity required to meet adult escapement goals was estimated for each of the three life stages using a Generalized Capacity Model framework [see Appendix C in @IdahoOSCTeam2019]. Then, currently available habitat capacity was estimated using the QRF approach [@See2021] and an associated random forest extrapolation model. Next, capacity limitations were quantified by subtracting required capacity from available capacity, providing an estimate of (potential) capacity deficits by species and life-stage. These results can determine target conditions necessary to achieve adult escapement goals and inform prioritization by identifying identifying species and life-stage specific bottlenecks to population productivity in the Upper Walla Walla watershed.
 
 ```{r capacity-schematic, out.width = "100%", fig.cap = "Schematic depicting an ideal scenario on the left with no limiting factors, while the right depicts a river with significant limiting factors resulting in reduced habitat capacity and production."}
 knitr::include_graphics("../figures/hab-capac-fig.png")
 
 ```
 
+
 ## Required Capacity
 
 ```{r get-params}
-params = read_csv(here("analysis/data/raw_data/LifeHistoryParameters_0622.csv"))
+params = read_csv(here("analysis/data/raw_data/LifeHistoryParameters.csv"))
 
 #define target escapement
 target.esc = c(3600,3400)
@@ -348,7 +365,9 @@ rec_goals = tibble(Species = c("Chinook", "Steelhead"),
   mutate(`90% CI, upper` = c(NA,as.numeric(select(reqs_summary, ends_with("90U"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("90U"))[2,])))
 ```
 
-Life-stage specific capacity requirements were estimated using a Generalized Capacity Model (GCM) described in Appendix C of @IdahoOSCTeam2019. The model uses a combination of empirical and literature-based parameter estimates (Table \@ref(tab:param-tab)) to determine the capacity required to achieve a given adult abundance goal. We used adult escapement goals of `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Chinook" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for Chinook salmon and `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Steelhead" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for steelhead. These escapement goals are considered high-range goals and are intended to represent *"healthy and harvestable abundance levels that would sustain very high levels of species viability, significant fishery opportunities and harvest, and a fuller range of ecological values"* [@CBPTF2020]. The required capacities to reach these goals were estimated using the GCM with a simulation approach to account for expected interannual variation in life history parameters. The simulation was conducted by repeatedly drawing applicable parameters from normal distributions with means and standard deviations defined in Table \@ref(tab:param-tab) and constrained within the range of observed values. Standard deviations for Egg to parr and parr to presmolt survival parameters were set to zero due to small sample sizes, high variability, and potential bias leading to potentially unreliable results. Then, adult escapement goals were multiplied step-wise through the applicable parameter values to obtain capacity requirements by life-stage. For example, the number of redds necessary for recovery was calculated by multiplying the adult escapement goal by the female ratio and the estimated redds per female. We conducted 5,000 simulations, resulting in a range of capacity requirements that were summarized to provide the mean required capacity by life-stage with associated confidence intervals. Sources for each parameter estimate are provided in Table \@ref(tab:param-tab); however, those values can be modified if updated or in-basin estimates with empirical support are available.
+Life stage specific capacity requirements were estimated using a Generalized Capacity Model (GCM) described in Appendix C of @IdahoOSCTeam2019. The model uses a combination of empirical and literature-based parameter estimates (Table \@ref(tab:param-tab)) to determine the capacity required to achieve a given adult abundance goal. We used adult escapement goals of `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Chinook" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for Chinook salmon and `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Steelhead" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for steelhead. These escapement goals are considered high-range goals and are intended to represent *"healthy and harvestable abundance levels that would sustain very high levels of species viability, significant fishery opportunities and harvest, and a fuller range of ecological values"* [@CBPTF2020].
+
+The required capacities to reach the adult escapement goals were estimated using the GCM with a simulation approach to account for expected interannual variation in life history parameters. The simulation was conducted by repeatedly drawing applicable parameters from a normal distribution with means and standard deviations defined in Table \@ref(tab:param-tab) and constrained within the range of observed values. Standard deviations for egg-to-parr and parr-to-presmolt survival parameters were set to zero due to small sample sizes, high variability, and potential bias leading to potentially unreliable results. Then, adult escapement goals were multiplied step-wise through the applicable parameter values to obtain capacity requirements by life stage. For example, the number of redds necessary for recovery was calculated by multiplying the adult escapement goal by the female ratio and the estimated redds per female, drawing new parameter estimates during each iteration. We conducted 5,000 simulations, resulting in a range of capacity requirements that were summarized to provide the mean required capacity by life stage with associated confidence intervals. Sources for each parameter estimate are provided in Table \@ref(tab:param-tab); however, those values can be modified if updated or in-basin estimates with empirical support are available.
 
 ```{r param-tab}
 params %>%
@@ -369,7 +388,11 @@ The resulting estimated habitat capacity requirements are shown in Table \@ref(t
 
 ```{r require-tab}
 rec_goals %>%
-  mutate(`90% CI` = paste0("(",round(`90% CI, lower`,0),"-",round(`90% CI, upper`,0),")")) %>%
+  mutate(`90% CI` = paste0("(",
+                           prettyNum(round(`90% CI, lower`,0), big.mark = ","),
+                           " - ",
+                           prettyNum(round(`90% CI, upper`,0), big.mark = ","),
+                           ")")) %>%
   select(-`90% CI, lower`, -`90% CI, upper`) %>%
   kable(booktabs = T,
         digits = 0,
