@@ -351,7 +351,7 @@ temp_suit_tab
 
 Figures \@ref(fig:optimum-map) and \@ref(fig:max-map) show reaches in the Upper Walla Walla watershed that exceed optimum and maximum temperature thresholds for the target species and life stages and under each climate scenario. In general, additional upstream reaches become unsuitable moving to the 2040 and 2080 warming scenarios, depicted by the brightly colored "New Yes" reaches under those scenarios (Figures \@ref(fig:optimum-map) and \@ref(fig:max-map)).
 
-```{r optimum-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting whether recent mean (2002-2011) and projected (2040) August mean stream temperatures exceed ('Yes' and 'New Yes') or are below ('No') the top optimal temperature for summer life stages of target species within the Upper Walla Walla watershed. 'New Yes' indicates that the stream length did not exceed optimal temperatures in the previous climate scenario."}
+```{r optimum-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting whether recent mean (2002-2011) and projected (2040 and 2080) August mean stream temperatures exceed ('Yes' and 'New Yes') or are below ('No') the top optimal temperature for summer life stages of target species within the Upper Walla Walla watershed. 'New Yes' indicates that the stream length did not exceed optimal temperatures in the previous climate scenario."}
 optimum_df = norwest_df %>%
   mutate(`Chinook Spawning` = ifelse(temp_c > 14.5, "New Yes", "No"),
          `Chinook Parr` = ifelse(temp_c > 16, "New Yes", "No"),
