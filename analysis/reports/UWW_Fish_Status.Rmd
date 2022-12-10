@@ -1,0 +1,149 @@
+---
+title: "Historic and Contemporary Fish Distribution and Status, Upper Walla Walla Watershed - *PRELIMINARY*"
+author:
+  - Joshua Egan:
+      email: joshua.egan@mthoodenvironmental.com
+      institute: [mhe_sandy]
+      correspondence: false
+  - Michael W. Ackerman:
+      email: mike.ackerman@mthoodenvironmental.com
+      institute: [mhe_mccall]
+      correspondence: true
+  - Bryce N. Oldemeyer:
+      email: bryce.oldemeyer@mthoodenvironmental.com
+      institute: [mhe_challis]
+      correspondence: true
+institute:
+  - mhe_sandy: Mount Hood Environmental, 39085 Pioneer Boulevard \#100 Mezzanine, Sandy, Oregon, 97055, USA
+  - mhe_mccall: Mount Hood Environmental, PO Box 4282, McCall, Idaho, 83638, USA
+  - mhe_challis: Mount Hood Environmental, PO Box 1303, Challis, Idaho 83226, USA
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  bookdown::html_document2:
+    theme: yeti
+    toc: yes
+    toc_depth: 2
+    toc_float:
+      collapsed: yes
+      smooth_scroll: yes
+    number_sections: yes
+    pandoc_args:
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks.lua
+    - --lua-filter=../templates/pagebreak.lua  
+csl: "../templates/journal-of-archaeological-science.csl"
+bibliography:
+  - AckermanLibrary.bib
+always_allow_html: yes
+---
+
+<!-- the following inserts MHE logo into header -->
+
+```{=html}
+<script>
+   $(document).ready(function() {
+     $head = $('#header');
+     $head.prepend('<img src=\"logo.jpg\" style=\"float: right;width: 150px;\"/>')
+   });
+</script>
+
+```
+
+```{r setup, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  echo = FALSE,
+  comment = "#>",
+  fig.path = "../figures/",
+  dpi = 600
+)
+
+options(knitr.kable.NA = '--')
+
+```
+
+# Background
+
+This qualitative biological assessment focuses on the historical and contemporary distribution and status of spring-run Chinook salmon (*Oncorhynchus tshawytscha*; hereafter Chinook salmon), Middle Columbia River summer steelhead (*O. mykiss*; hereafter steelhead; ESA-listed threatened), Columbia River bull trout (*Salvelinus confluentus*; ESA-listed threatened), and Pacific lamprey (*Lampetra tridentata*) in the Upper Walla Walla watershed.
+
+
+# Spring-run Chinook salmon
+
+## Distribution
+
+There are historical accounts of spring Chinook salmon occurring in the Walla Walla River basin within Mill Creek, the mainstem Walla Walla River, North Fork Walla Walla River, South Fork Walla Walla River, and Upper Walla Walla River watershed tributaries [@Swindell1942; @Volkman2005]. The contemporary Upper Walla Walla River basin Chinook salmon distribution spans the upper mainstem Walla Walla River, South Fork Walla Walla River, and Mill Creek [@Mendel2007; @Mahoney2009; @Mendel2014]. <!-- I can't find recent reports of Chinook salmon occurring in the North Fork Walla Walla River since 1942. Anyone know differently? -->
+
+Chinook salmon are documented to have historically spawned in approximately the upper 40 km of the mainstem Walla Walla River [@Fulton1968]. Documentation of spawning runs, habitat attributes, and the contemporary spawning distribution indicate Mill Creek, the North Fork Walla Walla River, South Fork Walla Walla River, and various Walla Walla River tributaries were also likely historically important Chinook salmon spawning grounds [@Swindell1942; @Fulton1968; @Volkman2005; @Mendel2007; @Mahoney2009; @Mendel2014]. The contemporary spawning distribution includes Mill Creek above Mill Creek Diversion Dam (also referred to as Bennington Dam), the mainstem Walla Walla River above Nursery Bridge Dam, and the South Fork Walla Walla River [@Mendel2007; @Mendel2014]. There is no evidence that Chinook salmon currently spawn in the North Fork Walla Walla River [@Mahoney2009; @Mendel2014].
+
+## Population status
+
+The contemporary Upper Walla Walla River watershed Chinook salmon population size is smaller than historical estimates and natural-origin adult abundance is lower then the current conservation goal of 1,100 adults [@Mahoney2009]. The abundance of natural-origin Chinook salmon show a slightly increasing trend, but the abundance of hatchery-origin upstream migrating adults show a decreasing trend [@Mendel2007; @Mahoney2009; @Mendel2014].
+
+Historical accounts report large runs of spring Chinook salmon in the Walla Walla River basin [@Swindell1942; @Volkman2005]. The last sizeable run of Chinook salmon in the Walla Walla River watershed took place in 1925 and by the late 1950s Chinook salmon were extirpated [@Nielson1950; @VanCleve1960; @ACOE1997; @Mendel2000; @Mahoney2009]. 2009). Movement of Chinook salmon into Mill Creek was blocked between 1942 and 1985 after the construction of the Mill Creek Diversion Dam and Mill Creek Division Dam until fish ladders were installed at both dams in 1985 [@Martin1992; @Mahoney2009]. Reintroductions of adults and smolts to the South Fork Walla Walla River and Mill Creek started in 2000 and 2005, respectively [@Mendel2007; @Mahoney2009].
+
+Counts of upstream migrating adult Chinook salmon at Nursery Bridge Dam are used as the primary index of run sizes and population abundance in the Walla Walla River watershed and additional counts are made at Mill Creek Diversion Dam, Yellowhawk Creek weir, and Mill Creek Division Dam [@Mahoney2009]. Smolt abundance was monitored int he Upper Walla Walla River watershed using two traps, one in the Upper Walla Walla River and one in Mill Creek [@Mendel2014]. Upstream migrating adult Chinook salmon were first documented at Nursery Bridge Dam in 2000 and in upper Mill Creek at the Mill Creek Diversion Dam in 2004 [@Mendel2007; @Mahoney2009]. In 2004, the first adults returned as progeny from initial reintroductions [@Mahoney2009]. From 2000 to 2004, a total of 84 upstream migrating adult Chinook salmon returned to the Upper Walla Walla River watershed and were likely strays from the Umatilla River [@Mahoney2009]. Counts of natural-origin Chinook salmon at Nursery Bridge Dam (2000-2013) ranged from 2 (2003) to 293 (2011), exhibited a positive trend, and a 10-year geometric mean of 142 [@Mendel2007; @Mahoney2009; @Mendel2014]. Counts of hatchery-origin Chinook salmon at Nursery Bridge Dam (2007-2013) ranged from 29 (2013) to 932 (2010), had a negative trend, and a 7-year geometric mean of 204 [@Mendel2014]. Total counts of upstream migrating adults (natural-origin plus hatchery-origin fish) declined from 2010 to 2013, primarily driven by a reduction in hatchery-origin counts [@Mendel2014]. The abundance of naturally produced smolts in the Walla Walla River basin has been stable (2005-2013) and the smolt-to-adult survival rate of natural-origin Chinook salmon exhibits a positive trend (2002-2010) [@Mendel2014]. Counts of upstream migrating adult Chinook salmon returning to Mill Creek (counted at the Mill Creek Diversion Dam, Yellowhawk Creek weir, and Mill Creek Division Dam from 2004 to 2008) ranged from a low of 0 (2007) to a high of 68 (2004) with a 5-year geometric mean of 21.8 (± 33.0) [@Mahoney2009].
+
+Redd counts in sections of the upper mainstem of the Walla Walla River, South Fork Walla Walla River, and Mill Creek began in 2000 and sampling expanded in 2005 to include the entire spring-run Chinook salmon production area in the Upper Walla Walla River watershed [@Mahoney2009; @Mendel2014]. During 2000-2008, the number of redds at sampling locations generally increased in the South Fork Walla Walla River and upper mainstem Walla Walla River and the number of redds in Mill Creek remained relatively constant [@Mahoney2009].
+
+## Limiting Factors
+
+Limiting factors text...
+<!-- Add any relevant species-specific considerations regarding causes of declines and factors inhibiting recovery here. -->
+
+
+# Middle Columbia River summer steelhead
+
+## Distribution
+
+Historically, steelhead occupied much of the Upper Walla Walla River watershed [@WDFW1993; @Mendel2001; @Mendel2014]. The steelhead spawning distribution has been dramatically reduced in the Lower Walla Walla River watershed, but much of the historical spawning grounds in the Upper Walla Walla River watershed are still used [@Mahoney2009; @NOAA2021]. Anadromous life history was not expressed by *O. mykiss* in Mill Creek between 1942 and 1985 [@Martin1992]. The Mill Creek Division Dam (rkm 15.9), built in 1942, prevented movement of fish futher upstream. Fish could bypass the Mill Creek Division Dam by traveling through Yellowhawk Creek, a Mill Creek distributary flowing from the Walla Walla River to Mill Creek. However, a second dam also constructed in 1942, the Mill Creek Diversion Dam (rkm 18.5) located approximately 1.6 km upstream of Mill Creek Division Dam, prevented fish from moving further upstream. Fish ladders were installed at both dams in 1985 and steelhead were first documented returning to Mill Creek above the Mill Creek Diversion Dam in 1990 [@Martin1992; @Mahoney2009]. Spawning occurs in the mainstem Walla Walla River from Nursery Bridge Dam downstream to at least Mill Creek and possibly below, in many Walla Walla River tributaries (e.g., Couse Creek, Yellowhawk Creek, and Cottonwood Creek), the South Fork Walla Walla River, the North Fork Walla Walla River, and Mill Creek above Mill Creek Diversion Dam and at its confluence with the Walla Walla River [@Mahoney2009; @Carmichael2010; @Mendel2014]. @Mendel2014 report that steelhead spawn in several Mill Creek tributaries, but do not specify which tributaries spawning occurs in or provide empirical evidence to support this claim. Likely, steelhead spawning historically occurred throughout most of Mill Creek, but does not currently occur throughout most of the section downstream of Mill Creek Diversion Dam, likely due to habitat degradation from the Mill Creek Flood Control Project, agriculture, and livestock grazing [@Underwood1995; @Mahoney2009; @NOAA2021].
+
+## Population status
+
+The contemporary steelhead population in the Upper Walla Walla River watershed is smaller than historical estimates, time-series data suggest abundance is decreasing, and both productivity (recruits per spawner) and adult abundance in the Walla Walla River watershed are below Endangered Species Act (ESA) minimum recovery goals [@WDFW1993; @Mendel2001; @NOAA2009; @Mendel2014; @NOAA2021; ODFW salmon and steelhead recovery tracker].
+
+Counts of upstream migrating adults at Nursery Bridge Dam are used as the primary index of steelhead run sizes and population abundance in the Walla Walla River watershed. Fish counts at Nursery Bridge dam do not include returns to important spawning areas in the Upper Walla Walla River watershed such as Mill Creek, Yellowhawk Creek, and Cottonwood Creek or returns to the Lower Walla Walla River watershed. During the period of 1993-2013, the Walla Walla River watershed steelhead population was inferred to be stable based on counts of upstream migrating adults at Nursery Bridge Dam [@Mahoney2009; @Carmichael2010; @Mendel2014]. During 2011-2019, upstream migrating adult counts at Nursery Bridge Dam exhibited a negative trend and the 10-year geometric mean of upstream migrating adults decreased, indicative of declining steelhead abundance in the Upper Walla Walla River watershed [@Mendel2014; @NOAA2021; ODFW salmon and steelhead recovery tracker]. Five-year mean counts of hatchery-origin upstream migrating adults were less than 4% from 1993-2014, but the most recent 5-year mean count of hatchery origin upstream migrating adults (2015-2019) was 13% [@Carmichael2010; @ Mendel2014; ODFW salmon and steelhead recovery tracker]. @Mahoney2009 conducted partial counts of returning steelhead (not all fish could be counted due to logistical constraints) on upper Yellowhawk Creek (at Yellowhawk weir) and Mill Creek (at Mill Creek Division Dam and Mill Creek Diversion Dam) during 1990-2005. Counts ranged from 1 fish in 1998 to 57 fish in 2001 [@Mahoney2009]. The 16-year mean return was 21.6 adults, with a 13.9% mean return of hatchery-origin upstream migrating adults. Downstream migrating smolts trapped in the Upper Walla Walla River showed a positive trend during 2009-2013 and adult-to-adult returns (based on counts at Nursery Bridge Dam) were stable during 1993-2006 [@Mendel2014].
+
+The ESA minimum recovery abundance goal for the Walla Walla River watershed is 1,000 adults and the minimum productivity goal is 1.35 [@WDFW1993]. The adult population size has been consistently estimated to be below the ESA recovery goal and the most recent 10-year (2010-2019) geometric mean of natural-origin steelhead spawners available is 713 [@Mahoney2009; @NOAA2009; @Mendel2014; @NOAA2021; ODFW salmon and steelhead recovery tracker]. Productivity has fluctuated above and below the ESA recovery goal and the most recent 20-year (1993-2012) geometric mean productivity estimate available for the Walla Walla River watershed steelhead population is 0.9873, below the minimum productivity goal [@Mahoney2009; @Mendel2014; @NOAA2021; ODFW salmon and steelhead recovery tracker]
+
+## Limiting Factors
+
+Limiting factors text...
+<!-- Add any relevant species-specific considerations regarding causes of declines and factors inhibiting recovery here. -->
+
+
+# Columbia River bull trout
+
+## Distribution
+
+Historically, bull trout are thought to have occurred throughout most of the Upper Walla Walla River watershed, but are now largely absent from much of the mainstem Walla Walla River and highly anthropogenically modified reaches within the Upper Walla Walla River watershed, such as Mill Creek below the Mill Creek Diversion Dam and the mainstem Walla Walla River downstream of rkm 75 <!-- Need to double-check this because some of the rkm estimates used in earlier papers have not been particularly accurate - is there a landmark?-->[@Buchanan1997; @Mendel2007; @Barrows2014; @Howell2016]. Fluvial and resident bull trout persist in the upper portion of the mainstem Walla Walla River, in the North and South Fork Walla Walla River, and Mill Creek [@Martin1992; @Underwood1995; @Buchanan1997; @Al-Chokhachy2005; @Mahoney2009; @Mendel2007; @Anglin2009; @Howell2016].
+
+Fluvial bull trout exhibit substantial movement and seasonal differences in distribution and habitat use in the Walla Walla River watershed. Fluvial bull trout over-winter in the upper mainstem Walla Walla River and the lower reaches of the North Fork and South Fork Walla Walla River and Walla Walla River tributaries such as Mill Creek from December through June, summer rearing and the upstream spawning migration occurs from June through September, and the fall return to rearing areas occurs in October and November [@Anglin2009; @Howell2016]. During periods of low flow, bull trout are mostly limited to the upper portions of the Upper Walla Walla River watershed subbasins due to high water temperatures in the lower reaches [@Mendel2007]. Bull trout move between the Walla Walla River basin and the Columbia River system and different subbasins with the Walla Walla River watershed, such as the South Fork Walla Walla River and Mill Creek [@Anglin2009; @Newlon2018; @Howell2016].
+
+The historical bull trout spawning distribution in the Upper Walla Walla River watershed is not documented prior to 1990 [@Martin1992; @Buchanan1997]. However, habitat degradation and declines in the spawning distributions of steelhead and Chinook salmon in the Upper Walla Walla River watershed suggests the bull trout spawning distribution has likely shrunk [@Buchanan1997; @Jacobs2009; @Mahoney2009; @Schaller2014]. Contemporary bull trout spawning occurs in Mill Creek and the South Fork Walla Walla River [@Barrows2014; @Budy2017]. Redd counts have been consistently higher in the South Fork Walla Walla River than in Mill Creek from 1990 to 2007 [@Barrows2014; @Conner2014]. In Mill Creek, much of the spawning is concentrated between Deadman Creek and North Fork Mill Creek, with spawning also occurring in several Mill Creek tributaries, including Bull Creek, Deadman Creek, Paradise Creek, Broken Creek, and Low Creek [@Martin1992; @Underwood1995; @Buchanan1997; @Mendel2007; @Jacobs2009; @Howell2016]. Spawning in the South Fork Walla Walla River watershed primarily occurs between Table Creek and Reser Creek and in the lower portions of Reser Creek and Skiphorton Creek [@Buchanan1997; @Al-Chokhachy2005; @Budy2017]. Spawning may occur in the North Fork Walla Walla River, but requires verification [@Barrows2014].
+
+## Population status
+
+## Limiting Factors
+
+Limiting factors text...
+<!-- Add any relevant species-specific considerations regarding causes of declines and factors inhibiting recovery here. -->
+
+
+# Pacific lamprey
+
+## Distribution
+
+## Population status
+
+## Limiting Factors
+
+Limiting factors text...
+<!-- Add any relevant species-specific considerations regarding causes of declines and factors inhibiting recovery here. -->
+
+# Literature Cited
+
+<!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
+<div id="refs"></div>
+
