@@ -15,7 +15,6 @@ author:
     correspondence: no
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-  bookdown::word_document2: default
   bookdown::html_document2:
     theme: yeti
     toc: yes
@@ -28,6 +27,7 @@ output:
     - "--lua-filter=../templates/scholarly-metadata.lua"
     - "--lua-filter=../templates/author-info-blocks.lua"
     - "--lua-filter=../templates/pagebreak.lua"
+  bookdown::word_document2: default
 institute:
 - mhe_mccall: Mount Hood Environmental, PO Box 4282, McCall, Idaho, 83638, USA
 - mhe_challis: Mount Hood Environmental, PO Box 1303, Challis, Idaho 83226, USA
@@ -241,8 +241,8 @@ temp_thresh_tab = tibble(Species = c("Chinook", "Chinook", "Steelhead", "Bull Tr
                          `Life Stage` = c("Spawning", "Summer Parr", "Summer Parr", "All", "All"),
                          Source = c("Carter 2005", "Carter 2005", "Carter 2005", "Selong et al. 2001", "Clemens et al. 2016, 2017"),
                          Timing = c("8/10 - 9/30", "6/10 - 10/15", "6/10 - 10/15", "7/1 - 8/31", "7/1 - 8/31"),
-                         Minimum = c("NA", "4.5", "4.5", "0", "5"),
-                         Optimum = c("5.6 - 14.5", "10 - 16", "10 - 18", "10.2 - 16", "10 - 17"),
+                         Minimum = c("3.3", "4.5", "4.5", "0", "5"),
+                         Optimum = c("7.2 - 14.5", "10 - 16", "10 - 18", "10.2 - 16", "10 - 17"),
                          Maximum = c("17.7", "19", "19", "18", "20"),
                          Acute = c("20", "22", "22", "20", "25")) %>%
   kable(booktabs = T,
@@ -349,11 +349,11 @@ The amount of stream within the optimum range for Chinook salmon spawning decrea
 
 Unsurprisingly, the hypothetical scenario where summer stream temperatures were decreased by 1^o^C relative to the Recent Historic reduced the stream length that exceeded optimum, maximum, and acute temperature thresholds for focal species and life stages. A reduction of 1^o^C relative to the Recent Historic scenario resulted in between 47.6 - 85.3 km (5.6 - 10.0%) less stream length that exceeded optimum temperatures and 7.4 - 64.1 km (0.9 - 7.5%) that exceeded maximum temperatures.
 
-Figures \@ref(fig:optimum-map) and \@ref(fig:max-map) show reaches in the Upper Walla Walla watershed that exceeded optimum and maximum temperature thresholds for the focal species and life stages under each climate scenario. In general, additional upstream reaches become unsuitable moving to the 2040 and 2080 warming scenarios, depicted by the red colored reaches ("New Yes") under those scenarios (Figures \@ref(fig:optimum-map) and \@ref(fig:max-map)).
+Figures \@ref(fig:above-optimum-map) and \@ref(fig:max-map) show reaches in the Upper Walla Walla watershed that exceeded optimum and maximum temperature thresholds for the focal species and life stages under each climate scenario. In general, additional upstream reaches become unsuitable moving to the 2040 and 2080 warming scenarios, depicted by the red colored reaches ("New Yes") under those scenarios (Figures \@ref(fig:optimum-map) and \@ref(fig:max-map)).
 
-```{r within-optimum-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenerios where reaches were within optimal temperatures for summer life stages of focal species within the Upper Walla Walla watershed. "Lost" indicates reaches that were inside the optimal temperature during the prior scenarios but were outside  optimal temperatures for the scenario. Conversely, "Gained" indicates reaches that were outside the optimal temperature during the prior scenarios but were within optimal temperatures for the scenario}
+```{r within-optimum-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenerios where reaches were within optimal temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *Lost* indicates reaches that were inside the optimal temperature during the prior scenarios but were outside  optimal temperatures for the scenario. Conversely, *Gained* indicates reaches that were outside the optimal temperature during the prior scenarios but were within optimal temperatures for the scenario."}
 within_optimum_df = norwest_df %>%
-  mutate(`Chinook Spawning` = ifelse(temp_c > 14.5 | temp_c < 5.6, "Outside", "Within"),
+  mutate(`Chinook Spawning` = ifelse(temp_c > 14.5 | temp_c < 7.2, "Outside", "Within"),
          `Chinook Parr` = ifelse(temp_c > 16 | temp_c < 10, "Outside", "Within"),
          `Steelhead Parr` = ifelse(temp_c > 18 | temp_c < 10, "Outside", "Within"),
          `Bull Trout` = ifelse(temp_c > 16 | temp_c < 10.2, "Outside", "Within"),
@@ -451,7 +451,7 @@ within_optimum_p
 
 ```
 
-```{r above-optimum-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenerios where reaches exceeded the optimal temperatures for summer life stages of focal species within the Upper Walla Walla watershed. 'New Yes' indicates reaches that were below the optimal temperature thresholds during the prior scenarios but exceeded the optimal temperature thresholds for the scenario."}
+```{r above-optimum-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenerios where reaches exceeded the optimal temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *New Yes* indicates reaches that were below the optimal temperature thresholds during the prior scenarios but exceeded the optimal temperature thresholds for the scenario."}
 optimum_df = norwest_df %>%
   mutate(`Chinook Spawning` = ifelse(temp_c > 14.5, "New Yes", "No"),
          `Chinook Parr` = ifelse(temp_c > 16, "New Yes", "No"),
@@ -599,7 +599,7 @@ maximum_p
 
 ```
 
-```{r acute-map, fig.width = 6, fig.height = 7, fig.cap = ""Maps depicting modeled August mean stream temperatures scenerios where reaches exceeded acute temperatures for summer life stages of focal species within the Upper Walla Walla watershed. 'New Yes' indicates reaches that were below the acute temperature thresholds during the prior scenarios but exceeded the acute temperature thresholds for the scenario."}
+```{r acute-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenerios where reaches exceeded acute temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *New Yes* indicates reaches that were below the acute temperature thresholds during the prior scenarios but exceeded the acute temperature thresholds for the scenario."}
 acute_df = norwest_df %>%
   mutate(`Chinook Spawning` = ifelse(temp_c > 20, "New Yes", "No"),
          `Chinook Parr` = ifelse(temp_c > 22, "New Yes", "No"),
@@ -683,7 +683,7 @@ Discuss optimal temperatures range moving further up watershed. Even though temp
 
 Recognize the -1 C scenario is unrealistic but illustrative of how resto actions throughout the watershed could help mitigate the impacts of a warming climate.
 
-Actions to reduce peak summer water temperatures, such as riparian restoration, improved grazing practices, and channel narrowing should be considered in the Upper Walla Walla watershed, particularly in reaches identified in Figures \@ref(fig:optimum-map) and \@ref(fig:max-map). @Justice2017 similarly evaluated a 2080s climate change scenario and demonstrated that despite substantial increases in summer stream temperatures, basin-wide restoration of riparian vegetation and channel width could offset climate impacts in the Upper Grande Ronde and Catherine Creek watersheds in eastern Oregon.
+Actions to reduce peak summer water temperatures, such as riparian restoration, improved grazing practices, and channel narrowing should be considered in the Upper Walla Walla watershed, particularly in reaches identified in Figures \@ref(fig:above-optimum-map) and \@ref(fig:max-map). @Justice2017 similarly evaluated a 2080s climate change scenario and demonstrated that despite substantial increases in summer stream temperatures, basin-wide restoration of riparian vegetation and channel width could offset climate impacts in the Upper Grande Ronde and Catherine Creek watersheds in eastern Oregon.
 
 # Literature Cited
 
