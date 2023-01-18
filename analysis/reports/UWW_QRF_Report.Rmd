@@ -94,8 +94,6 @@ theme_set(theme_pubr(x.text.angle = 45,
 
 # Background
 
-Adding something to background
-
 Water is the cornerstone of First Foods production and inherently tied to the five fundamental touchstones: hydrology, geomorphology, habitat and network connectivity, riverine biotic community, and riparian vegetation [@Jones2008]. These touchstones form the Umatilla River Vision, a holistic approach to water quality restoration. In support of the Vision, population status and habitat use of riverine fishes defined as First Foods (including Endangered Species Act [ESA] listed middle Columbia River summer-run steelhead, spring-run Chinook salmon, bull trout, and Pacific lamprey) have been identified as critical data needs in the assessment of biotic communities [@Jones2008]. The decline of anadromous Pacific salmonid populations (*Oncorhynchus* spp.) across the Pacific Northwest, USA, has prompted numerous actions aimed at reversing that trend. These actions are often categorized into four 'H's' - harvest modification, habitat rehabilitation, hydroelectric operations, and hatchery practices. While these actions can influence salmonid survival, predicting the potential magnitude of population uplift and developing the most cost-effective and sustainable solutions is a complex task that results in substantial uncertainties. Recovery plans (e.g., @NOAA2009) have identified adult escapement targets at the population scale, providing a quantitative metric useful for evaluating the magnitude of survival improvements (across life-stages) required. These abundance targets provide a benchmark against which habitat rehabilitation actions can be measured. Here, we apply a novel approach to estimating life-stage specific habitat capacity for spring-run Chinook salmon (hereafter Chinook salmon) and summer-run steelhead (hereafter steelhead) to quantify the magnitude and types of tributary habitat restoration needed to achieve recovery goals in the Upper Walla Walla watershed. The necessity of tributary habitat restoration actions can now be demonstrated, and the magnitude of required change can be placed in context with the other 'H's'.
 
 ## Focal Species
@@ -118,10 +116,6 @@ This assessment will be focused on the alluvial channel of the Walla Walla River
 knitr::include_graphics("../maps/UWW_NorWeST.png")
 
 ```
-
-# Biological Assessment
-
--   Reference Josh's fish status assessment
 
 # Habitat Capacity Assessment
 
@@ -860,8 +854,6 @@ chnk_def_p
                                   face = "bold"),
         legend.position = "right")
 
-
-
 ```
 
 ```{r sthd-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for steelhead at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals. Error bars represent 90% confidence intervals."}
@@ -967,19 +959,7 @@ availcap_spawners %>%
 
 -   The available capacity tables in the [Supplemental Tables and Figures](#supplemental-tables-and-figures) section, which provide estimates by stream, contain some reaches where the stream name is `NA`. If necessary, we could QC those stream reaches and identify whether they fall on a named stream.
 
-# Stream Temperature Assessment
 
-## Approach
-
-Taken directly from the SOW:
-
-*The QRF and extrapolation models can be run under existing climate conditions (i.e., assuming current predicted stream water temperatures), as well as under predicted future climate scenarios by incorporating Northwest Stream Temperature (NorWeST) thermal models. Doing so would allow us to compare current predicted habitat capacities to those capacities under various stream temperature warming scenarios, also by species and life-stage. We could also run the QRF model under a theoretical scenario where summer stream temperatures were decreased (e.g., by 1°C) to examine the influence if rehabilitation actions were able to remediate increased summer temperatures. The result would be an evaluation of changes in capacity for Chinook salmon and steelhead under current conditions, a predicted future warming scenario, and a theoretical cooling scenario. This evaluation would only be completed for the summer and spawning (redd) life-stages as the NorWeST model provides information on summer stream temperatures. Additionally, optimal and acute temperature thresholds for summer life-stages of Chinook salmon, steelhead, bull trout, and Pacific lamprey could be compared to available NorWeST temperature models using the aforementioned climate scenarios.*
-
-```{=html}
-<!-- 
-Finally, a NorWeST summer stream temperature model was used to describe changes in predicted capacity for target species given various changing climate scenarios [@Isaak2012; @Peterson2013; @Isaak2017]
--->
-```
 # Limited Species and Life-Stages
 
 What are the limited species and life-stages and why? Include results from a literature review, the habitat capacity assessment, and the stream temperature assessment.
@@ -988,9 +968,11 @@ What are the limited species and life-stages and why? Include results from a lit
 
 How do we address the identified limiting factors?
 
+
 # Discussion
 
 Discussion text here...
+
 
 # Literature Cited
 
