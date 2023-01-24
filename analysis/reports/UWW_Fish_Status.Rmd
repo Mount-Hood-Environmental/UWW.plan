@@ -19,17 +19,6 @@ institute:
   - mhe_challis: Mount Hood Environmental, PO Box 1303, Challis, Idaho 83226, USA
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-  bookdown::word_document2:
-    fig_caption: yes
-    reference_docx: "../templates/template.docx" # Insert path for the DOCX file
-    number_sections: FALSE
-    toc: no
-    always_allow_html: true
-    fig_width: 6
-    pandoc_args:
-    - --lua-filter=../templates/scholarly-metadata.lua
-    - --lua-filter=../templates/author-info-blocks.lua
-    - --lua-filter=../templates/pagebreak.lua
   bookdown::html_document2:
     theme: yeti
     toc: yes
@@ -42,6 +31,17 @@ output:
     - --lua-filter=../templates/scholarly-metadata.lua
     - --lua-filter=../templates/author-info-blocks.lua
     - --lua-filter=../templates/pagebreak.lua 
+  bookdown::word_document2:
+    fig_caption: yes
+    reference_docx: "../templates/template.docx" # Insert path for the DOCX file
+    number_sections: FALSE
+    toc: no
+    always_allow_html: true
+    fig_width: 6
+    pandoc_args:
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks.lua
+    - --lua-filter=../templates/pagebreak.lua
 csl: "../templates/journal-of-archaeological-science.csl"
 bibliography:
   - AckermanLibrary.bib
@@ -77,7 +77,7 @@ options(knitr.kable.NA = '--')
 
 # Background
 
-This qualitative biological assessment focuses on the historical and contemporary distribution and status of spring-run Chinook salmon (*Oncorhynchus tshawytscha*; hereafter Chinook salmon), Middle Columbia River summer steelhead (*O. mykiss*; hereafter steelhead; ESA-listed threatened), Columbia River bull trout (*Salvelinus confluentus*; ESA-listed threatened), and Pacific lamprey (*Lampetra tridentata*) in the Upper Walla Walla watershed.
+This qualitative biological assessment focuses on the historic and contemporary distribution and status of spring-run Chinook salmon (*Oncorhynchus tshawytscha*; hereafter Chinook salmon), Middle Columbia River summer steelhead (*O. mykiss*; hereafter steelhead; ESA-listed threatened), Columbia River bull trout (*Salvelinus confluentus*; ESA-listed threatened), and Pacific lamprey (*Lampetra tridentata*) in the Upper Walla Walla watershed. Following is a description of previously identified limiting factors within the Upper Walla Walla watershed, which in many cases, are shared among focal species.
 
 
 # Spring-run Chinook Salmon
@@ -103,11 +103,6 @@ Counts of upstream migrating adult Chinook salmon at Nursery Bridge Dam are used
 
 Redd counts in sections of the upper mainstem of the Walla Walla River, South Fork Walla Walla River, and Mill Creek began in 2000 and sampling expanded in 2005 to include the entire spring-run Chinook salmon production area in the Upper Walla Walla River watershed [@Mahoney2009; @Mendel2014]. During 2000 - 2008, the number of redds at sampling locations generally increased in the South Fork Walla Walla River and upper mainstem Walla Walla River and the number of redds in Mill Creek remained relatively constant [@Mahoney2009].
 
-## Limiting Factors
-
-Limiting factors text...
-<!-- Add any relevant species-specific considerations regarding causes of declines and factors inhibiting recovery here. -->
-
 
 # Middle Columbia River Summer Steelhead
 
@@ -127,11 +122,6 @@ The contemporary steelhead population in the Upper Walla Walla River watershed i
 Counts of upstream migrating adults at Nursery Bridge Dam are used as the primary index of steelhead run sizes and population abundance in the Walla Walla River watershed. Fish counts at Nursery Bridge dam do not include returns to important spawning areas in the Upper Walla Walla River watershed such as Mill Creek, Yellowhawk Creek, and Cottonwood Creek or returns to the Lower Walla Walla River watershed. During the period of 1993 - 2013, the Walla Walla River watershed steelhead population was inferred to be stable based on counts of upstream migrating adults at Nursery Bridge Dam [@Mahoney2009; @Carmichael2010; @Mendel2014]. During 2011-2019, upstream migrating adult counts at Nursery Bridge Dam exhibited a negative trend and the 10-year geometric mean of upstream migrating adults decreased, indicative of declining steelhead abundance in the Upper Walla Walla River watershed [@Mendel2014; @NOAA2021] [(ODFW salmon and steelhead recovery tracker)](http://www.odfwrecoverytracker.org/). Five-year mean counts of hatchery-origin upstream migrating adults were less than 4% from 1993 - 2014, but the most recent 5-year mean count of hatchery origin upstream migrating adults (2015 - 2019) was 13% [@Carmichael2010; @Mendel2014] [(ODFW salmon and steelhead recovery tracker)](http://www.odfwrecoverytracker.org/). @Mahoney2009 conducted partial counts of returning steelhead (not all fish could be counted due to logistical constraints) on upper Yellowhawk Creek (at Yellowhawk weir) and Mill Creek (at Mill Creek Division Dam and Mill Creek Diversion Dam) during 1990 - 2005. Counts ranged from 1 fish in 1998 to 57 fish in 2001 [@Mahoney2009]. The 16-year mean return was 21.6 adults, with a 13.9% mean return of hatchery-origin upstream migrating adults. Downstream migrating smolts trapped in the Upper Walla Walla River showed a positive trend during 2009 - 2013 and adult-to-adult returns (based on counts at Nursery Bridge Dam) were stable during 1993 - 2006 [@Mendel2014].
 
 The ESA minimum recovery abundance goal for the Walla Walla River watershed is 1,000 adults and the minimum productivity goal is 1.35 [@WDFW1993]. The adult population size has been consistently estimated to be below the ESA recovery goal and the most recent 10-year (2010-2019) geometric mean of natural-origin steelhead spawners available is 713 [@Mahoney2009; @NOAA2009; @Mendel2014; @NOAA2021] [(ODFW salmon and steelhead recovery tracker)](http://www.odfwrecoverytracker.org/). Productivity has fluctuated above and below the ESA recovery goal and the most recent 20-year (1993 - 2012) geometric mean productivity estimate available for the Walla Walla River watershed steelhead population is 0.9873, below the minimum productivity goal [@Mahoney2009; @Mendel2014; @NOAA2021] [(ODFW salmon and steelhead recovery tracker)](http://www.odfwrecoverytracker.org/).
-
-## Limiting Factors
-
-Limiting factors text...
-<!-- Add any relevant species-specific considerations regarding causes of declines and factors inhibiting recovery here. -->
 
 
 # Columbia River Bull Trout
@@ -155,11 +145,6 @@ Historical bull trout abundance in the Upper Walla Walla River watershed is poor
 
 Bull trout redd counts in Mill Creek increased during 1990 - 1994, declined slightly during 1994 - 2007, and were most abundant in 2000 and 2001 [@Martin1992; @Underwood1995; @Mendel2007; @Mahoney2009]. In the South Fork Walla Walla River redd counts increased from 1994 until 2001, declined again until 2007, increased from 2007-2009, then declined until 2011 [@Al-Chokhachy2005; @Mahoney2009; @Barrows2014; @Budy2017]. Upstream migrating adult counts at Nursery Bridge Dam showed a slightly positive trend from 2000 to 2008 and a stronly positive trend from 2008 to 2013, with counts ranging between a low of 20 in 2000 and a high of 416 in 2011 [@Mendel2014]. Upstream migrating adult counts during 2004 - 2008 for upper Mill Creek (counts from Yellowhawk weir, Mill Creek Division Dam, and Mill Creek Diversion Dam) ranged between a low of three and a high of 20 adults (not sufficient data for trend analysis) [@Mahoney2009]. A mark-recapture study on Mill Creek bull trout during 1998 - 2009 found that adult abundance was stable during 1998 - 2005, then declined 63% during 2006 - 2010, driven primarily by a reduction in adult returns [@Howell2016]. A mark-recapture study in the South Fork Walla Walla River during 2002 - 2011 inferred a population growth rate of 1.01 (95% confidence interval = 0.84-1.20), indicating a recently stable population [@Barrows2014; @Budy2017]. However, the adult population was dominated by small adults, and the contribution of large adults to total biomass declined during the study period [@Budy2017].
 
-## Limiting Factors
-
-Limiting factors text...
-<!-- Add any relevant species-specific considerations regarding causes of declines and factors inhibiting recovery here. -->
-
 
 # Pacific Lamprey
 
@@ -171,10 +156,34 @@ Pacific lamprey once occurred throughout much of the Upper Walla Walla River wat
 
 There are not quantitative trends of the historical abundance of Pacific lamprey in the Upper Walla Walla River watershed. However, interviews with tribal members and fisheries biologists and the historical importance of several locations within the Walla Walla River watershed for Pacific lamprey harvest by the CTUIR, including the North and South forks of the Walla Walla River and nearby Skiphorton Creek on the mainstem Walla Walla River, indicate Pacific lamprey were once abundant in the Upper Walla Walla River watershed [@Swindell1942; @Jackson1997]. Pacific lamprey have not been confirmed in any surveys conducted within the past 25 years, suggesting they are now extirpated from the Upper Walla Walla River watershed [@Close2000; @Close2001; @Kostow2002; @Moser2003; @Harris2017]. Pacific lamprey were most recently documented in the Upper Walla Walla River watershed in 1997 near the confluence of the Walla Walla River and the Little Walla Walla River [@Jackson1997]. @Jackson1997 recovered fifty-five lamprey from sediment removed from the Little Walla Walla River diversion structure, of which four were Pacific lamprey and 51 were western brook lamprey (*Lempetra richardsoni*).
 
-## Limiting Factors
 
-Limiting factors text...
-<!-- Add any relevant species-specific considerations regarding causes of declines and factors inhibiting recovery here. -->
+# Limiting Factors
+
+A number of factors limiting population productivity have previously been identified in the Upper Walla Walla watershed. Limiting factors were not separated for each species, as most are shared among species.
+
+## Temperature
+
+Rising air temperatures, removal of riparian vegetation, sedimentation, and water extractions resulting in low flows, have increased stream temperatures in the Upper Walla Walla watershed [@Kuttel2001; @Mendel2001; @Mendel2007; @Mahoney2009; @Mendel2014]. High water temperatures can be acutely lethal to fishes, impose a variety of sublethal fitness costs, and create barriers to movement [@Meeuwig2005; @Bjornn1991; @McCullough1999; @Richter2005; @Mendel2007; @Mahoney2009; @Mendel2014; @Whitesel2022]. Water temperatures high enough to harm focal species have been recorded in many locations in the Upper Walla Walla River watershed, including in Blue Creek, Bryant Creek, Caldwell Creek, Cold Creek, Cottonwood Creek, Doan Creek, East Little Walla Walla River, Garrison Creek, Mill Creek, Russell Creek, Stone Creek, the Walla Walla River, West Little Walla Walla River, and Yellowhawk Creek [@Kuttel2001; @Mendel2001; @Johnson2004; @Mendel2007; @Baldwin2008; @Mahoney2009; @Mendel2014].
+
+High water temperatures in the Upper Walla Walla River watershed have previously been identified as the most important limiting factor for Chinook salmon, steelhead, and bull trout [@Mendel2007; @Mahoney2009; @Mendel2014; @Schaller2014]. Warm temperatures have also been identified as a potential limiting factor for Pacific lamprey in the Upper Walla Walla watershed, but relationships between water temperature and Pacific lamprey physiology, ecology, and distribtuions are poorly understood [@Close1995; @Jackson1997; @Close2000; @Mallatt1983; @Meeuwig2005; @Whitesel2022]. Bull trout is the focal species most sensitive to warm temperatures, with maximum temperature thresholds to avoid detrimental effects to juvenile rearing, adult migration, and spawning of 12-14^o^C, 10-14^o^C, and 7-9^o^C, respectively [@Selong2005; @Mendel2007]. Chinook salmon and steelhead are more tolerant of warm temperatures, with maximum temperature thresholds to avoid detrimental effects to juvenile rearing, adult migration, and spawning of 15-18^o^C, 17-20^o^C, and 12.5-14^o^C, respectively [@Bjornn1991; @McCullough1999; @Richter2005; @Mendel2007]. The temperature tolerance of Pacific lamprey, particularly adults, is poorly understoon. However, @Meeuwig2005 documented elevated mortality of ammocetes at temperatures of 22^o^C relative to cooler temperatures and @Whitesel2022 documented elevated ammocete mortality at temperatures of 30^o^C relative to cooler temperatures. @Moser2019 report that in aquaculture settings, Pacific lamprey adults are generally held at temperatures between 3-15.5^o^C, but that adult lamprey can be help at temepratures up to 27^o^C for long periods without increased mortality.
+
+High temperatures primarily occur in the Upper Walla Walla watershed from May through September in areas where the juveniles of all focal salmonid species and adults during the upstream migration of steelhead, which enter the Walla Walla watershed from September through June of the next year, and downstream migration of bull trout after spawning during September, and upstream migrating Chinook salmon from May through July [@Kuttel2001; @Mende2001; @Mendel2007; @Mahoney2009; @Mendel2014]. There is evidence that in some years Chinook salmon run timing has been truncated in late May and upstream steelhead migrations may be inhibited during the summer by warm water temperatures in the Walla Walla River [@Mahoney2009; @Mendel2014; @Yun2016]. There is also evidence that warm temperatures exclude Chinook salmon, steelhead, and bull trout from portions of the Walla Walla River and the lower reach of several Upper Walla Walla tributaries during summer months [@Yun2016].
+
+## Sedimentation
+
+Contemporary sedimentation rates are above historical levels in many areas within the Upper Walla Walla watershed due to increased erosion resulting from agricultural activities and the removal or riparian habitat [@Underwood1995; @Kuttel2001]. High sedimentation rates have caused embedded cobble and gravel substrates in several areas in the Upper Walla Walla watershed, particularly in Garrison Creek, Yellowhawk Creek, the Walla Walla River, Mill Creek, and Skiphorton Creek [@Kuttel2001; @Mendel2007; @Mahoney2009; @Barrows2014]. All focal species require unembedded cobble and gravel substrate for redd construction and spawning and fine sediments can reduce embryonic survival [@Barrows2014; @Bowerman2014; @Clemens2010; @Gallion2014; @Mayfield2014; @McMillan2015; @Moir2010]. Sedimentation is an important factor limiting the spawning distributions of focal salmonid species [@Barrows2014; @Bowerman2013; @Mahoney2009; @Gallion2014]. Due to similar substrate requirements of focal salmonid species and Pacific lamprey, sedimentation will also likely limit spawning habitat for Pacific lamprey in the Upper Walla Walla watershed if a population is reestablished [@Clemens2010].
+
+## Chemical Water Pollution
+
+Chlorinated pesticides, polychlorinated biphenyls (PCBs), and low levels of lead and mercury, all chemicals that are toxic to fishes [@Morcillo2017; @Murty2018], have been documented throughout the Upper Walla Walla watershed [@Hopkins1985; @Davis1994; @Davis1995; @Johnson2002; @Fischnaller2003; @Meredith2011]. Wastewater treatment plant effluent, urban stormwater runoff, and erosion and runoff from agricultural fields have been implicated in pwater pollution in the watershed [@Close1995; @Kuttel2001; @Johnson2002; @Schaller2014]. Chemical pollution is hypothesized to have contributed to declines in populations of focal species [@Jackson1997; @Mendel2007; @Schaller2014] and chlorine pollution has been implicated for fish kills in lower Mill Creek [@Mendel2007]. Ongoing mitigation efforts are successfully reducing chlorinated pesticides and polychlorinated biphenyl pollution in the Walla Walla watershed and no additional fish kills related to chemical pollution have been reported in more recent years [@Johnson2004; @Gray2006; @Lubliner2007; @Mendel2007; @Baldwin2008; @Carmichael2010]. Chemical water pollution is not considered to be a key limiting factor for any of the focal species [@Kuttel2001; @Mahoney2009; @Mendel2014; @Schaller2014; @NOAA2021].
+
+## Dissolved Oxygen
+
+Dissolved oxygen concentrations low enough to be harmful to fishes have been recorded at some sampling sites in the Walla Walla River, Mill Creek, and the Yellowhawk Creek tributaries Garrison Creek, Cottonwood Creek, and Russel Creek [@Mendel2001; @Swanson; @Joy2007; @Baldwin2008; @Dugger2001]. Low levels of dissolved oxygen have been attributed to high primary productivity resulting from nutrient enrichment and warm water temperatures and reduced dissolved oxygen holding capacity due to warm water temperatures [@Swanson2005; @Joy2007]. Actions have been taken to improve dissolved oxygen levels in the Upper Walla Walla watershed, but have been met with limited success [@Carmichael2010; @Dugger2021]. Dissolved oxygen has not been identified as a key limiting factor for any of the focal species, but has been hypothesized to act as a secondary limiting factor for Chinook salmon, steelhead, and bull trout and may be one of the multiple mechanisms through which temperature limits fishes in the watershed [@Mendel2001; @Carmichael2010]. Dissolved oxygen requirements are not well characterized for Pacific lamprey. Larval Pacific lamprey are thought to be relatively tolerant of low dissolved oxygen concentrations, but adult Pacific lamprey appear to be only slightly less sensitive to low dissolved oxygen than focal salmonid species and additional research on the potential of dissolved oxygen to be a limiting factor is warranted [@Swanson2005; @Lampman2021].
+
+## pH
+
+High primary productivity resulting from nutrient enrichment through urban stormwater runoff and erosion and runoff from agricultural fields has caused high pH in several locations in the Upper Walla Walla watershed [@Mendel2001; @Joy2007; @Dugger2021]. The Washington State Water Quality Standards consider a pH range of 6.5 - 8.5 to be safe for aquatic life [@Joy2007]. High and low pH can have negative, sublethal effects and caus mortality in all life stages of salmonids and warm temperatures can amplify the harmful effects of high and low pH [@Daye2008; @Wagner1997]. Low pH can be lethal to lamprey embryos and larvae, but the effects of high pH are not well characterized for any life stage of Pacific lamprey [@Myllynen1997]. pH below 6.5 has not been recorded in the Upper Walla Walla watershed, but pH greater than 8.5 has been documented in several locations in Cottonwood Creek, Mill Creek, and the Walla Walla River [@Mendel2001; @Joy2007; @Dugger2021]. @Mendel2001 identified pH as a potential limiting factor of secondary importance for salmonids in the Upper Walla Walla watershed.
 
 # Literature Cited
 
