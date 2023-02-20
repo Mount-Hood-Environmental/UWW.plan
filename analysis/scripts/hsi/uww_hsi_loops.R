@@ -1,8 +1,8 @@
 ######################################
 #
 # Purpose: Script for calculating WUA and HHS using depth and velocity
-# rasters for the Upper Walla Walla watershed. Loops over all possible
-# scenarios/runs
+#   rasters for the Upper Walla Walla watershed. Loops over all possible
+#   scenarios/runs
 #
 # Created by: Tulley Mackey
 #   Modified by: Mike Ackerman
