@@ -1,5 +1,5 @@
 ---
-title: "Historic and Contemporary Fish Distribution and Status, Upper Walla Walla Watershed - *PRELIMINARY*"
+title: "Historic and Contemporary Fish Distribution, Status, and Limiting Factors - Upper Walla Walla Watershed"
 author:
   - Joshua Egan:
       email: joshua.egan@mthoodenvironmental.com
@@ -19,6 +19,17 @@ institute:
   - mhe_challis: Mount Hood Environmental, PO Box 1303, Challis, Idaho 83226, USA
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
+  bookdown::word_document2:
+    fig_caption: yes
+    reference_docx: "../templates/template.docx" # Insert path for the DOCX file
+    number_sections: FALSE
+    toc: no
+    always_allow_html: true
+    fig_width: 6
+    pandoc_args:
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks.lua
+    - --lua-filter=../templates/pagebreak.lua
   bookdown::html_document2:
     theme: yeti
     toc: yes
@@ -31,17 +42,6 @@ output:
     - --lua-filter=../templates/scholarly-metadata.lua
     - --lua-filter=../templates/author-info-blocks.lua
     - --lua-filter=../templates/pagebreak.lua 
-  bookdown::word_document2:
-    fig_caption: yes
-    reference_docx: "../templates/template.docx" # Insert path for the DOCX file
-    number_sections: FALSE
-    toc: no
-    always_allow_html: true
-    fig_width: 6
-    pandoc_args:
-    - --lua-filter=../templates/scholarly-metadata.lua
-    - --lua-filter=../templates/author-info-blocks.lua
-    - --lua-filter=../templates/pagebreak.lua
 csl: "../templates/journal-of-archaeological-science.csl"
 bibliography:
   - AckermanLibrary.bib
@@ -219,7 +219,7 @@ High water temperatures have been identified as the most important barrier to th
 
 ## Food Webs
 
-The substantial anthropogenic modification of the Upper Walla Walla River watershed has likely impacted food webs in a variety of ways. For example, degradation of riparian habitat can reduce inputs of terrestrial insects into rivers and nutrient enrichment can lead to increased primary productivity and abundances of aquatic macroinvertebrates [@DeBruyn2003; @Kiffney2003; @Xiang2016]. Additionally, changes to the Upper Walla Walla River ecosystem have likely impacted native fishes other than focal species, which may alter prey availability. 
+The substantial anthropogenic modification of the Upper Walla Walla River watershed has likely impacted food webs in a variety of ways. For example, degradation of riparian habitat can reduce inputs of terrestrial insects into rivers and nutrient enrichment can lead to increased primary productivity and abundances of aquatic macroinvertebrates [@DeBruyn2003; @Kiffney2003; @Xiang2017]. Additionally, changes to the Upper Walla Walla River ecosystem have likely impacted native fishes other than focal species, which may alter prey availability. 
 
 Changes in prey availability are a primary mechanism through which anthropogenic modification of food webs might impact focal species and has been proposed as a potential explanation for the substantial spatial variation in bull trout growth rates in the Upper Walla Walla River watershed [@Bowerman2014]. Larval lamprey primarily feed on suspended detritus, algae, and diatoms and may benefit from nutrient enrichment and increased primary productivity [@Moore1980]. The availability of invertebrate prey potentially impacts all focal salmonid species because at small sizes, Chinook salmon, steelhead, and bull trout primarily consume aquatic and terrestrial invertebrates before transitioning to piscivory at larger sizes [@Budy2017; @Huntsman2019; @Johnson1980; @Litz2017; @Lowery2015; @Martin1992; @Monnet2020; @Schoby2011; @Huntsman2019].
 
