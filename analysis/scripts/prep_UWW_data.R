@@ -35,6 +35,16 @@ sum_juv_sf = st_read(paste0(nas_prefix, "main/data/qrf/gitrepo_data/output/gpkg/
 win_juv_sf = st_read(paste0(nas_prefix, "main/data/qrf/gitrepo_data/output/gpkg/Rch_Cap_RF_No_elev_juv_winter.gpkg")) %>% st_transform(uww_crs)
 redd_sf = st_read(paste0(nas_prefix, "main/data/qrf/gitrepo_data/output/gpkg/Rch_Cap_RF_No_elev_redds.gpkg")) %>% st_transform(uww_crs)
 
+# Read in cleaned Bull and Geo reach data built off the UWW_rch_200 file. Manually added the Bull and geo extents to this data in QGIS.
+bull_geo_sf = st_read(here("analysis/data/raw_data/Bull_Geo_Cleaned_rch_200.gpkg")) %>%
+  st_transform(uww_crs) %>%
+  mutate(bull = ifelse(is.na(Species) == "TRUE", "FALSE","TRUE")) %>%
+  select(UniqueID, bull, Geo_Reach, geom) %>%
+  st_zm()
+
+ggplot(data =bull_geo_sf) + geom_sf(aes(color=bull))
+ggplot(data =bull_geo_sf) + geom_sf(aes(color=Geo_Reach))
+
 # if needed, these .gpkg files can be saved locally to decrease read times, e.g.,
 # on Mike's machine...
 # sum_juv_sf = st_read("C:/Workspace/qrf/Rch_Cap_RF_juv_summer_dash.gpkg") %>%
@@ -77,9 +87,12 @@ uww_sum_sf = sum_juv_sf %>%
                    HUC10,
                    HUC12),
           join = st_covered_by,
-          left = F)
-
-ggplot(uww_sum_sf) + geom_sf()
+          left = F) %>%
+  # add geo reaches
+  left_join(bull_geo_sf %>%
+              select(Geo_Reach,
+                     UniqueID) %>%
+              st_set_geometry(NULL))
 
 # winter presmolt
 uww_win_sf = win_juv_sf %>%
@@ -98,7 +111,12 @@ uww_win_sf = win_juv_sf %>%
                    HUC10,
                    HUC12),
           join = st_covered_by,
-          left = F)
+          left = F)%>%
+  # add geo reaches
+  left_join(bull_geo_sf %>%
+              select(Geo_Reach,
+                     UniqueID) %>%
+              st_set_geometry(NULL))
 
 ggplot(uww_win_sf) + geom_sf()
 
@@ -119,7 +137,12 @@ uww_redd_sf = redd_sf %>%
                    HUC10,
                    HUC12),
           join = st_covered_by,
-          left = F)
+          left = F) %>%
+  # add geo reaches
+  left_join(bull_geo_sf %>%
+              select(Geo_Reach,
+                     UniqueID) %>%
+              st_set_geometry(NULL))
 
 ggplot(uww_redd_sf) + geom_sf()
 
@@ -140,7 +163,15 @@ uww_rch_sf = rch_200 %>%
   filter(UniqueID %in% uww_sum_sf$UniqueID) %>%
   st_transform(uww_crs)
 
-ggplot(uww_rch_sf) + geom_sf()
+# Add bull trout extents
+uww_rch_sf <- uww_rch_sf %>%
+  # add geo reaches
+  left_join(bull_geo_sf %>%
+              select(bull,
+                     UniqueID) %>%
+              st_set_geometry(NULL))
+
+ggplot(test) + geom_sf(aes(color=bull))
 
 # compare with the stream network provided by CTUIR, this is for entire Walla Walla
 ctuir_rch_sf = st_read(here("analysis/data/raw_data/stream_network/CTUIRStillwaterStreamNetwork.shp")) %>%
