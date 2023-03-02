@@ -88,6 +88,9 @@ theme_set(theme_pubr(x.text.angle = 45,
 # Project area polygons and 200m layer (with habitat attributes) within project area
 load(here("analysis/data/derived_data/uww_spatial.rda"))
 
+# bt =   st_read("C:/Users/mikea/Desktop/Bull Trout Distribution (StreamNet - January 2019)/StreamNet_BullTroutDist_20190131.gdb/")
+# test = st_read("C:/Users/mikea/Desktop/Generalized Fish Distribution - All Species Combined (StreamNet - January 2019)/StreamNet_20190131.gdb/")
+
 ```
 
 # Background
@@ -98,7 +101,7 @@ Water is the cornerstone of First Foods production and inherently tied to the fi
 
 The primary objectives of the Upper Walla Walla summer stream temperature assessment include:
 
-1.  Summarize recent historic and future projected summer stream temperature scenarios for the Upper Walla Walla available from the [NorWeST](https://www.fs.usda.gov/rm/boise/AWAE/projects/NorWeST.html) database [Isaak2017a].
+1.  Summarize recent historic and future projected summer stream temperature scenarios for the Upper Walla Walla available from the [NorWeST](https://www.fs.usda.gov/rm/boise/AWAE/projects/NorWeST.html) database [@Isaak2017a].
 
 2.  Compare recent historic and future projected summer stream temperature scenarios in the Upper Walla Walla to life stage specific temperature thresholds for focal species to determine whether stream temperatures may hinder those species.
 
@@ -119,21 +122,41 @@ knitr::include_graphics("../maps/UWW_NorWeST.png")
 
 ```{r study-area}
 study_tab = uww_rch_sf %>%
-  select(GNIS_Name, reach_leng, S2_02_11) %>%
+  select(GNIS_Name, chnk, sthd, reach_leng, S2_02_11) %>%
   st_drop_geometry() %>%
-  filter(!is.na(S2_02_11)) %>%
+  filter(chnk == T | sthd == T,
+         !is.na(S2_02_11)) %>%
   group_by(GNIS_Name) %>%
-  summarize(`Length (km)` = round(sum(reach_leng) / 1000, 1)) %>%
+  summarize(`Chinook (km)`   = round(sum(reach_leng[chnk == T]) / 1000, 1),
+            `Steelhead (km)` = round(sum(reach_leng[sthd == T]) / 1000, 1)) %>%
+  mutate_all(~na_if(., 0)) %>%
   rename(`Stream Name` = GNIS_Name) %>%
   adorn_totals() %>%
   mutate(`Stream Name` = ifelse(is.na(`Stream Name`), "Unnamed Creek(s)", `Stream Name`)) %>%
-  kable(booktabs = T,
-        align = "lc",
-        caption = "Rivers and tributaries included in the summer stream temperature assessment that were modeled as part of the NorWeST regional database.") %>%
+  kable (booktabs = T,
+         align = "lcc", 
+         caption = "River and tributaries within the spatial extent of Chinook salmon and steelhead (as defined by StreamNet) in the Upper Walla Walla watershed that were modeled as part of the NorWeST regional database.") %>%
   kable_styling(full_width = F,
                 position = "center",
                 bootstrap_options = c("striped", "condensed"))
 study_tab
+ 
+# study_tab = uww_rch_sf %>%
+#   select(GNIS_Name, reach_leng, S2_02_11) %>%
+#   st_drop_geometry() %>%
+#   filter(!is.na(S2_02_11)) %>%
+#   group_by(GNIS_Name) %>%
+#   summarize(`Length (km)` = round(sum(reach_leng) / 1000, 1)) %>%
+#   rename(`Stream Name` = GNIS_Name) %>%
+#   adorn_totals() %>%
+#   mutate(`Stream Name` = ifelse(is.na(`Stream Name`), "Unnamed Creek(s)", `Stream Name`)) %>%
+#   kable(booktabs = T,
+#         align = "lc",
+#         caption = "Rivers and tributaries included in the summer stream temperature assessment that were modeled as part of the NorWeST regional database.") %>%
+#   kable_styling(full_width = F,
+#                 position = "center",
+#                 bootstrap_options = c("striped", "condensed"))
+# study_tab
 
 ```
 
@@ -363,7 +386,7 @@ Not surprisingly, the amount of stream habitat within the optimum range for Chin
 
 Large portions of the Upper Walla Walla watershed are outside of preferred temperature ranges for each of the species evaluated (Figure \@ref(fig:within-optimum-map)), generally concentrated in the lowest portions of the watershed as well as the highest-elevation headwater streams. As temperatures increase in the 2040 and 2080 warming scenarios, the reaches within optimum temperatures tend to shift upstream as lower river sections begin to exceed preferred temperatures even moreso and headwater stream warm enough to be within optimum ranges. Figure \@ref(fig:within-optimum-map) indicates lower reaches that begin to exceed optimum temperatures (i.e., Lost) versus reaches that warm to be within optimum temperatures (i.e., Gained).
 
-```{r within-optimum-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenerios where reaches were within optimal temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *Lost* indicates reaches that were inside the optimal temperature during the prior scenarios but were outside optimal temperatures for the scenario. Conversely, *Gained* indicates reaches that were outside the optimal temperature during the prior scenarios but were within optimal temperatures for the scenario."}
+```{r within-optimum-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenarios where reaches were within optimal temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *Lost* indicates reaches that were inside the optimal temperature during the prior scenarios but were outside optimal temperatures for the scenario. Conversely, *Gained* indicates reaches that were outside the optimal temperature during the prior scenarios but were within optimal temperatures for the scenario."}
 within_optimum_df = norwest_df %>%
   filter(scenario != "Recent Minus 1") %>%
   mutate(`Chinook Spawning` = ifelse(temp_c > 14.5 | temp_c < 7.2, "Outside", "Within"),
@@ -466,7 +489,7 @@ within_optimum_p
 
 In general, greater portions of the Upper Walla Walla watershed exceed optimum, maximum, and acute temperature thresholds when transitioning from the recent historic to 2080 warming scenario (Figures \@ref(fig:above-optimum-map) through \@ref(fig:acute-map)). Additional upstream reaches become unsuitable moving through the scenarios, depicted by the orange/red colored ("New Yes") reaches under each scenario. These results and spatial data are available within the GitHub repository located at https://github.com/Mount-Hood-Environmental/UWW.plan and can be exported for viewing in GIS software.
 
-```{r above-optimum-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenerios where reaches exceeded the optimal temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *New Yes* indicates reaches that were below the optimal temperature thresholds during the prior scenarios but exceeded the optimal temperature thresholds for the scenario."}
+```{r above-optimum-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenarios where reaches exceeded the optimal temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *New Yes* indicates reaches that were below the optimal temperature thresholds during the prior scenarios but exceeded the optimal temperature thresholds for the scenario."}
 optimum_df = norwest_df %>%
   filter(scenario != "Recent Minus 1") %>%
   mutate(`Chinook Spawning` = ifelse(temp_c > 14.5, "New Yes", "No"),
@@ -541,7 +564,7 @@ optimum_p
 
 ```
 
-```{r max-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenerios where reaches exceeded the maximum temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *New Yes* indicates reaches that were below the maximum temperature thresholds during the prior scenarios but exceeded the maximum temperature thresholds for the scenario."}
+```{r max-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenarios where reaches exceeded the maximum temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *New Yes* indicates reaches that were below the maximum temperature thresholds during the prior scenarios but exceeded the maximum temperature thresholds for the scenario."}
 maximum_df = norwest_df %>%
   filter(scenario != "Recent Minus 1") %>%
   mutate(`Chinook Spawning` = ifelse(temp_c > 17.7, "New Yes", "No"),
@@ -616,7 +639,7 @@ maximum_p
 
 ```
 
-```{r acute-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenerios where reaches exceeded acute temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *New Yes* indicates reaches that were below the acute temperature thresholds during the prior scenarios but exceeded the acute temperature thresholds for the scenario."}
+```{r acute-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenarios where reaches exceeded acute temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *New Yes* indicates reaches that were below the acute temperature thresholds during the prior scenarios but exceeded the acute temperature thresholds for the scenario."}
 acute_df = norwest_df %>%
   filter(scenario != "Recent Minus 1") %>%
   mutate(`Chinook Spawning` = ifelse(temp_c > 20, "New Yes", "No"),
