@@ -35,12 +35,11 @@ sum_juv_sf = st_read(paste0(nas_prefix, "main/data/qrf/gitrepo_data/output/gpkg/
 win_juv_sf = st_read(paste0(nas_prefix, "main/data/qrf/gitrepo_data/output/gpkg/Rch_Cap_RF_No_elev_juv_winter.gpkg")) %>% st_transform(uww_crs)
 redd_sf = st_read(paste0(nas_prefix, "main/data/qrf/gitrepo_data/output/gpkg/Rch_Cap_RF_No_elev_redds.gpkg")) %>% st_transform(uww_crs)
 
-# Read in cleaned Bull and Geo reach data built off the UWW_rch_200 file. Manually added the Bull and geo extents to this data in QGIS.
+# Read in cleaned Bull trout extents and Geo reach data built off the UWW_rch_200 file. Manually added the Bull and geo extents to this data in QGIS.
 bull_geo_sf = st_read(here("analysis/data/raw_data/Bull_Geo_Cleaned_rch_200.gpkg")) %>%
   st_transform(uww_crs) %>%
   mutate(bull = ifelse(is.na(Species) == "TRUE", "FALSE","TRUE")) %>%
-  select(UniqueID, bull, Geo_Reach, geom) %>%
-  st_zm()
+  select(UniqueID, bull, Geo_Reach, geom)
 
 ggplot(data =bull_geo_sf) + geom_sf(aes(color=bull))
 ggplot(data =bull_geo_sf) + geom_sf(aes(color=Geo_Reach))
