@@ -23,8 +23,8 @@ library(tidyverse)
 
 # set some arguments
 # a single run:
-scn  = "chnk_spw"
-yr   = "2019"
+# scn  = "chnk_spw"
+# yr   = "2019"
 
 # to loop over scenarios
 scenarios  = c("chnk_spw", "chnk_juv", "sthd_juv")
@@ -231,7 +231,7 @@ for(scn in scenarios) {
     write_csv(geo_mets, paste0(here(), "/analysis/hsi_outputs/csvs/", scn, "_", yr, "_geo_results.csv"))
 
     # calculate HSI metrics for the run (river kilometers)
-    rkm_mets = geo_csi %>%
+    rkm_mets = rkm_csi %>%
       mutate(pix_area = pix_area) %>%
       group_by(ID) %>%
       summarise(area_m2 = sum(pix_area),
