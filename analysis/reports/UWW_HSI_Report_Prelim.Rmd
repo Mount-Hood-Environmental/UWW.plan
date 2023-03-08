@@ -143,55 +143,14 @@ rename(Watershed = Strm_Name,
        'Geomorphic Reach' = Reach_ID) %>%
   arrange(Watershed, min) %>%
   relocate("Watershed", "Geomorphic Reach", "min", "max") %>%
-  select(Watershed, 'Geomorphic Reach', min, max)
+  select(Watershed, 'Geomorphic Reach', min, max) %>%
 
-# reverse the direction of the rkms
-mra_rkm = mra_rkm %>% 
-  arrange(River, rkm) %>%
-  group_by(River) %>%
-  mutate(rkm = rev(rkm)) %>%
-  ungroup()
-
-# fix where RKMs start in the Upper Salmon
-mra_rkm = mra_rkm %>%
-  mutate(rkm = if_else(River == 'Salmon River',
-                       as.integer(rkm - 109),
-                       rkm)) %>%
-  filter(rkm >= 0) %>%
-  arrange(River, rkm)
-
-rkm_gr = mra_rkm %>%
-  st_drop_geometry() %>%
-  as_tibble() %>%
-  filter(!is.na(GeoReach)) %>%
-  rename(Watershed = River,
-         `Geomorphic Reach` = GeoReach) %>%
-  group_by(Watershed, `Geomorphic Reach`) %>%
-  summarise_at(vars(rkm),
-               tibble::lst(min, max)) %>%
-  arrange(Watershed, min)
-
-# for plotting geomorphic reach breaks
-rch_label = rkm_gr %>%
-  rename(GeoReach = `Geomorphic Reach`,
-         min_rkm = min,
-         max_rkm = max) %>%
-  group_by(Watershed) %>%
-  mutate(label_txt = str_remove(GeoReach, "GR_"),
-         lead_min = lead(min_rkm),
-         label_rkm = (min_rkm + max_rkm) / 2,
-         sep_rkm = (max_rkm + lead_min) / 2) %>%
-  mutate(sep_rkm = if_else(is.na(sep_rkm),
-                           as.numeric(max_rkm),
-                           sep_rkm))
-
-geo_reach %>%
-  kable(booktabs = T,
-        linesep = "",
-        caption = "The minimum and maximum river kilometer contained within each geomorphic reach. 
-        River kilometers increase as you move upstream") %>%
-  kable_styling()
-
+kable(booktabs = T,
+ align = "ccccccc",
+caption = "The minimum and maximum river kilometer contained within each geomorphic reach. 
+        River kilometers increase as you move upstream") %>% kable_styling(full_width = F,
+ position = "center",
+ bootstrap_options = c("striped", "condensed"))
 ```
 
 
@@ -273,14 +232,28 @@ hsi_rkm = rch_hsi %>%
 ## Scenarios
 
 ```{r scenarios-tab}
-scenarios_tab = read_excel("../analysis/scenarios_to_run.xlsx") %>%
-  assign("scenarios_df", ., inherits = T) %>%
-  select(- `Date Completed`) %>%
-  kable(align = 'c', caption = "Scenarios for which we evaluated the composite suitability (depth & velocity) within geomorphic reaches including the corresponding depth and velocity rasters used for each scenario.")
-scenarios_tab
+hsi_scenario = tibble(Scenario = c(1:6),
+    Watershed = c("Walla Walla River","Walla Walla River","Walla Walla River","Walla Walla River","Walla Walla River",
+                  "Walla Walla River"),
+    Species = c("Chinook", "Chinook", "Chinook", "Chinook", "Steelhead", "Steelhead"),
+    Life_Stage = c("Juvenile", "Juvenile", "Spawning", "Spawning", "Juvenile", "Juvenile"),
+    Year = c("2019","2021","2019","2021","2019","2021"),
+    Depth_Raster = c("Combined_2019lidar_LowFlow_Depth_metric.tif","Combined_2021lidar_LowFlow_Depth_metric.tif",
+                     "Combined_2019lidar_LowFlow_Depth_metric.tif","Combined_2021lidar_LowFlow_Depth_metric.tif",
+                     "Combined_2019lidar_LowFlow_Depth_metric.tif","Combined_2021lidar_LowFlow_Depth_metric.tif"),
+    Velocity_Raster = c("Combined_2019lidar_LowFlow_Velocity_metric.tif","Combined_2021lidar_LowFlow_Velocity_metric.tif",
+                        "Combined_2019lidar_LowFlow_Velocity_metric.tif","Combined_2021lidar_LowFlow_Velocity_metric.tif",
+                        "Combined_2019lidar_LowFlow_Velocity_metric.tif","Combined_2021lidar_LowFlow_Velocity_metric.tif")) %>%
+
+ kable(booktabs = T,
+        align = "ccccccc",
+       caption = "Scenarios for which we evaluated the composite suitability (depth & velocity) within geomorphic reaches including the corresponding depth and velocity rasters used for each scenario.") %>%
+kable_styling(full_width = F,
+position = "center",
+bootstrap_options = c("striped", "condensed"))
 ```
 
-We evaluated `r nrow(scenarios_df)` scenarios in total which are summarized in Table \@ref(tab:scenarios-tab). For all summer scenarios, we used rasters from a discharge scenario representative of low flow conditions. In the case of the Lemhi and Pahsimeroi watersheds, all spring and winter scenarios used rasters from moderate to high flow conditions. Alternatively, for the Upper Salmon, winter scenarios were analyzed using a low-flow discharge. Finally, for the Upper Salmon, we added spring scenarios for juvenile rearing to evaluate high-flow conditions, as both summer and winter are typically low-flow in that watershed.
+We evaluated `r nrow(hsi_scenarios)` scenarios in total which are summarized in Table \@ref(tab:scenarios-tab). For all summer scenarios, we used rasters from a discharge scenario representative of low flow conditions. In the case of the Lemhi and Pahsimeroi watersheds, all spring and winter scenarios used rasters from moderate to high flow conditions. Alternatively, for the Upper Salmon, winter scenarios were analyzed using a low-flow discharge. Finally, for the Upper Salmon, we added spring scenarios for juvenile rearing to evaluate high-flow conditions, as both summer and winter are typically low-flow in that watershed.
 
 # Results
 
