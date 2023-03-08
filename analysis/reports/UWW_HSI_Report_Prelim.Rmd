@@ -198,7 +198,7 @@ geo_reach %>%
 ## Habitat Suitability
 
 ```{r hsi-curves}
-source(here("analysis/scripts/hsi/hsi_curves.R"))
+hsi_df = read_csv(here("analysis/data/raw_data/maret_hsi_curves_for_r.csv"))
 
 ```
 
