@@ -526,3 +526,13 @@ sthd_juv_2021_rkm_sf = hsi_raw %>%
        title = "SF Steelhead Juvenile Rearing 2021") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
 sthd_juv_2021_rkm_sf
+
+#### Geo Reach Summary Table Script #####
+geo_reach = read_csv(here("analysis/data/raw_data/reach_partitions/Geo_reaches_corrected.csv")) %>%
+  rename(Watershed = Strm_Name,
+         min = From_RKM,
+         max = To_RKM,
+         'Geomorphic Reach' = Reach_ID) %>%
+  arrange(Watershed, min) %>%
+  relocate("Watershed", "Geomorphic Reach", "min", "max") %>%
+  select(Watershed, 'Geomorphic Reach', min, max)
