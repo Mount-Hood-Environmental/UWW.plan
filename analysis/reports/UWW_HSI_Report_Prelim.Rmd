@@ -196,26 +196,7 @@ sthd_hsi
 
 ```
 
-```{r hsi-p-prep}
-## read in all of the HSI results
-hsi_outputs = list.files(path = "../output/hsi_csvs/", pattern = "*.csv", full.names = T)
-hsi_p = sapply(hsi_outputs, read_csv, simplify = F) %>%
-  bind_rows(.id = "id") %>%
-  dplyr::select(-c(id, X1)) %>%
-  mutate(geo_reach = paste0("GR_", str_pad(sub(".*_", "", ID), 2, pad = "0"))) %>%
-  dplyr::select(-ID) %>%
-  dplyr::select(species, life_stage, season, geo_reach, everything()) %>%
-  mutate(scenario = paste(life_stage, season, sep = "_")) %>%
-  mutate(species = recode(species,
-                          `chnk` = "Chinook",
-                          `sthd` = "Steelhead")) %>%
-  mutate(scenario = recode(scenario,
-                           `juv_spr` = "Juvenile Spring Rearing",
-                           `juv_sum` = "Juvenile Summer Rearing",
-                           `juv_win` = "Juvenile Winter Rearing",
-                           `spw_spr` = "Adult Spawning",
-                           `spw_sum` = "Adult Spawning"))
-```
+
 
 ```{r hsi-p-prep-rkm}
 ## read in all of the HSI results, as a spatial file, and then make non-spatial
