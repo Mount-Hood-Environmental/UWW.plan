@@ -131,12 +131,19 @@ Detailed methods are as follows:
 
 8. Calculate the total wetted area, weighted usable area, and normalized weighted usable area (i.e., hydraulic habitat suitability) for each species, life stage, and rkm / geomorphic reach. The total wetted area was calculated by counting the total number of pixels (each with a known area), that occur within each rkm and wetted area for a given scenario. The weighted usable area (WUA) was calculated by summing the composite suitability values of all pixels within that same area. And finally, the normalized weighted usable area i.e., hydraulic habitat suitability (HHS), was calculated by dividing the WUA by the total wetted area for each rkm or geomorphic reach.
 
-Finally, composite suitability values were visualized by year, watershed, species, life stage (Chinook adult spawning, Chinook and steelhead juvenile rearing), and rkm / geomorphic reach. Violin plots were used to show the distribution of composite suitability values, by geomorphic reach, and are provided in the [Results]. Maps showing the hydraulic habitat suitability, by rkm / geomorphic reach, are provided by species and life stage for each valley segment, as well as plots showing the WUA and HHS for each individual scenario evaluated.
+Finally, composite suitability values were visualized by year, watershed, species, life stage (Chinook adult spawning, Chinook and steelhead juvenile rearing), and rkm / geomorphic reach. Violin plots were used to show the distribution of composite suitability values, by geomorphic reach, and are provided in the [Results]. Maps showing the hydraulic habitat suitability, by rkm / geomorphic reach, are provided by species and life stage for each watershed, as well as plots showing the WUA and HHS for each individual scenario evaluated.
 
 The resulting raster .tifs showing depth, velocity, and composite suitability are too large to store in a https://github.com/ repository, but are available from the authors upon request.
 
 ```{r rkm-geo-rch}
-load(here("data/mra_temp_rkm_redd_data_prepped.Rdata"))
+geo_reach = read_csv(here("analysis/data/raw_data/reach_partitions/Geo_reaches_corrected.csv")) %>%
+rename(Watershed = Strm_Name,
+       min = From_RKM,
+       max = To_RKM,
+       'Geomorphic Reach' = Reach_ID) %>%
+  arrange(Watershed, min) %>%
+  relocate("Watershed", "Geomorphic Reach", "min", "max") %>%
+  select(Watershed, 'Geomorphic Reach', min, max)
 
 # reverse the direction of the rkms
 mra_rkm = mra_rkm %>% 
@@ -178,7 +185,7 @@ rch_label = rkm_gr %>%
                            as.numeric(max_rkm),
                            sep_rkm))
 
-rkm_gr %>%
+geo_reach %>%
   kable(booktabs = T,
         linesep = "",
         caption = "The minimum and maximum river kilometer contained within each geomorphic reach. 
@@ -191,7 +198,7 @@ rkm_gr %>%
 ## Habitat Suitability
 
 ```{r hsi-curves}
-hsi_df = read_csv(here("data/hsi_curves/maret_hsi_curves_for_r.csv"))
+source(here("analysis/scripts/hsi/hsi_curves.R"))
 
 ```
 
