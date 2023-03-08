@@ -1068,11 +1068,12 @@ chnk_sum_georch = uww_sum_sf %>%
             st_union() %>%
             nngeo::st_remove_holes(),
           fill = NA,
-          color = "gray50") +
+          color = "gray50",
+          size = 5) +
   geom_sf(color = river_color) +
   geom_sf(data = uww_sum_sf,
           aes(color = chnk_sum),
-          size = 1) +
+          size = 5) +
   scale_color_viridis_c(direction = -1) +
   theme(legend.position = "right",
         axis.title.x = element_blank(),
@@ -1092,7 +1093,7 @@ chnk_win_georch = uww_win_sf %>%
   geom_sf(color = river_color) +
   geom_sf(data = uww_win_sf,
           aes(color = chnk_win),
-          size = 1) +
+          size = 2) +
   scale_color_viridis_c(direction = -1) +
   theme(legend.position = "right",
         axis.title.x = element_blank(),
@@ -1112,7 +1113,7 @@ chnk_redd_georch = uww_redd_sf %>%
   geom_sf(color = river_color) +
   geom_sf(data = uww_redd_sf,
           aes(color = chnk_redd),
-          size = 1) +
+          size = 2) +
   scale_color_viridis_c(direction = -1) +
   theme(legend.position = "right",
         axis.title.x = element_blank(),
@@ -1187,7 +1188,7 @@ chnk_redd_cap_rch %>%
          'Geo Reach' = 'Geo_Reach') %>%
   relocate('Geo Reach','# Sub Reaches','Stream Length (km)','Capacity','Capacity SE','Avg. Capacity/km') %>%
 kable(booktabs = T,
-        digits = c(0,0,1,0,00),
+        digits = c(0,0,1,1,1,1),
         align = "lcccccc",
         format.args = list(big.mark = ","),
         caption = "Estimated available habitat for **adult (redds)** Chinook salmon in the Upper Walla Walla watershed by geomorphically delineated reaches.") %>%
@@ -1277,7 +1278,7 @@ sthd_sum_georch = uww_sum_sf %>%
   geom_sf(color = river_color) +
   geom_sf(data = uww_sum_sf,
           aes(color = sthd_sum),
-          size = 1) +
+          size = 2) +
   scale_color_viridis_c(direction = -1) +
   theme(legend.position = "right",
         axis.title.x = element_blank(),
@@ -1297,7 +1298,7 @@ sthd_win_georch = uww_win_sf %>%
   geom_sf(color = river_color) +
   geom_sf(data = uww_win_sf,
           aes(color = sthd_win),
-          size = 1) +
+          size = 2) +
   scale_color_viridis_c(direction = -1) +
   theme(legend.position = "right",
         axis.title.x = element_blank(),
@@ -1317,7 +1318,7 @@ sthd_redd_georch = uww_redd_sf %>%
   geom_sf(color = river_color) +
   geom_sf(data = uww_redd_sf,
           aes(color = sthd_redd),
-          size = 1) +
+          size = 2) +
   scale_color_viridis_c(direction = -1) +
   theme(legend.position = "right",
         axis.title.x = element_blank(),
@@ -1340,7 +1341,7 @@ sthd_sum_cap_rch %>%
          'Geo Reach' = 'Geo_Reach') %>%
   relocate('Geo Reach','# Sub Reaches','Stream Length (km)','Capacity','Capacity SE','Avg. Capacity/km') %>%
 kable(booktabs = T,
-        digits = c(0,0,1,0,00),
+        digits = c(0,0,1,0,0,0),
         align = "lcccccc",
         format.args = list(big.mark = ","),
         caption = "Estimated available habitat for **juvenile summer rearing** steelhead in the Upper Walla Walla watershed by geomorphically  delineated reaches.") %>%
@@ -1366,7 +1367,7 @@ sthd_win_cap_rch %>%
          'Geo Reach' = 'Geo_Reach') %>%
   relocate('Geo Reach','# Sub Reaches','Stream Length (km)','Capacity','Capacity SE','Avg. Capacity/km') %>%
 kable(booktabs = T,
-        digits = c(0,0,1,0,00),
+        digits = c(0,0,1,0,0,0),
         align = "lcccccc",
         format.args = list(big.mark = ","),
         caption = "Estimated available habitat for **juvenile winter rearing** steelhead in the Upper Walla Walla watershed by geomorphically delineated reaches.") %>%
@@ -1392,7 +1393,7 @@ sthd_redd_cap_rch %>%
          'Geo Reach' = 'Geo_Reach') %>%
   relocate('Geo Reach','# Sub Reaches','Stream Length (km)','Capacity','Capacity SE','Avg. Capacity/km') %>%
 kable(booktabs = T,
-        digits = c(0,0,1,0,00),
+        digits = c(0,0,1,1,1,1),
         align = "lcccccc",
         format.args = list(big.mark = ","),
         caption = "Estimated available habitat for **adult (redds)** steelhead in the Upper Walla Walla watershed by geomorphically delineated reaches.") %>%
