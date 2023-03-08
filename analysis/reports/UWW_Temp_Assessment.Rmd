@@ -88,8 +88,18 @@ theme_set(theme_pubr(x.text.angle = 45,
 # Project area polygons and 200m layer (with habitat attributes) within project area
 load(here("analysis/data/derived_data/uww_spatial.rda"))
 
-# bt =   st_read("C:/Users/mikea/Desktop/Bull Trout Distribution (StreamNet - January 2019)/StreamNet_BullTroutDist_20190131.gdb/")
-# test = st_read("C:/Users/mikea/Desktop/Generalized Fish Distribution - All Species Combined (StreamNet - January 2019)/StreamNet_20190131.gdb/")
+uww_rch_sf = uww_rch_sf %>%
+  mutate(lamp = T,
+         bull = as.logical(bull))
+
+domain_km = uww_rch_sf %>%
+  select(chnk, sthd, bull, lamp, reach_leng) %>%
+  st_drop_geometry() %>%
+  pivot_longer(cols = chnk:lamp,
+               names_to = "species") %>%
+  filter(value == T) %>%
+  group_by(species) %>%
+  summarize(domain_km = round(sum(reach_leng) / 1000, 1))
 
 ```
 
@@ -101,97 +111,85 @@ Water is the cornerstone of First Foods production and inherently tied to the fi
 
 The primary objectives of the Upper Walla Walla summer stream temperature assessment include:
 
-1.  Summarize recent historic and future projected summer stream temperature scenarios for the Upper Walla Walla available from the [NorWeST](https://www.fs.usda.gov/rm/boise/AWAE/projects/NorWeST.html) database [@Isaak2017a].
+1.  Summarize recent historic and future projected summer stream temperature scenarios for the Upper Walla Walla [@Isaak2017a].
 
-2.  Compare recent historic and future projected summer stream temperature scenarios in the Upper Walla Walla to life stage specific temperature thresholds for focal species to determine whether stream temperatures may hinder those species.
+2.  Compare recent historic and future projected summer stream temperature scenarios in the Upper Walla Walla to life stage specific temperature thresholds for focal species to determine whether stream temperatures may hinder their productivity.
 
-3.  Evaluate a hypothetical scenario where restoration efforts (e.g. riparian planting, improved grazing practices, etc.) over the next \~60 years decrease summer stream temperatures relative to recent historic temperatures by 1^o^C.
+3.  Evaluate a hypothetical scenario where restoration efforts (e.g., riparian planting, improved grazing practices, etc.) over the next approximately 60 years decrease summer stream temperatures relative to recent historic temperatures by 1^o^C.
 
 # Methods
 
-Recent historic (2002-2011) and projected (2040 & 2080) August mean stream temperature predictions [@Isaak2017a] were used in conjunction with life stage specific temperature thresholds available from the literature for focal species (Table \@ref(tab:temp-thresh)) to evaluate potential habitat limitations within the upper Walla Walla River watershed. To accomplish this, modeled recent historic and projected August mean stream temperatures were used to quantify the amount of stream habitat exceeding optimum, maximum, and acute temperature thresholds for focal species present in the Upper Walla Walla watershed during summer months. Additionally, a scenario where hypothetical restoration actions reduced mean August stream temperatures by 1^o^C relative to the recent historic temperature scenerio was evaluated to illustrate the benefits restoration actions could provide for thermal suitability of habitat within the watershed.
-
-## Study Area
-
-The summer stream temperature assessment focused on the upper Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North Fork and South Fork Walla Walla Rivers, including tributaries (Figure \@ref(fig:uww-nrws-dist); Table \@ref(tab:study-area)). Temperate predictions for streams used in the assessment were pulled from the NorWeST regional database [@Isaak2017a].
-
-```{r uww-nrws-dist, out.width = "100%", fig.cap = "Stream extents for the Upper Walla Walla watershed included in the summer stream temperature assessment modeled as part of the NorWeST regional database (Isaak et al. 2017). Primary rivers and tributaries utilized by Chinook salmon and steelhead are labeled in the map."}
-knitr::include_graphics("../maps/UWW_NorWeST.png")
-
-```
-
-```{r study-area}
-study_tab = uww_rch_sf %>%
-  select(GNIS_Name, chnk, sthd, reach_leng, S2_02_11) %>%
-  st_drop_geometry() %>%
-  filter(chnk == T | sthd == T,
-         !is.na(S2_02_11)) %>%
-  group_by(GNIS_Name) %>%
-  summarize(`Chinook (km)`   = round(sum(reach_leng[chnk == T]) / 1000, 1),
-            `Steelhead (km)` = round(sum(reach_leng[sthd == T]) / 1000, 1)) %>%
-  mutate_all(~na_if(., 0)) %>%
-  rename(`Stream Name` = GNIS_Name) %>%
-  adorn_totals() %>%
-  mutate(`Stream Name` = ifelse(is.na(`Stream Name`), "Unnamed Creek(s)", `Stream Name`)) %>%
-  kable (booktabs = T,
-         align = "lcc", 
-         caption = "River and tributaries within the spatial extent of Chinook salmon and steelhead (as defined by StreamNet) in the Upper Walla Walla watershed that were modeled as part of the NorWeST regional database.") %>%
-  kable_styling(full_width = F,
-                position = "center",
-                bootstrap_options = c("striped", "condensed"))
-study_tab
- 
-# study_tab = uww_rch_sf %>%
-#   select(GNIS_Name, reach_leng, S2_02_11) %>%
-#   st_drop_geometry() %>%
-#   filter(!is.na(S2_02_11)) %>%
-#   group_by(GNIS_Name) %>%
-#   summarize(`Length (km)` = round(sum(reach_leng) / 1000, 1)) %>%
-#   rename(`Stream Name` = GNIS_Name) %>%
-#   adorn_totals() %>%
-#   mutate(`Stream Name` = ifelse(is.na(`Stream Name`), "Unnamed Creek(s)", `Stream Name`)) %>%
-#   kable(booktabs = T,
-#         align = "lc",
-#         caption = "Rivers and tributaries included in the summer stream temperature assessment that were modeled as part of the NorWeST regional database.") %>%
-#   kable_styling(full_width = F,
-#                 position = "center",
-#                 bootstrap_options = c("striped", "condensed"))
-# study_tab
-
-```
+Recent historic (2002-2011) and projected (2040 & 2080) August mean stream temperature predictions [@Isaak2017a] were used in combination with life stage specific temperature thresholds available from the literature for focal species (Table \@ref(tab:temp-thresh)) to evaluate potential habitat limitations within the upper Walla Walla River watershed. To accomplish this, modeled recent historic and projected August mean stream temperatures were used to quantify the amount of stream habitat exceeding optimum, maximum, and acute temperature thresholds for focal species present in the Upper Walla Walla watershed during summer months. Additionally, a scenario where hypothetical restoration actions reduced mean August stream temperatures by 1^o^C relative to the recent historic temperature scenario was evaluated to illustrate the benefits restoration actions could provide for thermal suitability of habitat within the watershed.
 
 ## Focal Species
 
-The focal species for the temperature assessment include:
+The focal species for the summer temperature assessment include:
 
 -   Spring-run Chinook salmon (*Oncorhynchus tshawytscha*; hereafter Chinook salmon)
 -   Middle Columbia River summer steelhead (*O. mykiss*; hereafter steelhead; ESA-listed "threatened")
 -   Columbia River bull trout (*Salvelinus confluentus*; ESA-listed "threatened")
 -   Pacific lamprey (*Lampetra tridentata*)
 
+## Study Area
+
+The summer stream temperature assessment included the upper Walla Walla River from its confluence with Dry Creek near Lowden, Washington, to the headwaters of the North Fork and South Fork Walla Walla rivers, including tributaries (Figure \@ref(fig:uww-nrws-dist)). Temperature predictions for streams used in the assessment were pulled from the NorWeST regional database [@Isaak2017a]. For Chinook salmon, steelhead, and bull trout we truncated the evaluation to include the spatial distributions currently used by each species as defined by StreamNet (Table \@ref(tab:study-area)). A distribution is not available for Pacific lamprey in StreamNet, and thus, we included the entirety of the modeled extent in the Upper Walla Walla watershed available from NorWeST (Table \@ref(tab:study-area)).
+
+```{r uww-nrws-dist, out.width = "100%", fig.cap = "Stream extents for the Upper Walla Walla watershed modeled as part of the NorWeST regional database (Isaak et al. 2017). Primary rivers and tributaries used by Chinook salmon, steelhead, and bull trout are labeled in the map."}
+knitr::include_graphics("../maps/UWW_NorWeST.png")
+
+```
+
+```{r study-area}
+study_tab = uww_rch_sf %>%
+  select(GNIS_Name, chnk, sthd, bull, reach_leng, S2_02_11) %>%
+  st_drop_geometry() %>%
+  filter(chnk == T | sthd == T | bull == T,
+         !is.na(S2_02_11)) %>%
+  group_by(GNIS_Name) %>%
+  summarize(`Chinook Salmon`  = round(sum(reach_leng[chnk == T]) / 1000, 1),
+            `Steelhead`       = round(sum(reach_leng[sthd == T]) / 1000, 1),
+            `Bull Trout`      = round(sum(reach_leng[bull == T]) / 1000, 1),
+            `Pacific Lamprey` = round(sum(reach_leng) / 1000, 1)) %>%
+  mutate_all(~na_if(., 0)) %>%
+  rename(`Stream Name` = GNIS_Name) %>%
+  adorn_totals() %>%
+  mutate(`Stream Name` = ifelse(is.na(`Stream Name`), "Unnamed Creek(s)", `Stream Name`)) %>%
+  kable(booktabs = T,
+        align = "lcccc",
+        caption = "River and tributaries within the spatial distribution of Chinook salmon, steelhead, and bull trout (as defined by StreamNet) in the Upper Walla Walla watershed. No distribution is available for Pacific lamprey in StreamNet; therefore, the entirety of the modeled NorWeST extent was used for Pacific lamprey.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
+study_tab  
+
+```
+
 ## Summer Stream Temperature Scenarios
 
-Three NorWeST summer stream temperature scenarios were considered:
+Three NorWeST summer stream temperature scenarios were considered. The first "Recent Historic" is intended to represent a contemporary scenario whereas the 2040 and 2080 represent mid-century and late-century climate warming scenarios, respectively. Definitions of each scenario are as follows:
 
--   **Recent Historic** (S2_02_11): A historical composite scenario representing the 10-year average August mean stream temperatures for 2002-2011 (Isaak et al. 2017).
+-   **Recent Historic** (S2_02_11): A historical composite scenario representing the 10-year average August mean stream temperatures for 2002-2011 [@Isaak2017a].
 
--   **2040 Projected** (S30_2040D): A future August mean stream temperature scenario based on average projected changes in August air temperature and stream discharge for the 2040s (2030-2059). Projected changes in streams accounted for differential sensitivity among streams so that cold streams warm less than warm streams (Isaak et al. 2017).
+-   **2040 Projected** (S30_2040D): A future August mean stream temperature scenario based on average projected changes in August air temperature and stream discharge for the 2040s (2030-2059). Projected changes in streams accounted for differential sensitivity among streams so that cold streams warm less than warm streams [@Isaak2017a].
 
--   **2080 Projected** (S32_2080D): A future August mean stream temperature scenario based on average projected changes in August air temperature and stream discharge for the 2080s (2070-2099). Projected changes in streams accounted for differential sensitivity among streams so that cold streams warm less than warm streams (Isaak et al. 2017).
+-   **2080 Projected** (S32_2080D): A future August mean stream temperature scenario based on average projected changes in August air temperature and stream discharge for the 2080s (2070-2099). Projected changes in streams accounted for differential sensitivity among streams so that cold streams warm less than warm streams [@Isaak2017a].
 
-To follow-up, we also considered a (very) hypothetical scenario (**Recent Minus 1^o^C**) in which summer stream temperatures were reduced by 1^o^C relative to the recent historic scenario. This scenario represents a situation where various restoration actions (e.g., riparian planting, improved land use practices) increases tream shading, reduced solar loading, and/or increased hyporheic exchange within the watershed resulting in cooler August stream temperatures. Each of the temperature scenarios are summarized in Figures \@ref(fig:norwest) and \@ref(fig:norwest-bp).
+We also considered a (very) hypothetical scenario (**Recent Minus 1^o^C**) in which summer stream temperatures were reduced by 1^o^C relative to the recent historic scenario. This scenario represents a situation where various restoration actions (e.g., riparian planting, improved land use practices) increases stream shading, reduced solar loading, and/or increased hyporheic exchange within the watershed resulting in cooler August stream temperatures. Each of the scenarios are summarized in Figures \@ref(fig:norwest) and \@ref(fig:norwest-bp).
 
-```{r norwest, fig.cap = "Modeled average August stream temperatures within the Upper Walla Walla watershed under each of the scenarios considered."}
-river_color = "lightskyblue1"
+```{r norwest, fig.cap = "Modeled average August stream temperatures within the Upper Walla Walla watershed for each of the NorWeST scenarios considered."}
 norwest_df = uww_rch_sf %>%
-  select(`Recent Historic` = S2_02_11,
+  select(chnk,
+         sthd,
+         bull,
+         lamp,
+         `Recent Historic` = S2_02_11,
          `2040 Projected` = S30_2040D,
          `2080 Projected` = S32_2080D,
          reach_leng) %>%
   mutate(`Recent Historic` = replace(`Recent Historic`, `Recent Historic` == -9999.00, NA),
          `2040 Projected` = replace(`2040 Projected`, `2040 Projected` == -9999.00, NA),
          `2080 Projected` = replace(`2080 Projected`, `2080 Projected` == -9999.00, NA),
-        `Recent Minus 1` = `Recent Historic` - 1) %>%
+         `Recent Minus 1` = `Recent Historic` - 1) %>%
   pivot_longer(cols = c("Recent Minus 1",
                         "Recent Historic",
                         "2040 Projected",
@@ -201,9 +199,9 @@ norwest_df = uww_rch_sf %>%
   mutate(scenario = factor(scenario, levels = c("Recent Minus 1",
                                                 "Recent Historic", 
                                                 "2040 Projected", 
-                                                "2080 Projected"
-                                                ))) 
+                                                "2080 Projected"))) 
 
+river_color = "lightskyblue1"
 norwest_p = norwest_df %>%
   ggplot() +
   geom_sf(data = uww_huc_sf %>%
@@ -230,7 +228,7 @@ norwest_p
 
 ```
 
-```{r norwest-bp, out.width = "70%", fig.cap = "Distribution of average August stream temperatures throughout streams in the Upper Walla Walla watershed under each of the scenarios considered."}
+```{r norwest-bp, out.width = "70%", fig.align = "center", fig.cap = "Distribution of average August stream temperatures throughout streams in the Upper Walla Walla watershed under each of the NorWeST scenarios considered."}
 norwest_bp = norwest_df %>%
   group_by(scenario) %>%
   mutate(avg_temp = mean(temp_c, na.rm = T)) %>%
@@ -253,9 +251,11 @@ norwest_bp
 
 ## Fish Temperature Threshholds
 
-Temperature thresholds for Chinook salmon and steelhead were chosen based on the life-stage(s) when individuals occupy habitat in the Upper Walla Walla watershed in August. Spawning and summer parr life-stages were considered for Chinook salmon and the summer parr life-stage was considered for steelhead. Temperature thresholds (expressed as the maximum weekly maximum temperature [MWMT]) identified in a literature review conducted by @Carter2005 were used for Chinook salmon and steelhead thresholds in this assessment. Chinook spawning was observed over a wide range of temperatures (5.6 - 17.7^o^C); however, a majority of observations cite maximum temperatures at 14.5^o^C. For juvenile Chinook salmon summer parr rearing, 10 - 16^o^C represented an optimal range for growth and rearing. Temperatures above 19^o^C generally did not support Chinook salmon parr growth and Chinook salmon parr were rarely found in reaches with temperatures greater than 22^o^C. Juvenile steelhead summer parr temperature tolerances were similar to those of Chinook salmon, but had a higher end to their optimal range (18^o^C) for growth and rearing.
+Temperature thresholds for Chinook salmon and steelhead were evaluated based on life-stage(s) that occupy habitat in the Upper Walla Walla watershed in August. Spawning and summer parr life-stages were considered for Chinook salmon and the summer parr life-stage was considered for steelhead. Temperature thresholds (expressed as the maximum weekly maximum temperature [MWMT]) identified in a literature review conducted by @Carter2005 were used for Chinook salmon and steelhead thresholds in this assessment. Chinook spawning was observed over a wide range of temperatures (5.6 - 17.7^o^C); however, a majority of observations cite maximum temperatures at 14.5^o^C. For juvenile Chinook salmon summer parr rearing, 10 - 16^o^C represented an optimal range for growth and rearing. Temperatures above 19^o^C generally did not support Chinook salmon parr growth and Chinook salmon parr were rarely found in reaches with temperatures greater than 22^o^C. Juvenile steelhead summer parr temperature tolerances were similar to those of Chinook salmon, but had a higher end to their optimal range (18^o^C) for growth and rearing.
 
-Bull trout tended to have more specific habitat requirements compared to other salmonids, typically needing colder stream temperatures. Although bull trout have been reported in stream temperatures above 20^o^C, they are seldom found in waters where temperatures exceed 15 - 16^o^C. Temperatures above 16^o^C are detrimental for bull trout feeding and growth and are unlikely to be suitable for their long-term survival [@Selong2001 and references therein]. At temperatures greater than 18^o^C, bull trout exhibit reduced consumption, growth, and survival [@Selong2001]. Pacific lamprey can tolerate a temperature range of 5 - 25^o^C [@Clemens2017]. Pacific lamprey spawning typically occurs between 10 - 18^o^C with early juvenile development between 14 - 19^o^C, and preferred temperatures by adults ranging from 16 - 17^o^C [@Clemens2016; @Clemens2017]. Temperatures greater than 19^o^C are typically associated with stress, tissue damage, and potential mortality in Pacific lamprey [@Clemens2016]. Temperature thresholds along with descriptions of the thresholds are shown in Tables \@ref(tab:temp-thresh) and \@ref(tab:temp-desc), respectively.
+Bull trout tended to have more specific habitat requirements compared to other salmonids, typically needing colder stream temperatures. Although bull trout have been reported in stream temperatures above 20^o^C, they are seldom found in waters where temperatures exceed 15 - 16^o^C. Temperatures above 16^o^C are detrimental for bull trout feeding and growth and are unlikely to be suitable for their long-term survival [@Selong2001 and references therein]. At temperatures greater than 18^o^C, bull trout exhibit reduced consumption, growth, and survival [@Selong2001]. 
+
+Pacific lamprey can tolerate a temperature range of 5 - 25^o^C [@Clemens2017]. Pacific lamprey spawning typically occurs between 10 - 18^o^C with early juvenile development between 14 - 19^o^C, and preferred temperatures by adults ranging from 16 - 17^o^C [@Clemens2016; @Clemens2017]. Temperatures greater than 19^o^C are typically associated with stress, tissue damage, and potential mortality in Pacific lamprey [@Clemens2016]. Temperature thresholds along with descriptions of the thresholds are shown in Tables \@ref(tab:temp-thresh) and \@ref(tab:temp-desc), respectively.
 
 ```{r temp-thresh}
 temp_thresh_tab = tibble(Species = c("Chinook", "Chinook", "Steelhead", "Bull Trout", "Pacific Lamprey"),
@@ -293,98 +293,81 @@ temp_desc
 
 ```
 
-
 # Results
 
 ## Recent and Projected Warming Scenarios
-
-Under most scenarios, a larger portion of stream length within the Upper Walla Walla watershed exceeded optimum, maximum, and acute temperature thresholds (Table \@ref(tab:temp-thresh)) when moving from the recent historic to projected 2040 and 2080 climate change scenarios (Table \@ref(tab:temp-suit-tab)). The single exception was for Pacific lamprey where stream temperatures didn't exceed their acute threshold of 25^o^C under any scenario. Under the recent historic temperature scenario, between 97.6 - 336.5 km of river (11.5% - 39.5% of stream length) exceeded optimum temperatures depending on species and life stage. Chinook salmon spawning is of most concern, as 39.5% of available stream length exceeds preferred thermal thresholds (5.6 - 14.5^o^C). The length of stream that exceeded optimum temperatures further increased to between 212.6 - 388.3 km (24.9% - 45.6%) under the 2040 scenario and 281.9 - 416.1 (33.1% - 48.8%) under the 2080 scenario, depending on species and life stage. Patterns for the percentage of stream length exceeding maximum temperatures were similar to those observed for optimum temperatures. Using recent historic modeled temperatures, and estimated 14.4 km (1.7%) of available stream habitat in the Upper Walla Walla watershed exceeded acute thresholds for Chinook salmon spawning and bull trout. Under the projected climate change scenarios, a greater portion of available habitat is predicted to exceed acute temperatures, at least for Chinook salmon, steelhead, and bull trout; the portion of stream that exceeded acute temperatures increased between 8.6 - 58.7 km (1.0% - 6.9%) and 27.4 - 123.5 km (3.2% - 14.5%) under the projected 2040 and 2080 climate warming scenarios, respectively (Table \@ref(tab:temp-suit-tab)).
 
 ```{r temp-suit-tab}
 spec_ls = c("Chinook Spawning", "Chinook Parr", "Steelhead Parr", "Bull Trout", "Pacific Lamprey")
 thresh = c("Within Optimum", "Above Optimum", "Above Maximum", "Above Acute")
 
-temp_suit_tab = uww_rch_sf %>%
-  select(`Recent Historic` = S2_02_11,
-         `2040 Projected` = S30_2040D,
-         `2080 Projected` = S32_2080D,
-         reach_leng) %>%
-  mutate(`Recent Historic` = replace(`Recent Historic`, `Recent Historic` == -9999.00, NA),
-         `2040 Projected` = replace(`2040 Projected`, `2040 Projected` == -9999.00, NA),
-         `2080 Projected` = replace(`2080 Projected`, `2080 Projected` == -9999.00, NA)) %>%
-  pivot_longer(cols = c("Recent Historic",
-                        "2040 Projected",
-                        "2080 Projected"),
-               names_to = "scenario",
-               values_to = "temp_c") %>%
-  mutate(scenario = factor(scenario, levels = c("Recent Historic", 
-                                                "2040 Projected", 
-                                                "2080 Projected"))) %>%
-  group_by(scenario) %>%
+temp_tbl = norwest_df %>%
   expand_grid(spec_ls, thresh) %>%
-  mutate(value = case_when(
-    spec_ls == "Chinook Spawning" & thresh == "Within Optimum" & temp_c >= 5.6 & temp_c <= 14.5 ~ T,
-    spec_ls == "Chinook Parr" & thresh == "Within Optimum" & temp_c >= 10 & temp_c <= 16 ~ T,
-    spec_ls == "Steelhead Parr" & thresh == "Within Optimum" & temp_c >= 10 & temp_c <= 18 ~ T,
-    spec_ls == "Bull Trout" & thresh == "Within Optimum" & temp_c >= 10.2 & temp_c <= 16 ~ T,
-    spec_ls == "Pacific Lamprey" & thresh == "Within Optimum" & temp_c >= 10 & temp_c <= 17 ~ T,
-    spec_ls == "Chinook Spawning" & thresh == "Above Optimum" & temp_c >= 14.5 ~ T,
-    spec_ls == "Chinook Parr" & thresh == "Above Optimum" & temp_c >= 16 ~ T,
-    spec_ls == "Steelhead Parr" & thresh == "Above Optimum" & temp_c >= 18 ~ T,
-    spec_ls == "Bull Trout" & thresh == "Above Optimum" & temp_c >= 16 ~ T,
-    spec_ls == "Pacific Lamprey" & thresh == "Above Optimum" & temp_c >= 17 ~ T,
-    spec_ls == "Chinook Spawning" & thresh == "Above Maximum" & temp_c >= 17.7 ~ T,
-    spec_ls == "Chinook Parr" & thresh == "Above Maximum" & temp_c >= 19 ~ T,
-    spec_ls == "Steelhead Parr" & thresh == "Above Maximum" & temp_c >= 19 ~ T,
-    spec_ls == "Bull Trout" & thresh == "Above Maximum" & temp_c >= 18 ~ T,
-    spec_ls == "Pacific Lamprey" & thresh == "Above Maximum" & temp_c >= 20 ~ T,
-    spec_ls == "Chinook Spawning" & thresh == "Above Acute" & temp_c >= 20 ~ T,
-    spec_ls == "Chinook Parr" & thresh == "Above Acute" & temp_c >= 22 ~ T,
-    spec_ls == "Steelhead Parr" & thresh == "Above Acute" & temp_c >= 22 ~ T,
-    spec_ls == "Bull Trout" & thresh == "Above Acute" & temp_c >= 20 ~ T,
-    spec_ls == "Pacific Lamprey" & thresh == "Above Acute" & temp_c >= 25 ~ T,
-    TRUE ~ F
+  mutate(in_thresh = case_when(
+    spec_ls == "Chinook Spawning" & thresh == "Within Optimum" & chnk == T & temp_c >= 7.2 & temp_c <= 14.5 ~ T,
+    spec_ls == "Chinook Spawning" & thresh == "Above Optimum" & chnk == T & temp_c > 14.5 ~ T,
+    spec_ls == "Chinook Spawning" & thresh == "Above Maximum" & chnk == T & temp_c > 17.7 ~ T,
+    spec_ls == "Chinook Spawning" & thresh == "Above Acute" & chnk == T & temp_c > 20 ~ T,
+    spec_ls == "Chinook Parr" & thresh == "Within Optimum" & chnk == T & temp_c >= 10 & temp_c <= 16 ~ T,
+    spec_ls == "Chinook Parr" & thresh == "Above Optimum" & chnk == T & temp_c > 16 ~ T,
+    spec_ls == "Chinook Parr" & thresh == "Above Maximum" & chnk == T & temp_c > 19 ~ T,
+    spec_ls == "Chinook Parr" & thresh == "Above Acute" & chnk == T & temp_c > 22 ~ T,
+    spec_ls == "Steelhead Parr" & thresh == "Within Optimum" & sthd == T & temp_c >= 10 & temp_c <= 18 ~ T,
+    spec_ls == "Steelhead Parr" & thresh == "Above Optimum" & sthd == T & temp_c > 18 ~ T,
+    spec_ls == "Steelhead Parr" & thresh == "Above Maximum" & sthd == T & temp_c > 19 ~ T,
+    spec_ls == "Steelhead Parr" & thresh == "Above Acute" & sthd == T & temp_c > 22 ~ T,
+    spec_ls == "Bull Trout" & thresh == "Within Optimum" & bull == T & temp_c >= 10.2 & temp_c <= 16 ~ T,
+    spec_ls == "Bull Trout" & thresh == "Above Optimum" & bull == T & temp_c > 16 ~ T,
+    spec_ls == "Bull Trout" & thresh == "Above Maximum" & bull == T & temp_c > 18 ~ T,
+    spec_ls == "Bull Trout" & thresh == "Above Acute" & bull == T & temp_c > 20 ~ T,
+    spec_ls == "Pacific Lamprey" & thresh == "Within Optimum" & lamp == T & temp_c >= 10 & temp_c <= 17 ~ T,
+    spec_ls == "Pacific Lamprey" & thresh == "Above Optimum" & lamp == T & temp_c > 17 ~ T,
+    spec_ls == "Pacific Lamprey" & thresh == "Above Maximum" & lamp == T & temp_c > 20 ~ T,
+    spec_ls == "Pacific Lamprey" & thresh == "Above Acute" & lamp == T & temp_c > 25 ~ T,
+    TRUE ~ F ))
+
+results_tbl = temp_tbl %>%
+  select(spec_ls, 
+         scenario, 
+         thresh, 
+         reach_leng, 
+         in_thresh) %>%
+  filter(scenario != "Recent Minus 1",
+         in_thresh == T) %>%
+  group_by(spec_ls,
+           scenario,
+           thresh) %>%
+  summarize(length_km = round(sum(reach_leng) / 1000, 1)) %>%
+  pivot_wider(names_from = thresh,
+              values_from = length_km) %>%
+  mutate(`Species Domain` = case_when(
+    spec_ls == "Chinook Spawning" ~ domain_km$domain_km[domain_km$species == "chnk"],
+    spec_ls == "Chinook Parr" ~ domain_km$domain_km[domain_km$species == "chnk"],
+    spec_ls == "Steelhead Parr" ~ domain_km$domain_km[domain_km$species == "sthd"],
+    spec_ls == "Bull Trout" ~ domain_km$domain_km[domain_km$species == "bull"],
+    spec_ls == "Pacific Lamprey" ~ domain_km$domain_km[domain_km$species == "lamp"]
   )) %>%
-  filter(value == T) %>%
-  group_by(scenario, spec_ls, thresh) %>%
-  summarize(length_km = sum(reach_leng) / 1000) %>%
-  mutate(perc = round((length_km / 852.2079) * 100, 1),
-         length_km = round(length_km, 1),
-         `km (%)` = paste0(length_km,
-                           " (",
-                           perc,
-                           "%)")) %>%
   select(`Life Stage` = spec_ls,
          Scenario = scenario,
-         Threshold = thresh,
-         `km (%)`) %>%
-  pivot_wider(names_from = Threshold,
-              values_from = `km (%)`) %>%
-  select(`Life Stage`,
-         `Scenario`,
          `Within Optimum`,
          `Above Optimum`,
          `Above Maximum`,
-         `Above Acute`) %>%
+         `Above Acute`,
+         `Species Domain`) %>%
   arrange(match(`Life Stage`, c("Chinook Spawning", 
                                 "Chinook Parr", 
                                 "Steelhead Parr", 
                                 "Bull Trout", 
-                                "Pacific Lamprey"))) %>%
-  mutate(`Above Acute` = replace_na(`Above Acute`, "0 (0%)")) %>%
-  kable(booktabs = T,
-        align = "cccccc",
-        caption = "The length (percentage) of stream within the Upper Walla Walla watershed (852.2 km total) that falls within optimum, above optimum, above maximum, and above acute temperature thresholds for each species, life stage combination and under recent historic and projected summer stream temperature scenarios.") %>%
-  kable_styling(full_width = F,
-                position = "center",
-                bootstrap_options = c("striped", "condensed"))
-temp_suit_tab 
+                                "Pacific Lamprey"))) #%>%
+  # kable(booktabs = T,
+  #       align = "ccccccc",
+  #       caption = "The length (km) of stream that falls within optimum, above optimum, above maximum, and above acute temperature thresholds for each species and life stage and within the species domain as defined by StreamNet, for each NorWeST stream temperature scenario.") %>%
+  # kable_styling(full_width = F,
+  #               position = "center",
+  #               bootstrap_options = c("striped", "condensed"))
+#results_tbl
 
 ```
-
-Not surprisingly, the amount of stream habitat within the optimum range for Chinook salmon spawning decreased from 494.5 km (58.0% of available habitat) under the recent historic scenario to 459.8 (54.0%) and 430.7 km (50.5%) under the 2040 and 2080 scenarios, respectively. Conversely, the amount of stream within preferred ranges increased under the 2040 and 2080 warming scenarios for Chinook salmon parr, steelhead parr, bull trout, and Pacific lamprey. However, this was mostly a result of suitable temperatures shifting to more upstream habitats as headwater streams warmed to within optimal ranges whereas larger portions of the lower watershed became too warm. This result is discussed in further detail below.
-
-Large portions of the Upper Walla Walla watershed are outside of preferred temperature ranges for each of the species evaluated (Figure \@ref(fig:within-optimum-map)), generally concentrated in the lowest portions of the watershed as well as the highest-elevation headwater streams. As temperatures increase in the 2040 and 2080 warming scenarios, the reaches within optimum temperatures tend to shift upstream as lower river sections begin to exceed preferred temperatures even moreso and headwater stream warm enough to be within optimum ranges. Figure \@ref(fig:within-optimum-map) indicates lower reaches that begin to exceed optimum temperatures (i.e., Lost) versus reaches that warm to be within optimum temperatures (i.e., Gained).
 
 ```{r within-optimum-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenarios where reaches were within optimal temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *Lost* indicates reaches that were inside the optimal temperature during the prior scenarios but were outside optimal temperatures for the scenario. Conversely, *Gained* indicates reaches that were outside the optimal temperature during the prior scenarios but were within optimal temperatures for the scenario."}
 within_optimum_df = norwest_df %>%
@@ -487,9 +470,425 @@ within_optimum_p
 
 ```
 
-In general, greater portions of the Upper Walla Walla watershed exceed optimum, maximum, and acute temperature thresholds when transitioning from the recent historic to 2080 warming scenario (Figures \@ref(fig:above-optimum-map) through \@ref(fig:acute-map)). Additional upstream reaches become unsuitable moving through the scenarios, depicted by the orange/red colored ("New Yes") reaches under each scenario. These results and spatial data are available within the GitHub repository located at https://github.com/Mount-Hood-Environmental/UWW.plan and can be exported for viewing in GIS software.
+## Chinook Salmon Spawning
 
-```{r above-optimum-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenarios where reaches exceeded the optimal temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *New Yes* indicates reaches that were below the optimal temperature thresholds during the prior scenarios but exceeded the optimal temperature thresholds for the scenario."}
+```{r chnk-spw-map, fig.cap = "test"}
+results_tbl %>%
+  filter(`Life Stage` == "Chinook Spawning") %>%
+  kable(booktabs = T,
+        align = "ccccccc",
+        caption = "The length (km) of stream that falls within optimum, above optimum, above maximum, and above acute temperature thresholds for Chinook salmon spawning within the Chinook salmon spatial domain defined by StreamNet, and for each NorWeST stream temperature scenario evaluated.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
+
+chnk_spw_df = temp_tbl %>%
+  filter(chnk == T,
+         spec_ls == "Chinook Spawning",
+         thresh != "Within Optimum",
+         scenario != "Recent Minus 1") %>%
+  select(spec_ls,
+         scenario,
+         temp_c,
+         geometry) %>%
+  distinct() %>%
+  mutate(Optimum = ifelse(temp_c > 14.5, "New Yes", "No"),
+         Maximum = ifelse(temp_c > 17.7, "New Yes", "No"),
+         Acute = ifelse(temp_c > 20.0, "New Yes", "No")) %>%
+  st_as_sf() %>%
+  mutate(geom_text = as.character(st_geometry(.))) %>%
+  group_by(geom_text) %>%
+  mutate(Optimum = case_when(
+    lag(Optimum) == "New Yes" ~ "Yes",
+    is.na(lead(Optimum)) ~ Optimum,
+    TRUE ~ Optimum
+  )) %>%
+  mutate(Maximum = case_when(
+    lag(Maximum) == "New Yes" ~ "Yes",
+    is.na(lead(Maximum)) ~ Maximum,
+    TRUE ~ Maximum
+  )) %>%
+  mutate(Acute = case_when(
+    lag(Acute) == "New Yes" ~ "Yes",
+    is.na(lead(Acute)) ~ Acute,
+    TRUE ~ Acute
+  )) %>%
+  select(-geom_text) %>%
+  pivot_longer(cols = c("Optimum",
+                        "Maximum",
+                        "Acute"),
+               names_to = "thresh") %>%
+  mutate(thresh = factor(thresh, levels = c("Optimum",
+                                            "Maximum",
+                                            "Acute")))
+
+chnk_spw_p = chnk_spw_df %>%
+  ggplot() +
+  geom_sf(data = chnk_spw_df %>%
+            st_union(),
+          fill = NA,
+          color = "gray50",
+          size = 0.5) +
+  geom_sf(data = chnk_spw_df,
+          aes(color = value),
+          size = 0.5) +
+  scale_color_manual(values = c("Yes" = "gray",
+                                "New Yes" = "orangered",
+                                "No" = river_color)) +
+  facet_grid(thresh ~ scenario) +
+  theme_bw() +
+  theme(legend.position = "top",
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_line(color = "transparent")) +
+  labs(color = "Above Threshold")
+chnk_spw_p
+
+```
+
+## Chinook Salmon Parr
+
+```{r chnk-juv-map, fig.cap = "test"}
+results_tbl %>%
+  filter(`Life Stage` == "Chinook Parr") %>%
+  kable(booktabs = T,
+        align = "ccccccc",
+        caption = "The length (km) of stream that falls within optimum, above optimum, above maximum, and above acute temperature thresholds for Chinook salmon juvenile, summer rearing within the Chinook salmon spatial domain defined by StreamNet, and for each NorWeST stream temperature scenario evaluated.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
+
+chnk_juv_df = temp_tbl %>%
+  filter(chnk == T,
+         spec_ls == "Chinook Parr",
+         thresh != "Within Optimum",
+         scenario != "Recent Minus 1") %>%
+  select(spec_ls,
+         scenario,
+         temp_c,
+         geometry) %>%
+  distinct() %>%
+  mutate(Optimum = ifelse(temp_c > 16, "New Yes", "No"),
+         Maximum = ifelse(temp_c > 19, "New Yes", "No"),
+         Acute = ifelse(temp_c > 22, "New Yes", "No")) %>%
+  st_as_sf() %>%
+  mutate(geom_text = as.character(st_geometry(.))) %>%
+  group_by(geom_text) %>%
+  mutate(Optimum = case_when(
+    lag(Optimum) == "New Yes" ~ "Yes",
+    is.na(lead(Optimum)) ~ Optimum,
+    TRUE ~ Optimum
+  )) %>%
+  mutate(Maximum = case_when(
+    lag(Maximum) == "New Yes" ~ "Yes",
+    is.na(lead(Maximum)) ~ Maximum,
+    TRUE ~ Maximum
+  )) %>%
+  mutate(Acute = case_when(
+    lag(Acute) == "New Yes" ~ "Yes",
+    is.na(lead(Acute)) ~ Acute,
+    TRUE ~ Acute
+  )) %>%
+  select(-geom_text) %>%
+  pivot_longer(cols = c("Optimum",
+                        "Maximum",
+                        "Acute"),
+               names_to = "thresh") %>%
+  mutate(thresh = factor(thresh, levels = c("Optimum",
+                                            "Maximum",
+                                            "Acute")))
+
+chnk_juv_p = chnk_juv_df %>%
+  ggplot() +
+  geom_sf(data = chnk_juv_df %>%
+            st_union(),
+          fill = NA,
+          color = "gray50",
+          size = 0.5) +
+  geom_sf(data = chnk_juv_df,
+          aes(color = value),
+          size = 0.5) +
+  scale_color_manual(values = c("Yes" = "gray",
+                                "New Yes" = "orangered",
+                                "No" = river_color)) +
+  facet_grid(thresh ~ scenario) +
+  theme_bw() +
+  theme(legend.position = "top",
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_line(color = "transparent")) +
+  labs(color = "Above Threshold")
+chnk_juv_p
+
+```
+
+# Steelhead Parr
+
+```{r sthd-juv-map, fig.cap = "test"}
+results_tbl %>%
+  filter(`Life Stage` == "Steelhead Parr") %>%
+  kable(booktabs = T,
+        align = "ccccccc",
+        caption = "The length (km) of stream that falls within optimum, above optimum, above maximum, and above acute temperature thresholds for steelhead juvenile, summer rearing within the steelhead domain defined by StreamNet, and for each NorWeST stream temperature scenario evaluated.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
+
+sthd_juv_df = temp_tbl %>%
+  filter(sthd == T,
+         spec_ls == "Steelhead Parr",
+         thresh != "Within Optimum",
+         scenario != "Recent Minus 1") %>%
+  select(spec_ls,
+         scenario,
+         temp_c,
+         geometry) %>%
+  distinct() %>%
+  mutate(Optimum = ifelse(temp_c > 18, "New Yes", "No"),
+         Maximum = ifelse(temp_c > 19, "New Yes", "No"),
+         Acute = ifelse(temp_c > 22, "New Yes", "No")) %>%
+  st_as_sf() %>%
+  mutate(geom_text = as.character(st_geometry(.))) %>%
+  group_by(geom_text) %>%
+  mutate(Optimum = case_when(
+    lag(Optimum) == "New Yes" ~ "Yes",
+    is.na(lead(Optimum)) ~ Optimum,
+    TRUE ~ Optimum
+  )) %>%
+  mutate(Maximum = case_when(
+    lag(Maximum) == "New Yes" ~ "Yes",
+    is.na(lead(Maximum)) ~ Maximum,
+    TRUE ~ Maximum
+  )) %>%
+  mutate(Acute = case_when(
+    lag(Acute) == "New Yes" ~ "Yes",
+    is.na(lead(Acute)) ~ Acute,
+    TRUE ~ Acute
+  )) %>%
+  select(-geom_text) %>%
+  pivot_longer(cols = c("Optimum",
+                        "Maximum",
+                        "Acute"),
+               names_to = "thresh") %>%
+  mutate(thresh = factor(thresh, levels = c("Optimum",
+                                            "Maximum",
+                                            "Acute")))
+
+sthd_juv_p = sthd_juv_df %>%
+  ggplot() +
+  geom_sf(data = sthd_juv_df %>%
+            st_union(),
+          fill = NA,
+          color = "gray50",
+          size = 0.5) +
+  geom_sf(data = sthd_juv_df,
+          aes(color = value),
+          size = 0.5) +
+  scale_color_manual(values = c("Yes" = "gray",
+                                "New Yes" = "orangered",
+                                "No" = river_color)) +
+  facet_grid(thresh ~ scenario) +
+  theme_bw() +
+  theme(legend.position = "top",
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_line(color = "transparent")) +
+  labs(color = "Above Threshold")
+sthd_juv_p
+
+```
+
+# Bull Trout
+
+```{r bull-map, fig.cap = "test"}
+results_tbl %>%
+  filter(`Life Stage` == "Bull Trout") %>%
+  kable(booktabs = T,
+        align = "ccccccc",
+        caption = "The length (km) of stream that falls within optimum, above optimum, above maximum, and above acute temperature thresholds for bull trout within the bull trout spatial domain defined by StreamNet, and for each NorWeST stream temperature scenario evaluated.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
+
+bull_df = temp_tbl %>%
+  filter(bull == T,
+         spec_ls == "Bull Trout",
+         thresh != "Within Optimum",
+         scenario != "Recent Minus 1") %>%
+  select(spec_ls,
+         scenario,
+         temp_c,
+         geometry) %>%
+  distinct() %>%
+  mutate(Optimum = ifelse(temp_c > 16, "New Yes", "No"),
+         Maximum = ifelse(temp_c > 18, "New Yes", "No"),
+         Acute = ifelse(temp_c > 20, "New Yes", "No")) %>%
+  st_as_sf() %>%
+  mutate(geom_text = as.character(st_geometry(.))) %>%
+  group_by(geom_text) %>%
+  mutate(Optimum = case_when(
+    lag(Optimum) == "New Yes" ~ "Yes",
+    is.na(lead(Optimum)) ~ Optimum,
+    TRUE ~ Optimum
+  )) %>%
+  mutate(Maximum = case_when(
+    lag(Maximum) == "New Yes" ~ "Yes",
+    is.na(lead(Maximum)) ~ Maximum,
+    TRUE ~ Maximum
+  )) %>%
+  mutate(Acute = case_when(
+    lag(Acute) == "New Yes" ~ "Yes",
+    is.na(lead(Acute)) ~ Acute,
+    TRUE ~ Acute
+  )) %>%
+  select(-geom_text) %>%
+  pivot_longer(cols = c("Optimum",
+                        "Maximum",
+                        "Acute"),
+               names_to = "thresh") %>%
+  mutate(thresh = factor(thresh, levels = c("Optimum",
+                                            "Maximum",
+                                            "Acute")))
+
+bull_p = bull_df %>%
+  ggplot() +
+  geom_sf(data = bull_df %>%
+            st_union(),
+          fill = NA,
+          color = "gray50",
+          size = 0.5) +
+  geom_sf(data = bull_df,
+          aes(color = value),
+          size = 0.5) +
+  scale_color_manual(values = c("Yes" = "gray",
+                                "New Yes" = "orangered",
+                                "No" = river_color)) +
+  facet_grid(thresh ~ scenario) +
+  theme_bw() +
+  theme(legend.position = "top",
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_line(color = "transparent")) +
+  labs(color = "Above Threshold")
+bull_p
+
+```
+
+# Pacific Lamprey
+
+```{r lamp-map, fig.cap = "test"}
+results_tbl %>%
+  filter(`Life Stage` == "Pacific Lamprey") %>%
+  kable(booktabs = T,
+        align = "ccccccc",
+        caption = "The length (km) of stream that falls within optimum, above optimum, above maximum, and above acute temperature thresholds for Pacific lamprey within the Pacific lamprey spatial domain defined by StreamNet, and for each NorWeST stream temperature scenario evaluated.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
+
+lamp_df = temp_tbl %>%
+  filter(lamp == T,
+         spec_ls == "Pacific Lamprey",
+         thresh != "Within Optimum",
+         scenario != "Recent Minus 1") %>%
+  select(spec_ls,
+         scenario,
+         temp_c,
+         geometry) %>%
+  distinct() %>%
+  mutate(Optimum = ifelse(temp_c > 16, "New Yes", "No"),
+         Maximum = ifelse(temp_c > 18, "New Yes", "No"),
+         Acute = ifelse(temp_c > 20, "New Yes", "No")) %>%
+  st_as_sf() %>%
+  mutate(geom_text = as.character(st_geometry(.))) %>%
+  group_by(geom_text) %>%
+  mutate(Optimum = case_when(
+    lag(Optimum) == "New Yes" ~ "Yes",
+    is.na(lead(Optimum)) ~ Optimum,
+    TRUE ~ Optimum
+  )) %>%
+  mutate(Maximum = case_when(
+    lag(Maximum) == "New Yes" ~ "Yes",
+    is.na(lead(Maximum)) ~ Maximum,
+    TRUE ~ Maximum
+  )) %>%
+  mutate(Acute = case_when(
+    lag(Acute) == "New Yes" ~ "Yes",
+    is.na(lead(Acute)) ~ Acute,
+    TRUE ~ Acute
+  )) %>%
+  select(-geom_text) %>%
+  pivot_longer(cols = c("Optimum",
+                        "Maximum",
+                        "Acute"),
+               names_to = "thresh") %>%
+  mutate(thresh = factor(thresh, levels = c("Optimum",
+                                            "Maximum",
+                                            "Acute")))
+
+lamp_p = lamp_df %>%
+  ggplot() +
+  geom_sf(data = lamp_df %>%
+            st_union(),
+          fill = NA,
+          color = "gray50",
+          size = 0.5) +
+  geom_sf(data = lamp_df,
+          aes(color = value),
+          size = 0.5) +
+  scale_color_manual(values = c("Yes" = "gray",
+                                "New Yes" = "orangered",
+                                "No" = river_color)) +
+  facet_grid(thresh ~ scenario) +
+  theme_bw() +
+  theme(legend.position = "top",
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_line(color = "transparent")) +
+  labs(color = "Above Threshold")
+lamp_p
+
+```
+
+<!-- Under most scenarios, a larger portion of stream length within the Upper Walla Walla watershed exceeded optimum, maximum, and acute temperature thresholds (Table \@ref(tab:temp-thresh)) when moving from the recent historic to projected 2040 and 2080 climate change scenarios (Table \@ref(tab:temp-suit-tab)). The single exception was for Pacific lamprey where stream temperatures didn't exceed their acute threshold of 25^o^C under any scenario. Under the recent historic temperature scenario, between 97.6 - 336.5 km of river (11.5% - 39.5% of stream length) exceeded optimum temperatures depending on species and life stage. Chinook salmon spawning is of most concern, as 39.5% of available stream length exceeds preferred thermal thresholds (5.6 - 14.5^o^C). The length of stream that exceeded optimum temperatures further increased to between 212.6 - 388.3 km (24.9% - 45.6%) under the 2040 scenario and 281.9 - 416.1 (33.1% - 48.8%) under the 2080 scenario, depending on species and life stage. Patterns for the percentage of stream length exceeding maximum temperatures were similar to those observed for optimum temperatures. Using recent historic modeled temperatures, and estimated 14.4 km (1.7%) of available stream habitat in the Upper Walla Walla watershed exceeded acute thresholds for Chinook salmon spawning and bull trout. Under the projected climate change scenarios, a greater portion of available habitat is predicted to exceed acute temperatures, at least for Chinook salmon, steelhead, and bull trout; the portion of stream that exceeded acute temperatures increased between 8.6 - 58.7 km (1.0% - 6.9%) and 27.4 - 123.5 km (3.2% - 14.5%) under the projected 2040 and 2080 climate warming scenarios, respectively (Table \@ref(tab:temp-suit-tab)). -->
+
+<!-- Not surprisingly, the amount of stream habitat within the optimum range for Chinook salmon spawning decreased from 494.5 km (58.0% of available habitat) under the recent historic scenario to 459.8 (54.0%) and 430.7 km (50.5%) under the 2040 and 2080 scenarios, respectively. Conversely, the amount of stream within preferred ranges increased under the 2040 and 2080 warming scenarios for Chinook salmon parr, steelhead parr, bull trout, and Pacific lamprey. However, this was mostly a result of suitable temperatures shifting to more upstream habitats as headwater streams warmed to within optimal ranges whereas larger portions of the lower watershed became too warm. This result is discussed in further detail below. -->
+
+<!-- Large portions of the Upper Walla Walla watershed are outside of preferred temperature ranges for each of the species evaluated (Figure \@ref(fig:within-optimum-map)), generally concentrated in the lowest portions of the watershed as well as the highest-elevation headwater streams. As temperatures increase in the 2040 and 2080 warming scenarios, the reaches within optimum temperatures tend to shift upstream as lower river sections begin to exceed preferred temperatures even moreso and headwater stream warm enough to be within optimum ranges. Figure \@ref(fig:within-optimum-map) indicates lower reaches that begin to exceed optimum temperatures (i.e., Lost) versus reaches that warm to be within optimum temperatures (i.e., Gained). -->
+
+<!-- In general, greater portions of the Upper Walla Walla watershed exceed optimum, maximum, and acute temperature thresholds when transitioning from the recent historic to 2080 warming scenario (Figures \@ref(fig:above-optimum-map) through \@ref(fig:acute-map)). Additional upstream reaches become unsuitable moving through the scenarios, depicted by the orange/red colored ("New Yes") reaches under each scenario. These results and spatial data are available within the GitHub repository located at https://github.com/Mount-Hood-Environmental/UWW.plan and can be exported for viewing in GIS software. -->
+
+## Theoretical Cooling Scenario
+
+Predictably, the hypothetical scenario where summer stream temperatures were decreased by 1^o^C relative to the recent historic composite mean reduced the stream length that exceeded optimum, maximum, and acute temperature thresholds for focal species and life stages. The reduction from the recent historic scenario resulted in between 47.6 - 85.3 km (5.6% - 10.0%) less stream length that exceeded optimum temperatures and 7.4 - 64.1 km (0.9% - 7.5%) that exceeded maximum temperatures.
+
+<!-- We still need to insert a summary figure or table here for the hypothetical scenario. -->
+
+# Discussion
+
+An evaluation of recent historic (2002 - 2011) mean August stream temperatures showed that greater than 10% of the Upper Walla Walla watershed exceeds optimum temperatures for the species and summer life stages of interest, and that value increased to greater than 24% and 33% under projected 2040 and 2080 climate warming scenarios, respectively. Chinook salmon spawning, which typically occurs mid-August to mid-September for Snake River populations, was of most concern. We estimated that greater than 330 km of the watershed currently exceeds optimum temperatures for Chinook salmon spawning; that value increased to greater than 400 km or nearly half of the watershed under the 2080 projected scenario.
+
+Highlights the importance of conducting resto projects in the middle and lower reaches.
+
+Discuss optimal temperatures range moving further up watershed. Even though temperature ranges might improve (warm slightly) in future scenarios, practical habitat suitability for upper reaches is likely overstated due to small tributary sizes, low flows, etc. The loss of thermally suitable habitat in the lower watershed should be the highest concern.
+
+Recognize the -1 C scenario is unrealistic but illustrative of how resto actions throughout the watershed could help mitigate the impacts of a warming climate.
+
+Actions to reduce peak summer water temperatures, such as riparian restoration, improved grazing practices, and channel narrowing should be considered in the Upper Walla Walla watershed, particularly in reaches identified in Figures \@ref(fig:above-optimum-map) and \@ref(fig:max-map). @Justice2017 similarly evaluated a 2080s climate change scenario and demonstrated that despite substantial increases in summer stream temperatures, basin-wide restoration of riparian vegetation and channel width could offset climate impacts in the Upper Grande Ronde and Catherine Creek watersheds in eastern Oregon.
+
+# Literature Cited
+
+<!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
+
+::: {#refs}
+:::
+
+```{r above-optimum-map, eval = F, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenarios where reaches exceeded the optimal temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *New Yes* indicates reaches that were below the optimal temperature thresholds during the prior scenarios but exceeded the optimal temperature thresholds for the scenario."}
 optimum_df = norwest_df %>%
   filter(scenario != "Recent Minus 1") %>%
   mutate(`Chinook Spawning` = ifelse(temp_c > 14.5, "New Yes", "No"),
@@ -564,7 +963,7 @@ optimum_p
 
 ```
 
-```{r max-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenarios where reaches exceeded the maximum temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *New Yes* indicates reaches that were below the maximum temperature thresholds during the prior scenarios but exceeded the maximum temperature thresholds for the scenario."}
+```{r max-map, eval = F,  fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenarios where reaches exceeded the maximum temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *New Yes* indicates reaches that were below the maximum temperature thresholds during the prior scenarios but exceeded the maximum temperature thresholds for the scenario."}
 maximum_df = norwest_df %>%
   filter(scenario != "Recent Minus 1") %>%
   mutate(`Chinook Spawning` = ifelse(temp_c > 17.7, "New Yes", "No"),
@@ -639,7 +1038,7 @@ maximum_p
 
 ```
 
-```{r acute-map, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenarios where reaches exceeded acute temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *New Yes* indicates reaches that were below the acute temperature thresholds during the prior scenarios but exceeded the acute temperature thresholds for the scenario."}
+```{r acute-map, eval = F, fig.width = 6, fig.height = 7, fig.cap = "Maps depicting modeled August mean stream temperatures scenarios where reaches exceeded acute temperatures for summer life stages of focal species within the Upper Walla Walla watershed. *New Yes* indicates reaches that were below the acute temperature thresholds during the prior scenarios but exceeded the acute temperature thresholds for the scenario."}
 acute_df = norwest_df %>%
   filter(scenario != "Recent Minus 1") %>%
   mutate(`Chinook Spawning` = ifelse(temp_c > 20, "New Yes", "No"),
@@ -713,29 +1112,3 @@ acute_p = acute_df %>%
 acute_p
 
 ```
-
-## Theoretical Cooling Scenario
-
-Predictably, the hypothetical scenario where summer stream temperatures were decreased by 1^o^C relative to the recent historic composite mean reduced the stream length that exceeded optimum, maximum, and acute temperature thresholds for focal species and life stages. The reduction from the recent historic scenario resulted in between 47.6 - 85.3 km (5.6% - 10.0%) less stream length that exceeded optimum temperatures and 7.4 - 64.1 km (0.9% - 7.5%) that exceeded maximum temperatures.
-
-<!-- We still need to insert a summary figure or table here for the hypothetical scenario. -->
-
-
-# Discussion
-
-An evaluation of recent historic (2002 - 2011) mean August stream temperatures showed that greater than 10% of the Upper Walla Walla watershed exceeds optimum temperatures for the species and summer life stages of interest, and that value increased to greater than 24% and 33% under projected 2040 and 2080 climate warming scenarios, respectively. Chinook salmon spawning, which typically occurs mid-August to mid-September for Snake River populations, was of most concern. We estimated that greater than 330 km of the watershed currently exceeds optimum temperatures for Chinook salmon spawning; that value increased to greater than 400 km or nearly half of the watershed under the 2080 projected scenario.
-
-Highlights the importance of conducting resto projects in the middle and lower reaches.
-
-Discuss optimal temperatures range moving further up watershed. Even though temperature ranges might improve (warm slightly) in future scenarios, practical habitat suitability for upper reaches is likely overstated due to small tributary sizes, low flows, etc. The loss of thermally suitable habitat in the lower watershed should be the highest concern.
-
-Recognize the -1 C scenario is unrealistic but illustrative of how resto actions throughout the watershed could help mitigate the impacts of a warming climate.
-
-Actions to reduce peak summer water temperatures, such as riparian restoration, improved grazing practices, and channel narrowing should be considered in the Upper Walla Walla watershed, particularly in reaches identified in Figures \@ref(fig:above-optimum-map) and \@ref(fig:max-map). @Justice2017 similarly evaluated a 2080s climate change scenario and demonstrated that despite substantial increases in summer stream temperatures, basin-wide restoration of riparian vegetation and channel width could offset climate impacts in the Upper Grande Ronde and Catherine Creek watersheds in eastern Oregon.
-
-# Literature Cited
-
-<!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
-
-::: {#refs}
-:::
