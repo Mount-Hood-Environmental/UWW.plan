@@ -15,17 +15,6 @@ author:
     correspondence: no
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-  bookdown::word_document2:
-    fig_caption: yes
-    reference_docx: "../templates/template.docx" # Insert path for the DOCX file
-    number_sections: FALSE
-    toc: no
-    always_allow_html: true
-    fig_width: 6
-    pandoc_args:
-    - --lua-filter=../templates/scholarly-metadata.lua
-    - --lua-filter=../templates/author-info-blocks.lua
-    - --lua-filter=../templates/pagebreak.lua
   bookdown::html_document2:
     theme: yeti
     toc: yes
@@ -38,6 +27,17 @@ output:
     - "--lua-filter=../templates/scholarly-metadata.lua"
     - "--lua-filter=../templates/author-info-blocks.lua"
     - "--lua-filter=../templates/pagebreak.lua"
+  bookdown::word_document2:
+    fig_caption: yes
+    reference_docx: "../templates/template.docx" # Insert path for the DOCX file
+    number_sections: FALSE
+    toc: no
+    always_allow_html: true
+    fig_width: 6
+    pandoc_args:
+    - --lua-filter=../templates/scholarly-metadata.lua
+    - --lua-filter=../templates/author-info-blocks.lua
+    - --lua-filter=../templates/pagebreak.lua
 institute:
 - mhe_mccall: Mount Hood Environmental, PO Box 4282, McCall, Idaho, 83638, USA
 - mhe_challis: Mount Hood Environmental, PO Box 1303, Challis, Idaho 83226, USA
@@ -977,3 +977,227 @@ The results of this assessment highlights the importance of conducting restorati
 
 ::: {#refs}
 :::
+
+```{r write-spatial, eval = F}
+chnk_spw_recent = temp_tbl %>%
+  select(spec_ls,
+         scenario,
+         in_domain = chnk,
+         reach_leng,
+         temp_c,
+         thresh,
+         in_thresh,
+         geometry) %>%
+  filter(scenario == "Recent Historic",
+         spec_ls == "Chinook Spawning") %>%
+  pivot_wider(names_from = "thresh",
+              values_from = "in_thresh")
+
+chnk_spw_2040 = temp_tbl %>%
+  select(spec_ls,
+         scenario,
+         in_domain = chnk,
+         reach_leng,
+         temp_c,
+         thresh,
+         in_thresh,
+         geometry) %>%
+  filter(scenario == "2040 Projected",
+         spec_ls == "Chinook Spawning") %>%
+  pivot_wider(names_from = "thresh",
+              values_from = "in_thresh")
+chnk_spw_2080 = temp_tbl %>%
+  select(spec_ls,
+         scenario,
+         in_domain = chnk,
+         reach_leng,
+         temp_c,
+         thresh,
+         in_thresh,
+         geometry) %>%
+  filter(scenario == "2080 Projected",
+         spec_ls == "Chinook Spawning") %>%
+  pivot_wider(names_from = "thresh",
+              values_from = "in_thresh")
+
+chnk_juv_recent = temp_tbl %>%
+  select(spec_ls,
+         scenario,
+         in_domain = chnk,
+         reach_leng,
+         temp_c,
+         thresh,
+         in_thresh,
+         geometry) %>%
+  filter(scenario == "Recent Historic",
+         spec_ls == "Chinook Parr") %>%
+  pivot_wider(names_from = "thresh",
+              values_from = "in_thresh")
+
+chnk_juv_2040 = temp_tbl %>%
+  select(spec_ls,
+         scenario,
+         in_domain = chnk,
+         reach_leng,
+         temp_c,
+         thresh,
+         in_thresh,
+         geometry) %>%
+  filter(scenario == "2040 Projected",
+         spec_ls == "Chinook Parr") %>%
+  pivot_wider(names_from = "thresh",
+              values_from = "in_thresh")
+chnk_juv_2080 = temp_tbl %>%
+  select(spec_ls,
+         scenario,
+         in_domain = chnk,
+         reach_leng,
+         temp_c,
+         thresh,
+         in_thresh,
+         geometry) %>%
+  filter(scenario == "2080 Projected",
+         spec_ls == "Chinook Parr") %>%
+  pivot_wider(names_from = "thresh",
+              values_from = "in_thresh")
+
+sthd_juv_recent = temp_tbl %>%
+  select(spec_ls,
+         scenario,
+         in_domain = chnk,
+         reach_leng,
+         temp_c,
+         thresh,
+         in_thresh,
+         geometry) %>%
+  filter(scenario == "Recent Historic",
+         spec_ls == "Steelhead Parr") %>%
+  pivot_wider(names_from = "thresh",
+              values_from = "in_thresh")
+
+sthd_juv_2040 = temp_tbl %>%
+  select(spec_ls,
+         scenario,
+         in_domain = chnk,
+         reach_leng,
+         temp_c,
+         thresh,
+         in_thresh,
+         geometry) %>%
+  filter(scenario == "2040 Projected",
+         spec_ls == "Steelhead Parr") %>%
+  pivot_wider(names_from = "thresh",
+              values_from = "in_thresh")
+sthd_juv_2080 = temp_tbl %>%
+  select(spec_ls,
+         scenario,
+         in_domain = chnk,
+         reach_leng,
+         temp_c,
+         thresh,
+         in_thresh,
+         geometry) %>%
+  filter(scenario == "2080 Projected",
+         spec_ls == "Steelhead Parr") %>%
+  pivot_wider(names_from = "thresh",
+              values_from = "in_thresh")
+
+bull_recent = temp_tbl %>%
+  select(spec_ls,
+         scenario,
+         in_domain = chnk,
+         reach_leng,
+         temp_c,
+         thresh,
+         in_thresh,
+         geometry) %>%
+  filter(scenario == "Recent Historic",
+         spec_ls == "Bull Trout") %>%
+  pivot_wider(names_from = "thresh",
+              values_from = "in_thresh")
+
+bull_2040 = temp_tbl %>%
+  select(spec_ls,
+         scenario,
+         in_domain = chnk,
+         reach_leng,
+         temp_c,
+         thresh,
+         in_thresh,
+         geometry) %>%
+  filter(scenario == "2040 Projected",
+         spec_ls == "Bull Trout") %>%
+  pivot_wider(names_from = "thresh",
+              values_from = "in_thresh")
+bull_2080 = temp_tbl %>%
+  select(spec_ls,
+         scenario,
+         in_domain = chnk,
+         reach_leng,
+         temp_c,
+         thresh,
+         in_thresh,
+         geometry) %>%
+  filter(scenario == "2080 Projected",
+         spec_ls == "Bull Trout") %>%
+  pivot_wider(names_from = "thresh",
+              values_from = "in_thresh")
+
+lamp_recent = temp_tbl %>%
+  select(spec_ls,
+         scenario,
+         in_domain = chnk,
+         reach_leng,
+         temp_c,
+         thresh,
+         in_thresh,
+         geometry) %>%
+  filter(scenario == "Recent Historic",
+         spec_ls == "Pacific Lamprey") %>%
+  pivot_wider(names_from = "thresh",
+              values_from = "in_thresh")
+
+lamp_2040 = temp_tbl %>%
+  select(spec_ls,
+         scenario,
+         in_domain = chnk,
+         reach_leng,
+         temp_c,
+         thresh,
+         in_thresh,
+         geometry) %>%
+  filter(scenario == "2040 Projected",
+         spec_ls == "Pacific Lamprey") %>%
+  pivot_wider(names_from = "thresh",
+              values_from = "in_thresh")
+lamp_2080 = temp_tbl %>%
+  select(spec_ls,
+         scenario,
+         in_domain = chnk,
+         reach_leng,
+         temp_c,
+         thresh,
+         in_thresh,
+         geometry) %>%
+  filter(scenario == "2080 Projected",
+         spec_ls == "Pacific Lamprey") %>%
+  pivot_wider(names_from = "thresh",
+              values_from = "in_thresh")
+
+st_write(chnk_spw_recent, here("analysis/data/derived_data/norwest/uww_stream_temp.gpkg"), "chnk_spw_recent")
+st_write(chnk_spw_2040, here("analysis/data/derived_data/norwest/uww_stream_temp.gpkg"), "chnk_spw_2040", append = TRUE)
+st_write(chnk_spw_2080, here("analysis/data/derived_data/norwest/uww_stream_temp.gpkg"), "chnk_spw_2080", append = TRUE)
+st_write(chnk_juv_recent, here("analysis/data/derived_data/norwest/uww_stream_temp.gpkg"), "chnk_juv_recent", append = TRUE)
+st_write(chnk_juv_2040, here("analysis/data/derived_data/norwest/uww_stream_temp.gpkg"), "chnk_juv_2040", append = TRUE)
+st_write(chnk_juv_2080, here("analysis/data/derived_data/norwest/uww_stream_temp.gpkg"), "chnk_juv_2080", append = TRUE)
+st_write(sthd_juv_recent, here("analysis/data/derived_data/norwest/uww_stream_temp.gpkg"), "sthd_juv_recent", append = TRUE)
+st_write(sthd_juv_2040, here("analysis/data/derived_data/norwest/uww_stream_temp.gpkg"), "sthd_juv_2040", append = TRUE)
+st_write(sthd_juv_2080, here("analysis/data/derived_data/norwest/uww_stream_temp.gpkg"), "sthd_juv_2080", append = TRUE)
+st_write(bull_recent, here("analysis/data/derived_data/norwest/uww_stream_temp.gpkg"), "bull_recent", append = TRUE)
+st_write(bull_2040, here("analysis/data/derived_data/norwest/uww_stream_temp.gpkg"), "bull_2040", append = TRUE)
+st_write(bull_2080, here("analysis/data/derived_data/norwest/uww_stream_temp.gpkg"), "bull_2080", append = TRUE)
+st_write(lamp_recent, here("analysis/data/derived_data/norwest/uww_stream_temp.gpkg"), "lamp_recent", append = TRUE)
+st_write(lamp_2040, here("analysis/data/derived_data/norwest/uww_stream_temp.gpkg"), "lamp_2040", append = TRUE)
+st_write(lamp_2080, here("analysis/data/derived_data/norwest/uww_stream_temp.gpkg"), "lamp_2080", append = TRUE)
+
+```
