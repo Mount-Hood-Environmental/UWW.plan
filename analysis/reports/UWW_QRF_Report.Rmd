@@ -1,5 +1,5 @@
 ---
-title: "Upper Walla Walla Watershed - Habitat Capacity Assessment"
+title: "Fish Habitat Capacity Assessment, Upper Walla Walla Watershed"
 author:
   - Bryce N. Oldemeyer:
       email: bryce.oldemeyer@mthoodenvironmental.com
@@ -12,10 +12,6 @@ author:
   - Kevin E. See:
       email: Kevin.See@dfw.wa.gov
       institute: wdfw
-      correspondence: false
-  - Joshua P. Egan:
-      email: joshua.egan@mthoodenvironmental.com
-      institute: [mhe_mccall]
       correspondence: false
   - Michael W. Ackerman:
       email: mike.ackerman@mthoodenvironmental.com
@@ -92,16 +88,17 @@ theme_set(theme_pubr(x.text.angle = 45,
 
 ```
 
+
 # Background
 
-Water is the cornerstone of First Foods production and inherently tied to the five fundamental touchstones: hydrology, geomorphology, habitat and network connectivity, riverine biotic community, and riparian vegetation [@Jones2008]. These touchstones form the Umatilla River Vision, a holistic approach to water quality restoration. In support of the Vision, population status and habitat use of riverine fishes defined as First Foods (including Endangered Species Act [ESA] listed middle Columbia River summer-run steelhead, spring-run Chinook salmon, bull trout, and Pacific lamprey) have been identified as critical data needs in the assessment of biotic communities [@Jones2008]. The decline of anadromous Pacific salmonid populations (*Oncorhynchus* spp.) across the Pacific Northwest, USA, has prompted numerous actions aimed at reversing that trend. These actions are often categorized into four 'H's' - harvest modification, habitat rehabilitation, hydroelectric operations, and hatchery practices. While these actions can influence salmonid survival, predicting the potential magnitude of population uplift and developing the most cost-effective and sustainable solutions is a complex task that results in substantial uncertainties. Recovery plans (e.g., @NOAA2009) have identified adult escapement targets at the population scale, providing a quantitative metric useful for evaluating the magnitude of survival improvements (across life-stages) required. These abundance targets provide a benchmark against which habitat rehabilitation actions can be measured. Here, we apply a novel approach to estimating life-stage specific habitat capacity for spring-run Chinook salmon (hereafter Chinook salmon) and summer-run steelhead (hereafter steelhead) to quantify the magnitude and types of tributary habitat restoration needed to achieve recovery goals in the Upper Walla Walla watershed. The necessity of tributary habitat restoration actions can now be demonstrated, and the magnitude of required change can be placed in context with the other 'H's'.
+Water is the cornerstone of First Foods production and inherently tied to the five fundamental touchstones: hydrology, geomorphology, habitat and network connectivity, riverine biotic community, and riparian vegetation [@Jones2008]. These touchstones form the Umatilla River Vision, a holistic approach to water quality restoration. In support of the Vision, population status and habitat use of riverine fishes defined as First Foods, including Endangered Species Act (ESA) listed middle Columbia River summer-run steelhead, spring-run Chinook salmon, bull trout, and Pacific lamprey, have been identified as critical data needs in the assessment of biotic communities [@Jones2008]. The decline of anadromous Pacific salmonid populations (*Oncorhynchus* spp.) across the Pacific Northwest, USA, has prompted numerous actions aimed at reversing that trend. These actions are often categorized into four 'H's': harvest modification, habitat rehabilitation, hydroelectric operations, and hatchery practices. While these actions can influence salmonid survival, predicting the potential magnitude of population uplift and developing the most cost-effective and sustainable solutions is a complex task that results in substantial uncertainties. Recovery plans, e.g., @NOAA2009, have identified adult escapement targets at the population scale, providing a quantitative metric useful for evaluating the magnitude of survival improvements required. These abundance targets provide a benchmark against which habitat rehabilitation actions can be measured. Here, we apply a novel approach to estimating life stage specific habitat capacity for spring-run Chinook salmon (hereafter Chinook salmon) and summer-run steelhead (hereafter steelhead) to quantify the magnitude and types of tributary habitat restoration needed to achieve recovery goals in the Upper Walla Walla watershed. The necessity of tributary habitat restoration actions can now be demonstrated, and the magnitude of required change can be placed in context with the other 'H's'.
 
 ## Focal Species
 
-The focal species for the QRF habitat capacity assessment are:
+The focal species for the fish habitat capacity assessment are:
 
--   Spring-run Chinook salmon (*Oncorhynchus tshawytscha*; hereafter Chinook salmon)
--   Middle Columbia River summer steelhead (*O. mykiss*; hereafter steelhead; ESA-listed "threatened")
+-   Spring-run Chinook salmon (*Oncorhynchus tshawytscha*)
+-   Middle Columbia River summer steelhead (*O. mykiss*; ESA-listed "threatened")
 
 While our habitat capacity models specifically address Chinook salmon and steelhead, any uplift in habitat for these species are also expected to uplift:
 
@@ -110,12 +107,13 @@ While our habitat capacity models specifically address Chinook salmon and steelh
 
 ## Study Area
 
-This assessment will be focused on the alluvial channel of the Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North and South forks of the Walla Walla River. The primary study area includes approximately 70 miles of stream. The secondary study area includes the catchment of the primary study area which encompasses approximately 885 square miles.
+This assessment will be focused on the alluvial channel of the Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North and South forks of the Walla Walla River (\@ref:fig(uww-map)). The primary study area includes approximately 70 miles of stream. The secondary study area includes the catchment of the primary study area which encompasses approximately 885 square miles. The fish habitat capacity assessment, in particular, is limited to the spatial distribution of Chinook salmon and steelhead in the Upper Walla Walla watershed, as provided by StreamNet (https://www.streamnet.org/home/data-maps/gis-data-sets/).
 
-```{r UWW-NRWST-DIST, out.width = "100%", fig.cap = "Study area for the Upper Walla Walla watershed habitat capacity assessment. Primary rivers and tributaries utilized by Chinook salmon and steelhead are labeled in the map."}
+```{r uww-map, out.width = "100%", fig.cap = "Study area for the Upper Walla Walla watershed fish habitat capacity assessment. Primary rivers and tributaries used by Chinook salmon and steelhead are labeled."}
 knitr::include_graphics("../maps/UWW_NorWeST.png")
 
 ```
+
 
 # Habitat Capacity Assessment
 
@@ -143,7 +141,7 @@ uww_redd_df = uww_redd_sf %>%
 
 ## Approach Overview
 
-The habitat capacity assessment is focused on Chinook salmon and steelhead. Habitat capacity deficits (e.g., Figure \@ref(fig:capacity-schematic)) resulting from limitations in habitat quantity and/or quality were assessed for three life stages of Chinook salmon and steelhead: 1) spawning (redd) capacity, 2) juvenile summer rearing capacity, and 3) juvenile winter rearing capacity. First, the capacity required to meet adult abundance escapement goals was estimated for each of the three life-stages using a Generalized Capacity Model framework [see Appendix C in @IdahoOSCTeam2019]. Then, the currently available habitat capacity was estimated using a quantile random forest (QRF) approach [@See2021] applied at each life-stage. Next, capacity limitations were quantified by subtracting required capacity from available capacity, providing an estimate of habitat capacity deficit by species and life-stage. Finally, these results were used to determine the target conditions required to achieve adult escapement goals, and inform prioritization by identifying species and life-stage specific bottlenecks to population productivity in the Upper Walla Walla watershed.
+Habitat capacity deficits (e.g., Figure \@ref(fig:capacity-schematic)) resulting from limitations in habitat quantity and/or quality were assessed for three life stages of Chinook salmon and steelhead: 1) spawning (redd) capacity, 2) juvenile summer rearing (parr) capacity, and 3) juvenile winter rearing (presmolt) capacity. First, the capacity required to meet adult abundance escapement goals was estimated for each of the three life stages using a Generalized Capacity Model framework [see Appendix C in @IdahoOSCTeam2019]. Then, the currently available habitat capacity was estimated using a quantile random forest (QRF) approach [@See2021] applied at each life stage. Next, capacity limitations were quantified by subtracting required capacity from available capacity, providing an estimate of (potential) capacity deficit by species and life stage. Finally, results were considered to evaluate target conditions to achieve adult escapement goals, and inform prioritization by identifying species and life stage specific bottlenecks to population productivity in the Upper Walla Walla watershed. Results were also summarized for geomorphic reaches to identify relative low- and high-capacity reaches to assist in prioritization efforts.
 
 ```{r capacity-schematic, out.width = "100%", fig.cap = "Schematic depicting an ideal scenario on the left with no limiting factors, while the right depicts a river with significant limiting factors resulting in reduced habitat capacity and production."}
 knitr::include_graphics("../figures/hab-capac-fig.png")
@@ -981,18 +979,14 @@ Discussion text here...
 ::: {#refs}
 :::
 
-# Supplemental Tables and Figures {#supplemental-tables-and-figures}
-
-## QRF Habitat Capacity Estimates
-
-### Capacity by Geomorphic Reach
+# Habitat Capacity by Geomorphic Reach
 
 ```{r chnk-geo-reaches}
-
 uww_sum_sf_rch<- uww_sum_sf %>%
   rename(GNIS_Name_orig = GNIS_Name,
          GNIS_Name = Geo_Reach)
 
+# Chinook salmon, summer parr
 chnk_sum_cap_rch = calc_watershed_cap(uww_huc_sf,
                                   uww_sum_sf_rch %>%
                                     filter(!is.na(GNIS_Name)),
@@ -1005,7 +999,6 @@ chnk_sum_cap_rch = calc_watershed_cap(uww_huc_sf,
          'Geo_Reach' = replace_na(`Geo_Reach`, 'Total'))
 
 # Chinook salmon, winter presmolt
-
 uww_win_sf_rch<- uww_win_sf %>%
   rename(GNIS_Name_orig = GNIS_Name,
          GNIS_Name = Geo_Reach)
@@ -1022,7 +1015,6 @@ chnk_win_cap_rch = calc_watershed_cap(uww_huc_sf,
          'Geo_Reach' = replace_na(`Geo_Reach`, 'Total'))
 
 # Chinook salmon, redds
-
 uww_redd_sf_rch<- uww_redd_sf %>%
   rename(GNIS_Name_orig = GNIS_Name,
          GNIS_Name = Geo_Reach)
@@ -1039,7 +1031,6 @@ chnk_redd_cap_rch = calc_watershed_cap(uww_huc_sf,
          'Geo_Reach' = replace_na(`Geo_Reach`, 'Total'))
 
 #### Append the avg cap/km back to geo rch shp for graphing
-
 uww_sum_sf = uww_sum_sf %>%
   left_join(chnk_sum_cap_rch %>%
               select(Geo_Reach,'Avg. Capacity/km')) %>%
@@ -1069,11 +1060,11 @@ chnk_sum_georch = uww_sum_sf %>%
             nngeo::st_remove_holes(),
           fill = NA,
           color = "gray50",
-          size = 5) +
+          size = 0.5) +
   geom_sf(color = river_color) +
   geom_sf(data = uww_sum_sf,
           aes(color = chnk_sum),
-          size = 5) +
+          size = 0.7) +
   scale_color_viridis_c(direction = -1) +
   theme(legend.position = "right",
         axis.title.x = element_blank(),
@@ -1089,11 +1080,12 @@ chnk_win_georch = uww_win_sf %>%
             st_union() %>%
             nngeo::st_remove_holes(),
           fill = NA,
-          color = "gray50") +
+          color = "gray50",
+          size = 0.5) +
   geom_sf(color = river_color) +
   geom_sf(data = uww_win_sf,
           aes(color = chnk_win),
-          size = 2) +
+          size = 0.7) +
   scale_color_viridis_c(direction = -1) +
   theme(legend.position = "right",
         axis.title.x = element_blank(),
@@ -1109,11 +1101,12 @@ chnk_redd_georch = uww_redd_sf %>%
             st_union() %>%
             nngeo::st_remove_holes(),
           fill = NA,
-          color = "gray50") +
+          color = "gray50",
+          size = 0.5) +
   geom_sf(color = river_color) +
   geom_sf(data = uww_redd_sf,
           aes(color = chnk_redd),
-          size = 2) +
+          size = 0.7) +
   scale_color_viridis_c(direction = -1) +
   theme(legend.position = "right",
         axis.title.x = element_blank(),
@@ -1204,9 +1197,7 @@ chnk_win_georch
 ```
 
 
-
 ```{r sthd-geo-reaches}
-
 sthd_sum_cap_rch = calc_watershed_cap(uww_huc_sf,
                                   uww_sum_sf_rch %>%
                                     filter(!is.na(GNIS_Name)),
@@ -1219,7 +1210,6 @@ sthd_sum_cap_rch = calc_watershed_cap(uww_huc_sf,
          'Geo_Reach' = replace_na(`Geo_Reach`, 'Total'))
 
 # steelhead, winter presmolt
-
 sthd_win_cap_rch = calc_watershed_cap(uww_huc_sf,
                                   uww_win_sf_rch %>%
                                     filter(!is.na(GNIS_Name)),
@@ -1232,7 +1222,6 @@ sthd_win_cap_rch = calc_watershed_cap(uww_huc_sf,
          'Geo_Reach' = replace_na(`Geo_Reach`, 'Total'))
 
 # steelhead, redds
-
 sthd_redd_cap_rch = calc_watershed_cap(uww_huc_sf,
                                   uww_redd_sf_rch %>%
                                     filter(!is.na(GNIS_Name)),
@@ -1245,7 +1234,6 @@ sthd_redd_cap_rch = calc_watershed_cap(uww_huc_sf,
          'Geo_Reach' = replace_na(`Geo_Reach`, 'Total'))
 
 #### Append the avg cap/km back to geo rch shp for graphing
-
 uww_sum_sf = uww_sum_sf %>%
   left_join(sthd_sum_cap_rch %>%
               select(Geo_Reach,'Avg. Capacity/km')) %>%
@@ -1274,11 +1262,12 @@ sthd_sum_georch = uww_sum_sf %>%
             st_union() %>%
             nngeo::st_remove_holes(),
           fill = NA,
-          color = "gray50") +
+          color = "gray50",
+          size = 0.5) +
   geom_sf(color = river_color) +
   geom_sf(data = uww_sum_sf,
           aes(color = sthd_sum),
-          size = 2) +
+          size = 0.7) +
   scale_color_viridis_c(direction = -1) +
   theme(legend.position = "right",
         axis.title.x = element_blank(),
@@ -1294,11 +1283,12 @@ sthd_win_georch = uww_win_sf %>%
             st_union() %>%
             nngeo::st_remove_holes(),
           fill = NA,
-          color = "gray50") +
+          color = "gray50",
+          size = 0.5) +
   geom_sf(color = river_color) +
   geom_sf(data = uww_win_sf,
           aes(color = sthd_win),
-          size = 2) +
+          size = 0.7) +
   scale_color_viridis_c(direction = -1) +
   theme(legend.position = "right",
         axis.title.x = element_blank(),
@@ -1314,11 +1304,12 @@ sthd_redd_georch = uww_redd_sf %>%
             st_union() %>%
             nngeo::st_remove_holes(),
           fill = NA,
-          color = "gray50") +
+          color = "gray50",
+          size = 0.5) +
   geom_sf(color = river_color) +
   geom_sf(data = uww_redd_sf,
           aes(color = sthd_redd),
-          size = 2) +
+          size = 0.7) +
   scale_color_viridis_c(direction = -1) +
   theme(legend.position = "right",
         axis.title.x = element_blank(),
@@ -1409,9 +1400,9 @@ sthd_win_georch
 ```
 
 
-### Capacity by Stream
+<!-- ### Capacity by Stream -->
 
-```{r chnk-sum-tbl}
+```{r chnk-sum-tbl, eval = F}
 chnk_sum_cap %>%
   subset(!StreamName == "Total" | is.na(StreamName)) %>%
   adorn_totals() %>%
@@ -1432,7 +1423,7 @@ chnk_sum_cap %>%
 
 ```
 
-```{r chnk-win-tbl}
+```{r chnk-win-tbl, eval = F}
 chnk_win_cap %>%
   subset(!StreamName == "Total" | is.na(StreamName)) %>%
   adorn_totals() %>%
@@ -1453,7 +1444,7 @@ chnk_win_cap %>%
 
 ```
 
-```{r chnk-redd-tbl}
+```{r chnk-redd-tbl, eval = F}
 chnk_redd_cap %>%
   subset(!StreamName == "Total" | is.na(StreamName)) %>%
   adorn_totals() %>%
@@ -1474,9 +1465,9 @@ chnk_redd_cap %>%
 
 ```
 
-### Steelhead
+<!-- ### Steelhead -->
 
-```{r sthd-sum-tbl}
+```{r sthd-sum-tbl, eval = F}
 sthd_sum_cap %>%
   subset(!StreamName == "Total" | is.na(StreamName)) %>%
   adorn_totals() %>%
@@ -1497,7 +1488,7 @@ sthd_sum_cap %>%
 
 ```
 
-```{r sthd-win-tbl}
+```{r sthd-win-tbl, eval = F}
 sthd_win_cap %>%
   subset(!StreamName == "Total" | is.na(StreamName)) %>%
   adorn_totals() %>%
@@ -1519,7 +1510,7 @@ sthd_win_cap %>%
 
 ```
 
-```{r sthd-redd-tbl}
+```{r sthd-redd-tbl, eval = F}
 sthd_redd_cap %>%
   subset(!StreamName == "Total" | is.na(StreamName)) %>%
   adorn_totals() %>%
