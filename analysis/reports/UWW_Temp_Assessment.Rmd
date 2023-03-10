@@ -1,5 +1,5 @@
 ---
-title: "Summer Stream Temperature Assessment, Upper Walla Walla Watershed - *PRELIMINARY*"
+title: "Summer Stream Temperature Assessment, Upper Walla Walla Watershed"
 author:
 - Michael W. Ackerman:
     email: mike.ackerman@mthoodenvironmental.com
