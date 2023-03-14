@@ -17,7 +17,11 @@ library(readr)
 
 # upload hsi metric raw files for each species/life stage and year into one df
 hsi_raw = list.files("S:/main/data/habitat/HSI/UWW_hsi_results/raw_results", pattern = "*.rda", full.names = T) %>%
-  map_df(~read_rds(.))
+  map_df(~read_rds(.)) %>%
+  mutate(watershed = case_when(ID == "GR_''_MS" ~ "Mainstem",
+                               ID == "GR_''_NF" ~ "North Fork",
+                               ID == "GR_''_SF" ~ "South Fork",
+                               TRUE ~ F))
 
 ##################################
 # Box plot metrics (composite, depth, velocity) by geo reach and year #
