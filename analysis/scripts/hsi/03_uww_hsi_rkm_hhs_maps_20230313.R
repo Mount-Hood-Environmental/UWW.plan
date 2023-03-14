@@ -17,7 +17,7 @@ rkm = (st_read(here("analysis/data/derived_data/hsi/rkm_poly.shp"))) %>%
   rename(watershed = Strm_Name)
 
 geo = (st_read(here("analysis/data/derived_data/hsi/geom_poly.shp"))) %>%
-  select(Reach, geometry)
+  select(Reach, geometry) %>%
 
 geo_ww = geo %>%
   filter(str_starts(Reach, "WW"))
