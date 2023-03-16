@@ -14,13 +14,14 @@ library(ggmap)
 library(sf)
 library(reshape2)
 library(readr)
+library(dplyr)
 
 # upload hsi metric raw files for each species/life stage and year into one df
 hsi_raw = list.files("S:/main/data/habitat/HSI/UWW_hsi_results/raw_results", pattern = "*.rda", full.names = T) %>%
-  map_df(~read_rds(.)) %>%
-  mutate(watershed = case_when(ID == "GR_''_MS" ~ "Mainstem",
-                               ID == "GR_''_NF" ~ "North Fork",
-                               ID == "GR_''_SF" ~ "South Fork",
+  map_df(~read_rds(.))%>%
+  mutate(watershed = case_when(grepl("MS", ID) ~ "Mainstem",
+                               grepl("NF", ID) ~ "NorthFork",
+                               grepl("SF", ID) ~ "SouthFork",
                                TRUE ~ F))
 
 ##################################
@@ -53,7 +54,10 @@ chnk_juv_2019_geo = hsi_raw %>%
            labs(x = "Geomorphic Reach",
                 y = "Suitability Index",
                 title = "Chinook Juvenile Rearing 2019") +
-    theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_juv_2019_geo
 
 # Chinook juvenile rearing 2021 #
@@ -83,7 +87,10 @@ chnk_juv_2021_geo = hsi_raw %>%
   labs(x = "Geomorphic Reach",
        y = "Suitability Index",
        title = "Chinook Juvenile Rearing 2021") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_juv_2021_geo
 
 
@@ -114,7 +121,10 @@ chnk_spw_2019_geo = hsi_raw %>%
   labs(x = "Geomorphic Reach",
        y = "Suitability Index",
        title = "Chinook Spawning 2019") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_spw_2019_geo
 
 # Chinook spawning 2021 #
@@ -144,7 +154,10 @@ chnk_spw_2021_geo = hsi_raw %>%
   labs(x = "Geomorphic Reach",
        y = "Suitability Index",
        title = "Chinook Spawning 2021") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_spw_2021_geo
 
 # steelhead juvenile rearing 2019 #
@@ -174,7 +187,10 @@ sthd_juv_2019_geo = hsi_raw %>%
   labs(x = "Geomorphic Reach",
        y = "Suitability Index",
        title = "Steelhead Juvenile Rearing 2019") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 sthd_juv_2019_geo
 
 # steelhead juvenile rearing 2021 #
@@ -204,7 +220,10 @@ sthd_juv_2021_geo = hsi_raw %>%
   labs(x = "Geomorphic Reach",
        y = "Suitability Index",
        title = "Steelhead Juvenile Rearing 2021") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 sthd_juv_2021_geo
 
 ##################################
@@ -239,7 +258,10 @@ chnk_juv_2019_rkm_ms = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "Mainstem Chinook Juvenile Rearing 2019") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_juv_2019_rkm_ms
 
 # Chinook juvenile rearing 2019 NF #
@@ -256,7 +278,10 @@ chnk_juv_2019_rkm_nf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "NF Chinook Juvenile Rearing 2019") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_juv_2019_rkm_nf
 
 # Chinook juvenile rearing 2019 SF #
@@ -273,7 +298,10 @@ chnk_juv_2019_rkm_sf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "SF Chinook Juvenile Rearing 2019") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_juv_2019_rkm_sf
 
 # Chinook juvenile rearing 2021 MS #
@@ -290,7 +318,10 @@ chnk_juv_2021_rkm_ms = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "Mainstem Chinook Juvenile Rearing 2021") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_juv_2021_rkm_ms
 
 # Chinook juvenile rearing 2021 NF #
@@ -307,7 +338,10 @@ chnk_juv_2021_rkm_nf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "NF Chinook Juvenile Rearing 2021") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_juv_2021_rkm_nf
 
 # Chinook juvenile rearing 2021 SF #
@@ -324,7 +358,10 @@ chnk_juv_2021_rkm_sf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "SF Chinook Juvenile Rearing 2021") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_juv_2021_rkm_sf
 
 # Chinook spawning 2019 MS #
@@ -341,7 +378,10 @@ chnk_spw_2019_rkm_ms = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "Mainstem Chinook Spawning 2019") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_spw_2019_rkm_ms
 
 # Chinook spawning 2019 NF #
@@ -358,7 +398,10 @@ chnk_spw_2019_rkm_nf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "NF Chinook Spawning 2019") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_spw_2019_rkm_nf
 
 # Chinook spawning 2019 SF #
@@ -375,7 +418,10 @@ chnk_spw_2019_rkm_sf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "SF Chinook Spawning 2019") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_spw_2019_rkm_sf
 
 # Chinook spawning 2021 MS #
@@ -392,7 +438,10 @@ chnk_spw_2021_rkm_ms = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "Mainstem Chinook Spawning 2021") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_spw_2021_rkm_ms
 
 # Chinook spawning 2021 NF #
@@ -409,7 +458,10 @@ chnk_spw_2021_rkm_nf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "NF Chinook Spawning 2021") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_spw_2021_rkm_nf
 
 # Chinook spawning 2021 SF #
@@ -426,7 +478,10 @@ chnk_spw_2021_rkm_sf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "SF Chinook Spawning 2021") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 chnk_spw_2021_rkm_sf
 
 # steelhead juvenile rearing 2019 MS #
@@ -443,7 +498,10 @@ sthd_juv_2019_rkm_ms = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "Mainstem Steelhead Juvenile Rearing 2019") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 sthd_juv_2019_rkm_ms
 
 # steelhead juvenile rearing 2019 NF #
@@ -460,7 +518,10 @@ sthd_juv_2019_rkm_nf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "NF Steelhead Juvenile Rearing 2019") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 sthd_juv_2019_rkm_nf
 
 # steelhead juvenile rearing 2019 SF #
@@ -477,7 +538,10 @@ sthd_juv_2019_rkm_sf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "SF Steelhead Juvenile Rearing 2019") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 sthd_juv_2019_rkm_sf
 
 # steelhead juvenile rearing 2021 MS #
@@ -494,7 +558,10 @@ sthd_juv_2021_rkm_ms = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "Mainstem Steelhead Juvenile Rearing 2021") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 steelhead_juv_2021_rkm_ms
 
 # steelhead juvenile rearing 2021 NF #
@@ -511,7 +578,10 @@ sthd_juv_2021_rkm_nf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "NF Steelhead Juvenile Rearing 2021") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 sthd_juv_2021_rkm_nf
 
 # Steelhead juvenile rearing 2021 SF #
@@ -528,7 +598,10 @@ sthd_juv_2021_rkm_sf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index",
        title = "SF Steelhead Juvenile Rearing 2021") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
 sthd_juv_2021_rkm_sf
 
 #### Geo Reach Summary Table Script #####

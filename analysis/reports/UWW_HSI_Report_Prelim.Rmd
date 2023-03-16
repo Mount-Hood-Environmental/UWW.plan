@@ -1,5 +1,5 @@
 ---
-title: "Upper Walla Walla Watershed - Hydraulic Suitability Analysis"
+title: "Upper Walla Walla Watershed - Hydraulic Habitat Suitability Analysis"
 
 author:
   - name: Mike Ackerman
@@ -196,20 +196,6 @@ sthd_hsi
 
 ```
 
-
-
-```{r hsi-p-prep-rkm}
-## read in all of the HSI results, as a spatial file, and then make non-spatial
-rch_hsi = st_read("../output/hsi_rkm/hsi_rch_pts.gpkg",
-                  quiet = T)
-hsi_rkm = rch_hsi %>%
-  st_drop_geometry() %>%
-  as_tibble() %>%
-  rename(rkm = Reach)
-
-```
-
-
 ## Scenarios
 
 ```{r scenarios-tab}
@@ -234,7 +220,7 @@ position = "center",
 bootstrap_options = c("striped", "condensed"))
 ```
 
-We evaluated `r nrow(hsi_scenarios)` scenarios in total which are summarized in Table \@ref(tab:scenarios-tab). For all summer scenarios, we used rasters from a discharge scenario representative of low flow conditions. In the case of the Lemhi and Pahsimeroi watersheds, all spring and winter scenarios used rasters from moderate to high flow conditions. Alternatively, for the Upper Salmon, winter scenarios were analyzed using a low-flow discharge. Finally, for the Upper Salmon, we added spring scenarios for juvenile rearing to evaluate high-flow conditions, as both summer and winter are typically low-flow in that watershed.
+We evaluated `r nrow(hsi_scenarios)` scenarios in total which are summarized in Table \@ref(tab:scenarios-tab). For all scenarios, we used rasters from a discharge scenario representative of low flow conditions. Two raster datasets from 2019 and 2021 were assessed for suitability to evaluate changes to habitat as a result of extensive flooding in 2020.
 
 # Results
 
@@ -279,68 +265,49 @@ geo_rchs = st_read('../data/geomorph/geo_reaches/Lem_Poly_Label.shp',
 ```
 
 
-Here, we summarize the distribution of composite suitability values by geomorphic reach (as violin plots), mean HHS by rkm (as maps), and WUA and HHS by rkm (line plots) by valley segment, species, and life stage. Raw outputs and raster .tifs of depth, velocity, and composite suitability values are available in the [mra_hsi repo](https://github.com/mackerman44/mra_hsi/) or from the authors.
+Here, we summarize the distribution of composite, depth and velocity suitability values by geomorphic reach (as box plots), mean HHS by rkm (as maps), and WUA and HHS by rkm (line plots) by species, and life stage. Raw outputs and raster .tifs of depth, velocity, and composite suitability values are available in the [UWW.plan repo](https://github.com/Mount-Hood-Environmental/UWW.plan) or from the authors.
 
 ## Upper Lemhi
 
 Figure \@ref(fig:ul-plot) shows the composite hydraulic suitability (depth and velocity) within the Upper Lemhi valley segment to support Chinook salmon and steelhead spawning and juvenile rearing (summer and winter) along with the proportion of each geomorphic reach classified as simple, mixed, or complex. In general, the hydraulic suitability for spawning, for both Chinook salmon and steelhead, is high, with a large number of pixels having a suitability of 1. Hydraulic suitability for steelhead juvenile rearing, during both the summer and winter scenarios, also tends to be high in the Upper Lemhi valley segment; whereas suitability for juvenile Chinook salmon rearing is low. Interestingly, geomorphic reach 01, the upstream-most reach starting at Leadore, contains more pixels with a suitability above 0 than all other geomorphic reaches for both summer and winter juvenile rearing.
 
-```{r ul-plot, fig.height = 7, fig.cap = "Violin plots showing the distribution of composite suitability values (geometric mean of depth and velocity suitability) across geomorphic reaches in the Upper Lemhi valley segment. Results for both Chinook salmon and steelhead and for three lifestages (adult spawning, juvenile summer rearing, juvenile winter rearing) are shown. The bottom panel shows the proportion of each geometric reach classified as simple, mixed, or complex."}
-# the geo reaches within the upper lemhi
-ul_geos = c("GR_01", "GR_02", "GR_03", "GR_04",
-            "GR_05", "GR_06", "GR_07", "GR_08")
+```{r ul-plot, fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values , depth and velocity for Chinook spawning across geomorphic reaches in the Upper Walla Walla watershed in 2021. Results for composite suitability (geometric mean of depth and velocity suitability), depth and velocity are shown to help identify hydarulic metric limitations."}
+# upload hsi metric raw files for each species/life stage and year into one df
+hsi_raw = list.files("S:/main/data/habitat/HSI/UWW_hsi_results/raw_results", pattern = "*.rda", full.names = T) %>%
+  map_df(~read_rds(.))
 
-# get upper lemhi data
-ul_cs = all_comp_suits %>%
-  filter(watershed == "lemh") %>%
-  filter(geo_reach %in% ul_geos) %>%
-  unite(scenario, life_stage, season, sep = "_") %>%
-  mutate(scenario = recode(scenario,
-                           `juv_sum` = "Juvenile Summer Rearing",
-                           `juv_win` = "Juvenile Winter Rearing",
-                           `spw_sum` = "Adult Spawning",
-                           `spw_spr` = "Adult Spawning"))
-
-# the violin plot
-ul_vplot = ul_cs %>%
-  ggplot(aes(x = geo_reach,
-             y = value,
-             fill = scenario)) +
-  geom_violin(draw_quantiles = c(0.5),
-              scale = "width") +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  facet_wrap(~ species, nrow = 2) +
-  labs(x = "Geomorphic Reach",
-       y = "Composite Suitability (Depth & Velocity)",
-       fill = "Scenario",
-       title = "Upper Lemhi") +
-  theme(axis.text.x = element_text(angle = -45, vjust = 0))
-
-# plot of geomorphic tier data
-load("../output/geomorph/lemh_geomorph_summary.RData")
-ul_tier_p = tier_summary %>%
-  filter(Name %in% ul_geos) %>%
-  ggplot(aes(x = Name, y = p_Geo_Tier, fill = Geo_Tier)) +
-  geom_bar(stat = "identity") +
+# Chinook juvenile rearing 2021 #
+chnk_juv_2021_geo = hsi_raw %>%
+  filter(year == "2021",
+         scenario == "chnk_juv",
+         str_starts(ID, "GR")) %>%
+  mutate(ID = factor(ID, levels = c("GR_01_MS",
+                                    "GR_02_MS",
+                                    "GR_03_MS",
+                                    "GR_04_MS",
+                                    "GR_05_MS",
+                                    "GR_01_NF",
+                                    "GR_02_NF",
+                                    "GR_03_NF",
+                                    "GR_04_NF",
+                                    "GR_05_NF",
+                                    "GR_01_SF",
+                                    "GR_02_SF",
+                                    "GR_03_SF",
+                                    "GR_04_SF",
+                                    "GR_05_SF"))) %>%
+  ggplot(aes(x = ID, y = value, fill = metric)) +
+  geom_boxplot() +
+  facet_wrap(~ metric, nrow = 3) +
   theme_bw() +
   labs(x = "Geomorphic Reach",
-       y = "p(Geomorphic Tier",
-       fill = "Geomorphic Tier") +
-  scale_fill_brewer(palette = "Accent") +
-  theme(axis.text.x = element_text(angle = -45, vjust = 0))
-
-# merge the violin and geomorphic tier plot
-ul_p = ggarrange(plotlist = list(ul_vplot +
-                                   theme(axis.text.x = element_blank(),
-                                         legend.position = "top") +
-                                   labs(x = NULL),
-                                 ul_tier_p +
-                                   theme(legend.position = "bottom")),
-          nrow = 2,
-          ncol = 1,
-          heights = c(2, 1.25))
-ul_p
+       y = "Suitability Index",
+       title = "Chinook Juvenile Rearing 2021") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+chnk_juv_2021_geo
 #ggsave("../output/figures/ul_cs_plot.pdf", ul_p)
 ```
 
