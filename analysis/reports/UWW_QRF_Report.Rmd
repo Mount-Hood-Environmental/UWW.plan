@@ -51,7 +51,14 @@ always_allow_html: yes
      $head.prepend('<img src=\"logo.jpg\" style=\"float: right;width: 150px;\"/>')
    });
 </script>
+
+<style>
+p.caption {
+  font-size: 0.8em;
+}
+</style>
 ```
+
 ```{r setup, echo = FALSE, message = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -107,7 +114,7 @@ While our habitat capacity models specifically address Chinook salmon and steelh
 
 ## Study Area
 
-This assessment will be focused on the alluvial channel of the Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North and South forks of the Walla Walla River (\@ref:fig(uww-map)). The primary study area includes approximately 70 miles of stream. The secondary study area includes the catchment of the primary study area which encompasses approximately 885 square miles. The fish habitat capacity assessment, in particular, is limited to the spatial distribution of Chinook salmon and steelhead in the Upper Walla Walla watershed, as provided by StreamNet (https://www.streamnet.org/home/data-maps/gis-data-sets/).
+This assessment will be focused on the alluvial channel of the Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North and South forks of the Walla Walla River (Figure \@ref(fig:uww-map)). The primary study area includes approximately 70 miles of stream. The secondary study area includes the catchment of the primary study area which encompasses approximately 885 square miles. The fish habitat capacity assessment, in particular, is limited to the spatial distribution of Chinook salmon and steelhead in the Upper Walla Walla watershed, as provided by StreamNet (https://www.streamnet.org/home/data-maps/gis-data-sets/).
 
 ```{r uww-map, out.width = "100%", fig.cap = "Study area for the Upper Walla Walla watershed fish habitat capacity assessment. Primary rivers and tributaries used by Chinook salmon and steelhead are labeled."}
 knitr::include_graphics("../maps/UWW_NorWeST.png")
@@ -141,7 +148,7 @@ uww_redd_df = uww_redd_sf %>%
 
 ## Approach Overview
 
-Habitat capacity deficits (e.g., Figure \@ref(fig:capacity-schematic)) resulting from limitations in habitat quantity and/or quality were assessed for three life stages of Chinook salmon and steelhead: 1) spawning (redd) capacity, 2) juvenile summer rearing (parr) capacity, and 3) juvenile winter rearing (presmolt) capacity. First, the capacity required to meet adult abundance escapement goals was estimated for each of the three life stages using a Generalized Capacity Model framework [see Appendix C in @IdahoOSCTeam2019]. Then, the currently available habitat capacity was estimated using a quantile random forest (QRF) approach [@See2021] applied at each life stage. Next, capacity limitations were quantified by subtracting required capacity from available capacity, providing an estimate of (potential) capacity deficit by species and life stage. Finally, results were considered to evaluate target conditions to achieve adult escapement goals, and inform prioritization by identifying species and life stage specific bottlenecks to population productivity in the Upper Walla Walla watershed. Results were also summarized for geomorphic reaches to identify relative low- and high-capacity reaches to assist in prioritization efforts.
+Habitat capacity deficits (e.g., Figure \@ref(fig:capacity-schematic)) resulting from limitations in habitat quantity and/or quality were assessed for three life stages of Chinook salmon and steelhead: 1) spawning (redds), 2) juvenile summer rearing (parr), and 3) juvenile winter rearing (presmolts). First, the capacity required to meet adult abundance escapement goals was estimated for each of the life stages using a Generalized Capacity Model framework [see Appendix C in @IdahoOSCTeam2019]. Then, the currently available habitat capacity was estimated using a quantile random forest (QRF) approach [@See2021] applied at each life stage. Next, capacity limitations were quantified by subtracting required capacity from available capacity, providing an estimate of (potential) capacity deficit by species and life stage. Finally, results were considered to evaluate target conditions to achieve adult escapement goals, and inform prioritization by identifying species and life stage specific bottlenecks to population productivity in the Upper Walla Walla watershed. Results were also summarized for geomorphic reaches to identify relative low- and high-capacity reaches to assist in prioritization efforts.
 
 ```{r capacity-schematic, out.width = "100%", fig.cap = "Schematic depicting an ideal scenario on the left with no limiting factors, while the right depicts a river with significant limiting factors resulting in reduced habitat capacity and production."}
 knitr::include_graphics("../figures/hab-capac-fig.png")
@@ -205,7 +212,6 @@ reqs = tibble(Sim_number = rep(1:n.sim,2),
          Smolts = Eggs * egg_to_smolt
            )
 
-
 #With truncated uniform distribution
 # reqs = tibble(Sim_number = rep(1:n.sim,2),
 #               Species = c(rep("Chinook",n.sim),rep("Steelhead",n.sim)),
@@ -226,7 +232,6 @@ reqs = tibble(Sim_number = rep(1:n.sim,2),
 #          Summer_juv = Eggs * egg_to_parr,
 #          Winter_juv = Summer_juv * parr_to_presmolt
 #            )
-
 
 #Summarize sim results
 reqs_summary = reqs %>%
@@ -332,9 +337,10 @@ rec_goals = tibble(Species = c("Chinook", "Steelhead"),
   mutate(SE = c(NA,as.numeric(select(reqs_summary, ends_with("se"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("se"))[2,]))) %>%
   mutate(`90% CI, lower` = c(NA,as.numeric(select(reqs_summary, ends_with("90L"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("90L"))[2,]))) %>%
   mutate(`90% CI, upper` = c(NA,as.numeric(select(reqs_summary, ends_with("90U"))[1,]),NA, as.numeric(select(reqs_summary,ends_with("90U"))[2,])))
+
 ```
 
-Life-stage specific capacity requirements were estimated using a Generalized Capacity Model (GCM) described in Appendix C of @IdahoOSCTeam2019. The model uses a combination of empirical and literature-based parameter estimates (Table \@ref(tab:param-tab)) to determine the capacity required to achieve a given adult abundance goal. We used adult escapement goals of `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Chinook" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for Chinook salmon and `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Steelhead" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for steelhead. These escapement goals are considered high-range goals and are intended to represent *"healthy and harvestable abundance levels that would sustain very high levels of species viability, significant fishery opportunities and harvest, and a fuller range of ecological values"* [@CBPTF2020]. The required capacities to reach these goals were estimated using the GCM with a simulation approach to account for expected interannual variation in life history parameters. The simulation was conducted by repeatedly drawing applicable parameters from normal distributions with means and standard deviations defined in Table \@ref(tab:param-tab) and constrained within the range of observed values. Standard deviations for Egg to parr and parr to presmolt survival parameters were set to zero due to small sample sizes, high variability, and potential bias leading to potentially unreliable results. Then, adult escapement goals were multiplied step-wise through the applicable parameter values to obtain capacity requirements by life-stage. For example, the number of redds necessary for recovery was calculated by multiplying the adult escapement goal by the female ratio and the estimated redds per female. We conducted 5,000 simulations, resulting in a range of capacity requirements that were summarized to provide the mean required capacity by life-stage with associated confidence intervals. Sources for each parameter estimate are provided in Table \@ref(tab:param-tab); however, those values can be modified if updated or in-basin estimates with empirical support are available.
+Life stage specific capacity requirements were estimated using a Generalized Capacity Model (GCM) described in Appendix C of @IdahoOSCTeam2019. The model uses a combination of empirical and literature-based parameter estimates (Table \@ref(tab:param-tab)) to determine the capacity required to achieve a given adult abundance goal. We used escapement goals of `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Chinook" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for Chinook salmon and `r prettyNum(rec_goals$Abundance[rec_goals$Species == "Steelhead" & rec_goals$LifeStage == "Escapement"], big.mark = ",")` for steelhead. These escapement goals are considered high-range goals and are intended to represent *"healthy and harvestable abundance levels that would sustain very high levels of species viability, significant fishery opportunities and harvest, and a fuller range of ecological values"* [@CBPTF2020]. The required capacities to achieve these goals were estimated using the GCM with a simulation approach to account for expected interannual variation in life history parameters. The simulation was conducted by repeatedly drawing applicable parameters from normal distributions with means and standard deviations defined in Table \@ref(tab:param-tab) and constrained within the range of observed values. Standard deviations for egg-to-parr and parr-to-presmolt survival parameters were set to zero due to small sample sizes, high variability, and potential bias leading to potentially unreliable results. Then, adult escapement goals were multiplied step-wise through the applicable parameter values to obtain capacity requirements by life stage. For example, the number of redds necessary for recovery was calculated by multiplying the adult escapement goal by the female ratio and the estimated redds per female. We conducted 5,000 simulations, resulting in a range of capacity requirements that were summarized to provide the mean required capacity by life stage with associated confidence intervals. Sources for each parameter estimate are provided in Table \@ref(tab:param-tab).
 
 ```{r param-tab}
 params %>%
@@ -351,7 +357,7 @@ params %>%
 
 ```
 
-The resulting estimated habitat capacity requirements are shown in Table \@ref(tab:require-tab) and represent the necessary abundance at each life-stage to achieve adult escapement goals.
+The resulting estimated habitat capacity requirements are shown in Table \@ref(tab:require-tab) and represent the necessary abundance at each life stage to achieve adult escapement goals.
 
 ```{r require-tab}
 rec_goals %>%
@@ -363,7 +369,7 @@ rec_goals %>%
         format.args = list(big.mark = ",",
                            drop0trailing = T),
         col.names = c("Species", "Scenario","Life-stage","Abundance", "Abundance SE", "90% CI"),
-        caption = "Life-stage specific habitat capacity requirement estimates necessary to achieve given escapement recovery goals.") %>%
+        caption = "Life stage specific habitat capacity requirement estimates necessary to achieve given escapement recovery goals.") %>%
   kable_styling(full_width = F,
                 position = "center",
                 bootstrap_options = c("striped", "condensed"))
@@ -372,11 +378,11 @@ rec_goals %>%
 
 ## Available Capacity
 
-Available habitat capacity was defined as the maximum abundance the habitat could support for a species and life stage given current habitat quantity and quality. Within fisheries research and management, biotic and abiotic factors have been identified as limiting productivity within, and across, life stages. However, it is assumed that observed fish density is likely a poor predictor of habitat capacity due to both a paucity of individuals (i.e., low spawner abundance), especially in recent decades, and the existence of unmeasured biotic or abiotic variables that may be limiting capacity. Therefore, available habitat capacity estimates were generated using a QRF framework developed by See et al. (2021).
+Available habitat capacity was defined as the maximum abundance the habitat can support for a species and life stage given current habitat quantity and quality. Within fisheries research and management, biotic and abiotic factors have been identified as limiting productivity within, and across, life stages. However, it is assumed that observed fish density is generally a poor indicator of habitat capacity due to both a paucity of individuals (i.e., low spawner abundance), especially in recent decades, and the existence of unmeasured biotic or abiotic variables that may limit capacity. Therefore, available habitat capacity estimates were estimated using a QRF framework developed by See et al. (2021).
 
 ### QRF Model
 
-The QRF model is a novel approach to estimate the carrying capacity of wadable streams to support spawning and rearing Chinook salmon and steelhead. The approach involves fitting a QRF [@Meinshausen2006; @Cade2003] model to paired fish and habitat data across hundreds of sites in seven watersheds within the Columbia River Basin. Habitat data from the Colmbia Habitat Monitoring Program (CHaMP) were paired to juvenile fish and redd survey data to develop fish-habitat relationships [@See2021]. Importantly, the QRF model places no constraints on possible fish-habitat relationships; instead, relationships are estimated from the empirical data regardless of being positive, negative, linear, non-linear, etc. The QRF approach enables spatially continuous estimates of available habitat capacity given existing conditions at key life-stages for Chinook salmon and steelhead. Currently, available QRF models allow evaluation of three anadromous life stages: 1) spawning (redd) capacity, 2) juvenile (parr) summer rearing capacity, and 3) juvenile (presmolt) winter rearing capacity. Using the observed fish-habitat relationships, we can predict habitat capacity at any location with habitat data for all model covariates (e.g., at all CHaMP sites) (Table \@ref(tab:cov-tab)). The random forest model produces a distribution of predictions, one for each tree in the forest, and we chose the 90th quantile of that distribution as a proxy for carrying capacity. The QRF models used to estimate available habitat capacity, including data inputs, are described in further detail in Appendix B of @IdahoOSCTeam2019.
+The QRF framework is a novel approach to estimate the carrying capacity of wadable streams to support spawning and rearing Chinook salmon and steelhead. The approach involves fitting a QRF [@Meinshausen2006; @Cade2003] model to paired fish and habitat data across hundreds of sites in several watersheds throughout the Columbia River Basin. Habitat data from the Columbia River Habitat Monitoring Program (CHaMP) were paired to juvenile fish and redd survey data to develop fish-habitat relationships [@See2021]. Importantly, the QRF model places no constraints on possible fish-habitat relationships; instead, relationships are estimated from the empirical data regardless of being positive, negative, linear, non-linear, etc. The QRF approach, with an associated random forest extrapolation model (described below), enables spatially continuous estimates of available habitat capacity given existing conditions at key life stages for Chinook salmon and steelhead. Currently, available QRF models allow evaluation of three anadromous life stages: 1) spawning, 2) juvenile summer rearing, and 3) juvenile winter rearing. Using the observed fish-habitat relationships, we can then predict habitat capacity at any location with habitat data for all model covariates (e.g., at all CHaMP sites) (Table \@ref(tab:cov-tab)). The random forest model produces a distribution of predictions, one for each tree in the forest, and we chose the 90th quantile of that distribution as a proxy for carrying capacity. The QRF models used to estimate available habitat capacity, including data inputs, are described in further detail in Appendix B of @IdahoOSCTeam2019.
 
 ```{r cov-tab}
 load(here("analysis/data/raw_data/QRF_new_hab_cov_tbl.rda"))
@@ -393,9 +399,9 @@ QRF_new_hab_cov_tbl %>%
 
 ### Extrapolation Model
 
-Although we have hundreds of sites across the Columbia River basin with detailed habitat data (e.g., CHaMP sites) that were used to estimate capacity with the QRF model, this only covers a small percentage of the anadromous zone within each watershed. Additionally, many watersheds, including the Walla Walla, do not contain any sites.<!--I need to verify that statement, there may be a small number of CHaMP sites in the Walla Walla, but I believe, not--> Therefore, capacity predictions were extrapolated to areas outside of CHaMP sites and watersheds using an accompanying random forest extrapolation model fit to a [stream layer](https://www.nwfsc.noaa.gov/research/datatech/data/col_basin_hist_project/index.cfm) available from NOAA fisheries. This dataset consists of a polyline shapefile divided into 200m reaches with various attributes associated with each reach. We refer to these as globally available attributes (GAAs) because they are associated with every reach across all watersheds in the Columbia River Basin derived from the [National Hydrography Dataset High Resolution](https://www.usgs.gov/core-science-systems/ngp/national-hydrography/nhdplus-high-resolution) (NHDPlus HR) dataset.
+Although we have hundreds of sites across the Columbia River basin with detailed habitat data (e.g., CHaMP sites), this only covers a small percentage of the anadromous zone within each watershed. Additionally, many watersheds, including the Walla Walla, do not contain any sites. Therefore, capacity predictions were extrapolated to areas outside of CHaMP sites and watersheds using an accompanying random forest extrapolation model fit to a stream layer available from NOAA Fisheries (https://www.nwfsc.noaa.gov/research/datatech/data/col_basin_hist_project/index.cfm). The dataset consists of a polyline shapefile divided into 200m reaches with various attributes associated with each reach. We refer to these as globally available attributes (GAAs) because they are associated with every reach across all watersheds in the Columbia River Basin derived from the National Hydrography Dataset High Resolution (NHDPlus HR) dataset.
 
-Habitat capacity was estimated for the entirety of the UWW Watershed using the accompanying random forest extrapolation model (See et al. 2021). The extrapolation models were fit using GAAs from the NOAA stream layer dataset as predictor covariates and QRF capacity estimates as the response variable. The random forest approach again allows for non-linear associations between predictor and response variables and constricts capacity predictions within the estimated range from the initial QRF model. Using the random forest extrapolation model, density predictions were calculated for each 200 m NHDPlus HR reach segment within the NFSR watershed, and reach capacities were calculated by multiplying the predicted fish/m by the length of the reach. Predicted habitat capacities from the extrapolation model were then summarized at the watershed scale.
+Habitat capacity was estimated for the entirety of the Upper Walla Walla watershed using the accompanying random forest extrapolation model [@See2021]. The extrapolation models were fit using GAAs from the NOAA stream layer dataset as predictor covariates and QRF capacity estimates as the response variable. The random forest framework again allows for non-linear associations between predictor and response variables and constricts capacity predictions within the estimated range from the initial QRF model. Using the random forest extrapolation model, density predictions were calculated for each 200 m NHDPlus HR reach segment within the NFSR watershed, and reach capacities were calculated by multiplying the predicted fish/m by the length of the reach. Predicted habitat capacities from the extrapolation model were then summarized at the watershed scale.
 
 ```{r gaa-tbl}
 load(here("analysis/data/raw_data/gaa_hab_dict.rda"))
@@ -517,7 +523,7 @@ availcap_spawners$Pred_Spawners[6] = availcap_spawners$LifeStage_Cap[6]/(params$
 
 ```
 
-Estimates of total habitat capacity for the Upper Walla Walla by species and life-stage are shown in Table \@ref(tab:cap-table). Estimates were made using the anadromous spatial domain defined in [StreamNet](https://www.streamnet.org/home/data-maps/gis-data-sets/) for Chinook salmon and steelhead, and confirmed based on local, expert knowledge (CTUIR, personal communication). Available habitat capacity was extrapolated within these domains for `r unique(cap_totals$n_rchs[cap_totals$Species == "Chinook"])` reaches totaling `r round(unique(cap_totals$tot_length[cap_totals$Species == "Chinook"]) / 1000)` km in length for Chinook salmon and `r prettyNum(unique(cap_totals$n_rchs[cap_totals$Species == "Steelhead"]), big.mark = ",")` reaches totaling `r round(unique(cap_totals$tot_length[cap_totals$Species == "Steelhead"]) / 1000)` km in length for steelhead. Different spatial domains could be used for both Chinook salmon and steelhead if deemed appropriate. Capacity estimates for individual streams by species and life stage are provided in [Supplemental Tables and Figures](#supplemental-tables-and-figures).
+Estimates of total habitat capacity for the Upper Walla Walla watershed by species and life stage are provided in Table \@ref(tab:cap-table). Estimates were made using the anadromous spatial domain defined by StreamNet for Chinook salmon and steelhead, and confirmed based on local, expert knowledge. Available habitat capacity was extrapolated within these spatial extents for `r unique(cap_totals$n_rchs[cap_totals$Species == "Chinook"])` reaches totaling `r round(unique(cap_totals$tot_length[cap_totals$Species == "Chinook"]) / 1000)` km in length for Chinook salmon and `r prettyNum(unique(cap_totals$n_rchs[cap_totals$Species == "Steelhead"]), big.mark = ",")` reaches totaling `r round(unique(cap_totals$tot_length[cap_totals$Species == "Steelhead"]) / 1000)` km in length for steelhead. Each reach is equal to or approximately 200 m in length. Different spatial domains could be used for both Chinook salmon and steelhead if deemed appropriate. Capacity estimates for geomorphic reaches and life stage are summarized in a following section.
 
 ```{r cap-table}
 cap_totals %>%
@@ -542,14 +548,14 @@ cap_totals %>%
         align = "cccccccc",
         format.args = list(big.mark = ","),
         col.names = c("Species","Life-stage","Reaches","Stream Length (km)", "Capacity","SE", "Capacity 90% CI","Avg. Capacity/m"),
-        caption = "Estimates of current available watershed capacity by species and life-stage.") %>%
+        caption = "Estimates of current available habitat capacity, by species and life stage, in the Upper Walla Walla watershed within the spatial domains defined by StreamNet.") %>%
   kable_styling(full_width = F,
                 position = "center",
                 bootstrap_options = c("striped", "condensed"))
 
 ```
 
-Maps depicting capacity extrapolations were created to visualize low- versus high-capacity areas. The spatial data used to generate these maps have been exported and are available for download in a GitHub repository available at [UWW.plan GitHub repository](https://github.com/Mount-Hood-Environmental/UWW.plan). Chinook salmon and steelhead capacity extrapolations are shown in Figures \@ref(fig:chnk-maps) and \@ref(fig:sthd-maps), respectively.
+Maps depicting capacity extrapolations are useful to visualize relative low- versus high-capacity areas. The spatial results used to generate these maps have been exported and are available for download at https://github.com/Mount-Hood-Environmental/UWW.plan. Chinook salmon and steelhead capacity extrapolations for the watershed are shown in Figures \@ref(fig:chnk-maps) and \@ref(fig:sthd-maps), respectively.
 
 ```{r create-chnk-maps}
 # pick a background river color
@@ -711,7 +717,7 @@ ggarrange(sthd_sum_map,
 
 ## Capacity Limitations
 
-Finally, potential habitat capacity limitations were quantified by subtracting required capacity from available capacity (Table \@ref(tab:cap-limits)). When required capacity exceeded available capacity, this represented a habitat capacity deficit for a given species and life stage in the Upper Walla Walla watershed. Contrary, a "negative deficit" is indicative of a surplus of available habitat capacity necessary to meet adult escapement goals. Deficits can be used to identify potential species and life-stage limitations in physical habitat quantity and/or quality. Relative habitat capacity deficits were also calculated as available capacity divided by required capacity. Comparisons of available and required capacity by species and life stages are also depicted in (Figure \@ref(fig:chnk-def-fig) & \@ref(fig:sthd-def-fig)).
+Finally, potential habitat capacity limitations were quantified by subtracting required capacity from available capacity (Table \@ref(tab:cap-limits)). When required capacity exceeded available capacity, this represented a habitat capacity deficit for a given species and life stage within the Upper Walla Walla watershed. Contrary, a "negative deficit" is indicative of a surplus of available habitat capacity necessary to meet adult escapement goals. Deficits can be used to identify potential species and life stage bottlenecks in physical habitat quantity and/or quality. Relative habitat capacity deficits were also calculated as available capacity divided by required capacity. Comparisons of available and required capacity by species and life stages are also depicted in Figures \@ref(fig:chnk-def-fig) and \@ref(fig:sthd-def-fig)). This information can be useful in determining the types of actions that might provide the most benefit to address triburary habitat bottlenecks. For example, a spawning (redd) capacity deficit might suggest that actions to increase available spawning gravels, increase cover (for holding), moderate stream temperatures, and increase the frequency of pool tailouts and pool-riffle interfaces could provide the most benefit to alleviate habitat bottlenecks, especially in strategic locations.
 
 ```{r cap-limits}
 rec_goals %>%
@@ -737,7 +743,7 @@ rec_goals %>%
 
 ```
 
-```{r chnk-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for Chinook salmon at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals. Error bars represent 90% confidence intervals."}
+```{r chnk-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for Chinook salmon at three life stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest approach, and required capacity was calculated using a generalized capacity model with adult escapement goals. Error bars represent 90% confidence intervals."}
 chnk_def_p = rec_goals %>%
   select(-Scenario) %>%
   filter(Species == "Chinook",
@@ -854,7 +860,7 @@ chnk_def_p
 
 ```
 
-```{r sthd-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for steelhead at three life-stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest (QRF) approach, and required capacity was calculated using a Generalized Capacity Model with adult escapement goals. Error bars represent 90% confidence intervals."}
+```{r sthd-def-fig, fig.cap = "Estimated available capacity given current habitat conditions for steelhead at three life stages in the Upper Walla Walla watershed. Available capacity was calculated using a quantile random forest approach, and required capacity was calculated using a generalized capacity model with adult escapement goals. Error bars represent 90% confidence intervals."}
 sthd_def_p = rec_goals %>%
   select(-Scenario) %>%
   filter(Species == "Steelhead",
@@ -914,7 +920,7 @@ sthd_def_p
 
 ```
 
-Available capacity deficits can also be evaluated in terms of spawning escapement abundance using the GCM (Table \@ref(tab:cap-spawnconv-tbl)). For example, predicted redd capacity is divided by the estimated number of redds per female and the female ratio to provide an estimate of the spawner abundance supported given the particular life stage.
+As an alternative and complementary approach, available capacity deficits can also be evaluated in terms of spawning escapement abundance using the GCM approach (Table \@ref(tab:cap-spawnconv-tbl)). In other words, the predicted available habitat capacity for a given life stage can be converted into an esimate of the number of spawners that life stage can support using life stage transition parameters (Table \@ref(tab:param-tab)). For example, predicted redd capacity is divided by the estimated number of redds per female and the female ratio to provide an estimate of the spawner abundance that can be "supported" by the spawning (redd) capacity.
 
 ```{r cap-spawnconv-tbl}
 availcap_spawners %>%
