@@ -18,11 +18,11 @@ library(dplyr)
 
 # upload hsi metric raw files for each species/life stage and year into one df
 hsi_raw = list.files("S:/main/data/habitat/HSI/UWW_hsi_results/raw_results", pattern = "*.rda", full.names = T) %>%
-  map_df(~read_rds(.))%>%
-  mutate(watershed = case_when(grepl("MS", ID) ~ "Mainstem",
-                               grepl("NF", ID) ~ "NorthFork",
-                               grepl("SF", ID) ~ "SouthFork",
-                               TRUE ~ F))
+  map_df(~read_rds(.)) %>%
+  mutate(watershed = if_else(grepl("MS", ID), "Mainstem", ID)) %>%
+  mutate(watershed = if_else(grepl("NF", ID), "North Fork", watershed)) %>%
+  mutate(watershed = if_else(grepl("SF", ID), "South Fork", watershed))
+
 
 ##################################
 # Box plot metrics (composite, depth, velocity) by geo reach and year #
@@ -47,14 +47,14 @@ chnk_juv_2019_geo = hsi_raw %>%
                                     "GR_03_SF",
                                     "GR_04_SF",
                                     "GR_05_SF"))) %>%
-  ggplot(aes(x = ID, y = value, fill = metric)) +
+  ggplot(aes(x = ID, y = value, fill = watershed)) +
            geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
     theme_bw() +
            labs(x = "Geomorphic Reach",
                 y = "Suitability Index",
                 title = "Chinook Juvenile Rearing 2019") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
         axis.text.x = element_text(angle = 45, vjust = 0.5),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
@@ -80,14 +80,14 @@ chnk_juv_2021_geo = hsi_raw %>%
                                     "GR_03_SF",
                                     "GR_04_SF",
                                     "GR_05_SF"))) %>%
-  ggplot(aes(x = ID, y = value, fill = metric)) +
+  ggplot(aes(x = ID, y = value, fill = watershed)) +
   geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
   theme_bw() +
   labs(x = "Geomorphic Reach",
        y = "Suitability Index",
        title = "Chinook Juvenile Rearing 2021") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
         axis.text.x = element_text(angle = 45, vjust = 0.5),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
@@ -114,14 +114,14 @@ chnk_spw_2019_geo = hsi_raw %>%
                                     "GR_03_SF",
                                     "GR_04_SF",
                                     "GR_05_SF"))) %>%
-  ggplot(aes(x = ID, y = value, fill = metric)) +
+  ggplot(aes(x = ID, y = value, fill = watershed)) +
   geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
   theme_bw() +
   labs(x = "Geomorphic Reach",
        y = "Suitability Index",
        title = "Chinook Spawning 2019") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
         axis.text.x = element_text(angle = 45, vjust = 0.5),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
@@ -147,14 +147,14 @@ chnk_spw_2021_geo = hsi_raw %>%
                                     "GR_03_SF",
                                     "GR_04_SF",
                                     "GR_05_SF"))) %>%
-  ggplot(aes(x = ID, y = value, fill = metric)) +
+  ggplot(aes(x = ID, y = value, fill = watershed)) +
   geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
   theme_bw() +
   labs(x = "Geomorphic Reach",
        y = "Suitability Index",
        title = "Chinook Spawning 2021") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
         axis.text.x = element_text(angle = 45, vjust = 0.5),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
@@ -180,14 +180,14 @@ sthd_juv_2019_geo = hsi_raw %>%
                                     "GR_03_SF",
                                     "GR_04_SF",
                                     "GR_05_SF"))) %>%
-  ggplot(aes(x = ID, y = value, fill = metric)) +
+  ggplot(aes(x = ID, y = value, fill = watershed)) +
   geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
   theme_bw() +
   labs(x = "Geomorphic Reach",
        y = "Suitability Index",
        title = "Steelhead Juvenile Rearing 2019") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
         axis.text.x = element_text(angle = 45, vjust = 0.5),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
@@ -213,14 +213,14 @@ sthd_juv_2021_geo = hsi_raw %>%
                                     "GR_03_SF",
                                     "GR_04_SF",
                                     "GR_05_SF"))) %>%
-  ggplot(aes(x = ID, y = value, fill = metric)) +
+  ggplot(aes(x = ID, y = value, fill = watershed)) +
   geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
   theme_bw() +
   labs(x = "Geomorphic Reach",
        y = "Suitability Index",
        title = "Steelhead Juvenile Rearing 2021") +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none",
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
         axis.text.x = element_text(angle = 45, vjust = 0.5),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
