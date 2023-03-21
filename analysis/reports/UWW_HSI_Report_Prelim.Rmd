@@ -56,18 +56,13 @@ knitr::opts_chunk$set(
 
 options(knitr.kable.NA = '--')
 
-```  
-```{r setup, echo = FALSE, message = FALSE, warning = FALSE, results = 'hide'}
-# setwd('markdown')
+``` 
+
+```{r load-library, echo = FALSE, message = FALSE, warning = FALSE, results = 'hide'}
+
 # load knitr for markdown
 library(knitr)
 library(kableExtra)
-knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE,
-                      fig.path = "../output/figures/",
-                      dpi = 300)
-#options(tinytex.verbose = TRUE)
-options(knitr.kable.NA = '-')
-options(knitr.table.format = "pandoc")
 
 # load packages for analysis
 library(tidyverse)
@@ -75,13 +70,14 @@ library(here)
 library(ggpubr)
 library(sf)
 library(readxl)
-library(here)
 library(ggmap)
 library(nngeo)
 library(janitor)
 library(readr)
 library(gridExtra)
 library(reshape2)
+library(dplyr)
+library(ggplot2)
 
 theme_set(theme_pubr(x.text.angle = 45,
                      base_size = 8))
@@ -93,12 +89,12 @@ Water is the cornerstone of First Foods production and inherently tied to the fi
 
 ## Focal Species
 
-The focal species for the Hydraulic Suitability Criteria (HSC) analysis are:
+The focal species for the Hydraulic Habitat Suitability (HHS) analysis are:
 
 -   Spring-run Chinook salmon (*Oncorhynchus tshawytscha*; hereafter Chinook salmon)
 -   Middle Columbia River summer steelhead (*O. mykiss*; hereafter steelhead; ESA-listed "threatened")
 
-While our HSC models specifically address Chinook salmon and steelhead, any uplift in habitat for these species are also expected to benefit:
+While our HHS models specifically address Chinook salmon and steelhead, any uplift in habitat for these species are also expected to benefit:
 
 -   Columbia River bull trout (*Salvelinus confluentus*; ESA-listed "threatened")
 -   Pacific lamprey (*Lampetra tridentata*)
@@ -109,7 +105,7 @@ This assessment will be focused on the alluvial channel of the Walla Walla River
 
 ## Objective
 
-Evaluate the composite suitability of geomorphic reaches in the North Fork (NF), South Fork (SF), and upper Walla Walla (WW) River watersheds based on modeled depth and velocity rasters supported by  multi-year LiDAR sampling events that encompass the study reaches. Composite suitability is evaluated for both Chinook salmon and steelhead at multiple life stages, including adult spawning and juvenile rearing for Chinook and juvenile rearing for steelhead, at base flow discharge scenarios (see Table \@ref(tab:scenarios-tab)).
+Evaluate the composite suitability of geomorphic reaches in the North Fork (NF), South Fork (SF), and upper mainstem Walla Walla River (MS) watersheds based on modeled depth and velocity rasters supported by  multi-year LiDAR sampling events that encompass the study reaches. Composite suitability is evaluated for both Chinook salmon and steelhead at multiple life stages, including adult spawning and juvenile rearing for Chinook and juvenile rearing for steelhead, at base flow discharge scenarios (see Table \@ref(tab:scenarios-tab)).
 
 # Methods
 
@@ -117,7 +113,7 @@ We provide methods for calculating the composite (depth & velocity) suitability,
 
 Detailed methods are as follows:
 
-1. Raster .tifs containing depth and velocity values derived from 2019 and 2021 LiDAR data were imported into R [@R2019] with a raster pixel resolution of 1m x 1m. Rasters were obtained from Rio Applied Science and Engineering (Rio ASE).
+1. Raster .tifs containing depth and velocity values derived from 2019 and 2021 LiDAR data were imported into R [@RCoreTeam2021] with a raster pixel resolution of 1m x 1m. Rasters were obtained from Rio Applied Science and Engineering (Rio ASE).
 
 2. Import polygon shapefiles delineating the river kilometers and geomorphic reaches defined by ????. These shapefiles are used to interrogate the depth and velocity .tifs to determine which rkm or geomorphic reach each depth and velocity pixel falls within.
 
@@ -143,23 +139,41 @@ rename(Watershed = Strm_Name,
        min = From_RKM,
        max = To_RKM,
        'Geomorphic Reach' = Reach_ID) %>%
-  arrange(Watershed, min) %>%
   relocate("Watershed", "Geomorphic Reach", "min", "max") %>%
-  select(Watershed, 'Geomorphic Reach', min, max) %>%
+  select(Watershed, 'Geomorphic Reach', min, max)
+
+geo_reach$`Geomorphic Reach`= ordered(geo_reach$`Geomorphic Reach`, levels = c("GR_01_MS",
+                                                                               "GR_02_MS",
+                                                                               "GR_03_MS",
+                                                                               "GR_04_MS",
+                                                                               "GR_05_MS",
+                                                                               "GR_01_NF",
+                                                                               "GR_02_NF",
+                                                                               "GR_03_NF",
+                                                                               "GR_04_NF",
+                                                                               "GR_05_NF",
+                                                                               "GR_01_SF",
+                                                                               "GR_02_SF",
+                                                                               "GR_03_SF",
+                                                                               "GR_04_SF",
+                                                                               "GR_05_SF"))
+geo_reach = geo_reach %>%
+  arrange(factor(`Geomorphic Reach`)) %>%
 
 kable(booktabs = T,
  align = "ccccccc",
 caption = "The minimum and maximum river kilometer contained within each geomorphic reach. 
-        River kilometers increase as you move upstream") %>% kable_styling(full_width = F,
+        River kilometers increase as you move upstream") %>% kable_styling(full_width = T,
  position = "center",
  bootstrap_options = c("striped", "condensed"))
+geo_reach
 ```
 
 
 ## Habitat Suitability
 
 ```{r hsi-curves}
-hsi_df = read_csv(here("analysis/data/raw_data/maret_hsi_curves_for_r.csv"))
+hsi_df = read_csv(here("analysis/data/raw_data/maret_hsi_curves_for_r_uww.csv"))
 
 ```
 
@@ -181,7 +195,7 @@ chnk_hsi
 
 ```
 
-```{r sthd-hsi, fig.height = 4, fig.cap = "Suitability indices at varying depths and velocities for juvenile rearing and adult spawning for steelhead from Maret et al. (2006)."}
+```{r sthd-hsi, fig. height = 3, fig.width = 3, fig.cap = "Suitability indices at varying depths and velocities for juvenile rearing for steelhead from Maret et al. (2006)."}
 sthd_hsi = hsi_df %>%
   filter(species == "Steelhead") %>%
   ggplot(aes(x = value_m, y = si)) +
@@ -199,9 +213,8 @@ sthd_hsi
 ## Scenarios
 
 ```{r scenarios-tab}
-hsi_scenario = tibble(Scenario = c(1:6),
-    Watershed = c("Walla Walla River","Walla Walla River","Walla Walla River","Walla Walla River","Walla Walla River",
-                  "Walla Walla River"),
+scenarios_tab = tibble(Scenario = c(1:6),
+    Watershed = c("Walla Walla River","Walla Walla River","Walla Walla River","Walla Walla River","Walla                        Walla River", "Walla Walla River"),
     Species = c("Chinook", "Chinook", "Chinook", "Chinook", "Steelhead", "Steelhead"),
     Life_Stage = c("Juvenile", "Juvenile", "Spawning", "Spawning", "Juvenile", "Juvenile"),
     Year = c("2019","2021","2019","2021","2019","2021"),
@@ -218,52 +231,12 @@ hsi_scenario = tibble(Scenario = c(1:6),
 kable_styling(full_width = F,
 position = "center",
 bootstrap_options = c("striped", "condensed"))
+scenarios_tab
 ```
 
-We evaluated `r nrow(hsi_scenarios)` scenarios in total which are summarized in Table \@ref(tab:scenarios-tab). For all scenarios, we used rasters from a discharge scenario representative of low flow conditions. Two raster datasets from 2019 and 2021 were assessed for suitability to evaluate changes to habitat as a result of extensive flooding in 2020.
+We evaluated `r nrow(scenarios_tab)` scenarios in total which are summarized in Table \@ref(tab:scenarios-tab). For all scenarios, we used rasters from a discharge scenario representative of low flow conditions. Two raster datasets from 2019 and 2021 were assessed for suitability to evaluate changes to habitat as a result of extensive flooding in 2020.
 
 # Results
-
-```{r comp-suit-data, eval = T}
-raw_outputs = list.files(path = "../output/hsi_raw/", pattern = "*.RData", full.names = T)
-all_comp_suits = sapply(raw_outputs, function(x) mget(load(x)), simplify = T) %>%
-  bind_rows() %>%
-  mutate(geo_reach = paste0("GR_", str_pad(sub(".*_", "", ID), 2, pad = "0"))) %>%
-  dplyr::select(-ID) %>%
-  mutate(species = recode(species,
-                          `chnk` = "Chinook",
-                          `sthd` = "Steelhead"))
-```
-
-```{r comp-suit-data-rkm, eval = F}
-raw_outputs = list.files(path = "../output/hsi_rkm/", pattern = "*.RData", full.names = T)
-all_comp_suits = sapply(raw_outputs, function(x) mget(load(x)), simplify = T) %>%
-  bind_rows() %>%
-  mutate(species = recode(species,
-                          `chnk` = "Chinook",
-                          `sthd` = "Steelhead"))
-```
-
-```{r geo-polys, }
-geo_rchs = st_read('../data/geomorph/geo_reaches/Lem_Poly_Label.shp',
-                   quiet = T) %>%
-  mutate(watershed = "lemh") %>%
-  rename(GeoReach = Name) %>%
-  select(watershed, GeoReach) %>%
-  bind_rows(st_read('../data/geomorph/geo_reaches/Pah_Poly_Label.shp',
-                   quiet = T) %>%
-              mutate(watershed = "pahs") %>%
-              st_transform(st_crs(.)) %>%
-              select(watershed, GeoReach)) %>%
-  bind_rows(st_read('../data/geomorph/geo_reaches/US_Poly_Label.shp',
-                   quiet = T) %>%
-              mutate(watershed = "upsa") %>%
-              st_transform(st_crs(.)) %>%
-              select(watershed, GeoReach)) %>%
-  mutate(rch_num = str_extract(GeoReach, "[:digit:]+"),
-         rch_num = as.numeric(rch_num))
-```
-
 
 Here, we summarize the distribution of composite, depth and velocity suitability values by geomorphic reach (as box plots), mean HHS by rkm (as maps), and WUA and HHS by rkm (line plots) by species, life stage and year. Raw outputs and raster .tifs of depth, velocity, and composite suitability values are available in the [UWW.plan repo](https://github.com/Mount-Hood-Environmental/UWW.plan) or from the authors.
 
@@ -319,7 +292,7 @@ chnk_spw_2021_geo
 
 Figure \@ref(fig:uww-chnk-juv-plot) shows the composite hydraulic suitability, and depth and velocity suitability within the Upper Walla Walla watershed to support Chinook salmon juvenile rearing under post-flood conditions in 2021. In general, the hydraulic suitability for juvenile rearing,
 
-```{r fig:uww-chnk-juv-plot fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for Chinook juvenile rearing across geomorphic reaches in the Upper Walla Walla watershed in 2021. Results for composite suitability (geometric mean of depth and velocity suitability), depth and velocity are shown to help identify hydarulic metric limitations."}
+```{r uww-chnk-juv-plot, fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for Chinook juvenile rearing across geomorphic reaches in the Upper Walla Walla watershed in 2021. Results for composite suitability (geometric mean of depth and velocity suitability), depth and velocity are shown to help identify hydraulic metric limitations."}
 
 # Chinook juvenile rearing 2021 #
 chnk_juv_2021_geo = hsi_raw %>%
@@ -359,7 +332,7 @@ chnk_juv_2021_geo
 
 Figure \@ref(fig:uww-sthd-juv-plot) shows the composite hydraulic suitability, and depth and velocity suitability within the Upper Walla Walla watershed to support steelhead juvenile rearing under post-flood conditions in 2021. In general, the hydraulic suitability for juvenile rearing,
 
-```{r fig:uww-sthd-juv-plot fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for Chinook juvenile rearing across geomorphic reaches in the Upper Walla Walla watershed in 2021. Results for composite suitability (geometric mean of depth and velocity suitability), depth and velocity are shown to help identify hydarulic metric limitations."}
+```{r uww-sthd-juv-plot, fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for Chinook juvenile rearing across geomorphic reaches in the Upper Walla Walla watershed in 2021. Results for composite suitability (geometric mean of depth and velocity suitability), depth and velocity are shown to help identify hydarulic metric limitations."}
 
 # steelhead juvenile rearing 2021 #
 sthd_juv_2021_geo = hsi_raw %>%
