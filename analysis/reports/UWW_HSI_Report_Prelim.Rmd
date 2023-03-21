@@ -372,7 +372,7 @@ sthd_juv_2021_geo
 
 Figure \@ref(fig:hss-map-rkm) shows the hydraulic habitat suitability of each river kilometer by species, life stage, and year with the outlines of the geomorphic reaches in the Upper Walla Walla watershed. 
 
-```{r hss-map-rkm, results = 'hide', fig.cap = "Map showing the hydraulic habitat suitability by life stage and year for Chinook salmon and steelhead in the Upper Walla Walla watershed, plotted by river kilometer with geomorphic reaches also shown."}
+```{r hhs-map-rkm, results = 'hide', fig.cap = "Map showing the hydraulic habitat suitability by life stage and year for Chinook salmon and steelhead in the Upper Walla Walla watershed, plotted by river kilometer with geomorphic reaches also shown."}
 
 # HHS map by scenario
 rkm = (st_read(here("analysis/data/derived_data/hsi/rkm_poly.shp"))) %>%
@@ -476,7 +476,6 @@ Figure \@ref(fig:vel-map-rkm) shows the habitat suitability by depth of each riv
 ```{r vel-map-rkm, results = 'hide', fig.cap = "Map showing the velocity (depth avg) suitability by life stage and year for Chinook salmon and steelhead in the Upper Walla Walla River, plotted by river kilometer with geomorphic reaches also shown."}
 
 # Velocity maps
-# HHS maps
 vel_rkm = merge(rkm, hhs, by = "Reach_ID") %>%
 ggplot() +
 geom_sf(aes(fill = v_HSI)) +
