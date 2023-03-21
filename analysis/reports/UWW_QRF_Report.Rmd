@@ -950,103 +950,19 @@ For steelhead, there appears to be sufficient juvenile rearing habitat, during w
 
 ## Target Conditions to Address Limitations
 
+Conservation and rehabilitation actions taken in the Upper Walla Walla watershed should aim to increase the quantity and/or quality of available habitat for Chinook salmon and steelhead. The focus should be on improving spawning habitat, for both species, as well as juvenile summer rearing habitat, at least for steelhead. The assessment of habitat capacity suggests that the NFSR would need to support an additional 944 Chinook salmon redds, 938 steelhead redds, as well as 339,156 juvenile steelhead during summer months to provide sufficient tributary habitat to achieve recovery objectives of 3,600 and 3,400 adult spawners for Chinook salmon and steelhead, respectively. These values represent about 317%, 87%, and 33% increases, respectively, relative to existing carrying capacity to alleviate watershed habitat bottlenecks.There are two primary strategies to address the identified habitat capacity deficits: 1) implement rehabilitation actions within lower-quality habitats to increase available capacity (i.e., increase quality by restoring ecological and river processes), or 2) increase the available stream network in tributaries and headwater habitats by addressing issues with habitat connectivity (i.e., increase quantity by improving or removing barriers). More than likely, a combination of both strategies will be necessary to address identified capacity deficits and improve quantity and quality to remove tributary habitat limitations. 
 
+Increasing Chinook salmon and steelhead abundance to meet recovery objectives will likely require a combination of "active" and "passive" actions. Primary objectives for rehabilitation actions may be focused on improving and increasing habitat for a particular species and life stage; however it is important that cumulative actions address fish and ecosystem process in a holistic manner. This means considering connectivity, complexity, and overall functionality that supports a variety of species and life stages. For instance, improving spawning habitat for Chinook salmon and steelhead in only the lowest reaches of the watershed while improving juvenile steelhead rearing only in tributaries and headwaters is likely not an effective approach to achieve population objectives. For population-level benefits, projects may focus on a specific deficit (e.g., Chinook salmon spawning), but should accommodate multiple species and life stages while complementing nearby projects or existing high-quality habitat. As an example, implementing beaver dam analogs (BDAs) or similar features in tributaries and headwater areas may be an effective means to increase juvenile rearing capacity while also benefitting spawning. BDAs have been shown to increase juvenile steelhead density, survival, and production [@Bouwes2016] as well as buffer against stream temperature extremes [@Weber2017]. The also mimic and promote natural beaver dams which have been shown to attenuate late season water declines [@Burchsted2010; @Westbrook2006]. Designing and planning rehabilitation projects that employ both watershed- and reach-scale strategies to meet recovery objectives will ultimately provide more robust benefits to the fish population(s) and the ecosystem.
 
-<!--
-Conservation and rehabilitation actions taken in the North Fork Salmon River (NFSR) should aim to increase the
-quantity and/or quality of available habitat for Chinook salmon and steelhead. The focus should be on improving
-spawning habitat, for both species, and juvenile summer rearing habitat, at least for steelhead. Nevertheless,
-available winter habitat as well as fry and early parr habitat during spring months should be secondarily
-considered. The assessment of habitat capacity suggests that the NFSR would need to support an additional 63
-Chinook salmon redds, 159 steelhead redds, and 83,086 steelhead parr during summer months to provide
-sufficient tributary habitat to achieve recovery objectives of 625 adults for both species. These values represent
-about 41%, 75%, and 50% increases, respectively, relative to existing carrying capacity to alleviate watershed
-habitat bottlenecks. There are two primary strategies to address the identified habitat capacity deficits: 1)
-implement rehabilitation actions with lower-quality habitats to increase available capacity (i.e., increase quality
-by restoring process), or 2) increase the available stream network in tributaries and headwater habitats by
-addressing issues with habitat connectivity (i.e., increase quantity by improving or restoring barriers). More than
-likely, a combination of strategies will be necessary to address identified capacity deficits and improve habitat
-quantity and quality to remove tributary habitat limitations.
+<!--Additionally, having high-quality rearing habitat downstream of high-quality spawning habitat would allow juvenile fish emerging from natal areas redds the opportunity to “trickle down” into high-quality rearing habitat, rather than swim upstream in search of more suitable rearing habitat, minimizing the energy expended during early life history.--> 
 
-Increasing Chinook salmon and steelhead abundance to meet recovery objectives will likely require a
-combination of “active” and “passive” actions. Active actions include: 1) increasing habitat quality through
-rehabilitation of low-quality habitats, 2) increasing habitat quantity by improving habitat connectivity within the
-available stream network, or 3) a combination of both. Additionally, primary objectives for rehabilitation actions
-may be focused on improving and increasing habitat for a particular species and life stage, but it is important
-that cumulative actions address fish and ecosystem processes in a holistic manner. This means considering
-connectivity, complexity, and overall functionality that supports a variety of species and life stages. For instance, improving spawning habitat for Chinook salmon and steelhead in only the Lower NFSR while improving
-steelhead rearing only in tributaries and headwaters is likely not an effective approach to achieve population
-objectives. For population-level benefits, projects may focus on a specific deficit (e.g., Chinook salmon
-spawning), but should accommodate multiple species and life stages while complementing nearby projects or
-existing high-quality habitat. For instance, implementing beaver dam analogs (BDAs) or similar features in
-tributaries and headwater areas may be an effective means to increase juvenile rearing capacity while also
-benefitting downstream spawning. BDAs have been shown to increase juvenile steelhead density, survival, and
-production (Bouwes et al., 2016) as well as buffer against stream temperature extremes (Weber et al., 2017).
-They also mimic and promote natural beaver dams which have been shown to attenuate late season water
-decline (Burchsted et al., 2010; Westbrook et al., 2006). Designing and planning rehabilitation projects that
-employ both watershed- and reach-scale strategies to meet recovery objectives will ultimately provide for more
-robust benefits to the fish population(s) and the ecosystem.
+Deficiencies in fish-habitat data specific to fry and early parr life stages, plus a general lack of habitat suitability and preference indices for fry, precluded analysis of potential limitations for these early life stages. However, it is generally recognized that fry and early parr require slow velocity habitats (e.g., off-channel areas, beaver complexes, floodplains, small side-channels) and instream cover for growth and predator avoidance. Due to changes in land use practices within the Upper Walla Walla floodpain, it is likely that floodplain connectivity (a critical component for fry and early parr rearing and growth) has been greatly altered. When possible, incorporating strategies to increase the frequency and duration of floodplain inundation and connectivity into designs would providefry and early parr access to valuable habitats where they can hold and feed in near-lentic conditions. In addition, other life stages (e.g., adult holding, egg incubation) should not be dismissed. For example, fine sedimentation can fill interstitial spaces and reduce rates of egg incubation. Actions to reduce fine sedimentation and/or provide fry and early parr stream velocity refugia and cover should be considered as part of a holistic plan.
 
-Restoration efforts aimed at improving Chinook salmon and steelhead spawning habitat should prioritize the
-Middle and Lower NFSR where estimated spawning capacity is low (Table 5-1). By increasing the average
-potential redd densities capacities in these areas to levels in adjacent NFSR HUC12 units (Table 5-1), total NFSR
-redd capacity could be increased by an estimated 12 and 15 redds for Chinook salmon and steelhead,
-respectively. If spawning habitat quality in the Middle and Lower NFSR could be increased to levels estimated
-elsewhere in central Idaho (Table 5-1), total NFSR redd capacity could theoretically be increased by an estimated
-122 redds for Chinook salmon and 127 redds for steelhead. Under this scenario, Chinook salmon spawning redd
-capacity could likely be sufficient to achieve recovery goals. However, it is recognized increasing spawning
-capacity in the Lower NFSR to levels observed in high-quality habitat elsewhere in central Idaho may not be
-feasible given the natural gradient of the reach and artificial restriction of the channel by land use practices and
-development. Because of this, it may be more beneficial to split restoration priorities in the Lower NFSR
-between spawning and rearing habitat improvements. Additionally, having high-quality rearing habitat
-downstream of high-quality spawning habitat would allow juvenile fish emerging from natal areas redds the
-opportunity to “trickle down” into high-quality rearing habitat, rather than swim upstream in search of more
-suitable rearing habitat, minimizing the energy expended during early life history. Finally, it should be noted that
-Northwest Stream Temperature (NorWeST) climate projections for 2040 and 2080 predict that some portions of
-the Lower and Middle NFSR segments may become thermally sub-optimal for Chinook salmon spawning.
-Rehabilitation actions in the Middle and Lower NFSR should consider strategies to buffer stream temperatures
-(e.g., increasing shading, cover, hyporheic flow, etc.) from future potential climate impacts. While important,
-these actions should be a secondary priority to improving available spawning habitat given the majority of the
-NFSR is projected to continue to be a cold-water refugia into the future.
+Actions targeted at increasing spawning habitat capacity should aim to increase stream complexity (including channel unit frequency and hydraulic diversity), cover, and provide ample riffle-pool interfaces including pool tailouts with substrates consisting of fine and coarse gravels, where possible. The combination of these characteristics provides slow-water refuge with cover for holding adults, as well as ideal conditions for egg incubation (i.e., sufficient flow and interstitial spaces for protection and oxygenation of eggs). Pool tailouts and pool-riffle interfaces additionally provide sufficient sediment sorting during redd excavation [@Moir2010] and encourage hyporheic flow which aids in oxygenation of eggs [@Harrison2019]. Depth average velocities of around 0.25 m/s to 1.25 m/s are generally suitable for Chinook salmon and steelhead spawning [@Maret2006].
 
-Actions targeted at increasing spawning habitat capacity should aim to increase stream complexity (including
-channel unit frequency and hydraulic diversity), cover, and provide ample riffle-pool interfaces including pool
-tailouts with substrates consisting of fine and coarse gravels, where possible. The combination of these
-characteristics provides slow-water refuge with cover for holding adults, as well as ideal conditions for egg
-incubation (i.e., sufficient flow and interstitial spaces for protection and oxygenation of eggs). Pool tailouts and
-pool-riffle interfaces additionally provide sufficient sediment sorting during redd excavation (Moir et al., 2002)
-and encourage hyporheic flow which aids in oxygenation of eggs (Harrison et al., 2019). Depth averaged
-velocities of around 0.25 m/s to 1.25 m/s are generally suitable for Chinook salmon and steelhead spawning
-(Maret et al., 2006).
+During summer, juvenile Chinook salmon and steelhead aim to maximize growth while minimizing exposure to predators. As such, actions targeted at improving summer rearing habitat should strive to create deeper pools and runs (i.e. increases average thalweg and pool depths), increase channel unit frequency while balancing the proportion of riffles and rapids, provide ample cover (large wood and total fish cover), and include a variety of substrate sizes geomorphically appropriate for runs and pools. Combined, these characteristics present juvenile fish the opportunity to occupy a variety of microhabitats to optimize bioenergetic inputs and expenses. These characteristics provide options where juvenile fish can rest and hold in slow-velocity water (i.e., pools, behind structure or boulders, within cover, adjacent to seams, etc.) adjacent to higher velocity water that present increased forage opportunities, while cover and instream structure provides protection from predators. The combination of microhabitats provides options where the amount of energy necessary to maintain instream position is minimized, the amount of forage available is maximized (or at least increased), and cover provides refuge from predators at minimal energetic cost. Last, incorporating side channels, off-channels, and/or island complexes can be an effective tool to increase the frequency and scale of target characteristics, ultimately allowing for more microhabitat options for fish, particularly during juvenile rearing.
 
-Efforts to improve juvenile steelhead summer rearing habitat should focus primarily on major tributaries
-(Hughes, Sheep, and Dahlonega creeks) and the headwaters (Upper NFSR) which have the lowest estimated
-capacities. Increasing average capacities within these reaches to levels similar in the Lower and Middle NFSR
-(approx. 2,300 steelhead parr/km; Table 4-7) could increase total NFSR steelhead summer rearing capacity by
-about 24,400. Quantile Random Forest- (QRF) based estimates of steelhead summer rearing capacity approach
-5,000 parr/km in the recently restored Copper Gulch site (Figure 4-16). Under a theoretical scenario where postrehabilitation habitat could support an average of 5,000 steelhead parr/km, it would take an estimated 24 km of
-rehabilitation throughout the lowest capacity HUC12 units (Upper NFSR, Dahlonega, and Sheep creeks) to
-achieve steelhead summer rearing capacities to levels necessary to achieve NFSR escapement objectives. This is
-approximately 30% of the current estimated spatial domain for steelhead (Table 4-7). Rearing habitat capacities
-throughout the NFSR are far from homogenous (Figure 4-14; Table 4-7), so targeting the lowest capacity reaches
-within HUC12 units could further optimize rehabilitation efforts.
-
-During summer, juvenile Chinook salmon and steelhead aim to maximize growth while minimizing exposure to
-predators. As such, actions targeted at improving summer rearing habitat should strive to create deeper pools
-and runs (i.e., increased average thalweg and pool depths), increase channel unit frequency while decreasing
-the percentage of riffles and rapids, provide ample cover (large wood and total fish cover), and include a variety
-of substrate sizes geomorphically appropriate for runs and pools. Combined, these characteristics present
-juvenile fish the opportunity to occupy a variety of microhabitats to optimize bioenergetic inputs and expenses.
-These characteristics provide options where juvenile fish can rest and hold in slow-velocity water (i.e., pools, behind structure or boulders, within cover, adjacent to seams, etc.) adjacent to higher velocity water that
-present increased forage opportunities, while cover and instream structure provides protection from predators.
-The combination of microhabitats provides options where the amount of energy necessary to maintain instream
-position is minimized, the amount of forage available is maximized (or at least increased), and cover
-provides refuge from predators at minimal energetic cost. Last, incorporating side channels, off-channels,
-and/or island complexes can be an effective tool to increase the frequency and scale of target characteristics,
-ultimately allowing for more microhabitat options for fish, particularly during juvenile rearing.
-
-Deficiencies in fish-habitat data specific to fry and early parr life stages, plus a general lack of habitat suitability and preference information for fry, precluded analysis of potential limitations for these early life stages. However, it is generally understood that fry and early parr require slow-velocity habitats (e.g., off-channel areas, beaver complexes, floodplains, small side-channels) and instream cover for growth and predator avoidance. Due to changes in land use practices and relatively recent development within the NFSR floodplain, it is likely that floodplain connectivity (a critical component for fry and early parr rearing and growth) has been greatly altered. When possible, incorporating strategies to increase the frequency and duration of floodplain inundation and connectivity into designs would provide fry and early parr access to valuable habitats where they can hold and feed in near-lentic conditions.
--->
+Finally, it should be noted that NorWeST climate projections predict that large portions of the Upper Walla Walla watershed are or may become thermally sub-optimal for Chinook salmon spawning and summer parr rearing (both species). Rehabilitation actions should consider strategies to buffer stream temperatures (e.g., increasing shading, cover, hyporheic flow, etc.) from future potential climate impacts.
 
 ## Further Considerations
 
