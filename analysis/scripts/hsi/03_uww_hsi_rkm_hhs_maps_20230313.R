@@ -55,13 +55,13 @@ geom_sf(aes(fill = HHS)) +
 scale_fill_distiller(palette = "Spectral",
                       direction = 1,
                       name = "Hydraulic Habitat Suitability (HHS)") +
-  geom_sf(data = geo_ms, color = 'grey70',
+  geom_sf(data = geo_ms, color = 'grey50',
           fill = NA) +
   geom_sf_label(data = geo_ms, aes(label = Reach),
                 color = 'black',
                 size = 2,
-                nudge_x = -3500,
-                nudge_y = -1500) +
+                nudge_x = 2500,
+                nudge_y = 1000) +
   theme(axis.text = element_blank(),
         axis.title = element_blank(),
         axis.ticks = element_blank(),
@@ -76,6 +76,8 @@ hhs_rkm_fork = merge(rkm, hhs_fork, by = "Reach_ID") %>%
   scale_fill_distiller(palette = "Spectral",
                        direction = 1,
                        name = "Hydraulic Habitat Suitability (HHS)") +
+  geom_sf(data = geo_fork, color = 'grey50',
+          fill = NA) +
   geom_sf_label(data = geo_nf, aes(label = Reach),
                 color = 'black',
                 size = 2,
@@ -102,6 +104,8 @@ depth_rkm_ms = merge(rkm, hhs_ms, by = "Reach_ID") %>%
   scale_fill_distiller(palette = "Spectral",
                        direction = 1,
                        name = "Habitat Suitability by Depth") +
+  geom_sf(data = geo_ms, color = 'grey50',
+          fill = NA) +
   geom_sf_label(data = geo_ms, aes(label = Reach),
                 color = 'black',
                 size = 2,
@@ -121,6 +125,8 @@ depth_rkm_fork = merge(rkm, hhs_fork, by = "Reach_ID") %>%
   scale_fill_distiller(palette = "Spectral",
                        direction = 1,
                        name = "Hydraulic Habitat Suitability (HHS)") +
+  geom_sf(data = geo_fork, color = 'grey50',
+          fill = NA) +
   geom_sf_label(data = geo_nf, aes(label = Reach),
                 color = 'black',
                 size = 2,
@@ -146,6 +152,8 @@ vel_rkm_ms = merge(rkm, hhs_ms, by = "Reach_ID") %>%
   scale_fill_distiller(palette = "Spectral",
                        direction = 1,
                        name = "Habitat Suitability by Velocity (depth avg)") +
+  geom_sf(data = geo_ms, color = 'grey50',
+          fill = NA) +
   geom_sf_label(data = geo_ms, aes(label = Reach),
                 color = 'black',
                 size = 2,
@@ -165,6 +173,8 @@ vel_rkm_fork = merge(rkm, hhs_fork, by = "Reach_ID") %>%
   scale_fill_distiller(palette = "Spectral",
                        direction = 1,
                        name = "Hydraulic Habitat Suitability (HHS)") +
+  geom_sf(data = geo_fork, color = 'grey50',
+          fill = NA) +
   geom_sf_label(data = geo_nf, aes(label = Reach),
                 color = 'black',
                 size = 2,

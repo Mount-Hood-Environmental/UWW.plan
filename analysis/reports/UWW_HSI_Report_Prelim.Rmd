@@ -20,6 +20,8 @@ output:
     toc: yes
     toc_depth: 2
     toc_float:
+      fig_height: 8
+      fig_width: 10
       collapsed: yes
       smooth_scroll: yes
     number_sections: yes
@@ -195,14 +197,14 @@ chnk_hsi
 
 ```
 
-```{r sthd-hsi, fig. height = 3, fig.width = 3, fig.cap = "Suitability indices at varying depths and velocities for juvenile rearing for steelhead from Maret et al. (2006)."}
+```{r sthd-hsi, fig.height = 4, fig.cap = "Suitability indices at varying depths and velocities for juvenile rearing for steelhead from Maret et al. (2006)."}
 sthd_hsi = hsi_df %>%
   filter(species == "Steelhead") %>%
   ggplot(aes(x = value_m, y = si)) +
   geom_line(color = "royalblue3", size = 1.5) +
   coord_cartesian(xlim = c(0,2)) +
   theme_bw() +
-  facet_grid(variable ~ life_stage) +
+  facet_grid( life_stage ~ variable) +
   labs(x = "Value (m | m/s)",
        y = "Suitability Index",
        title = "Steelhead")
@@ -372,15 +374,15 @@ Figure \@ref(fig:hss-map-rkm) shows the hydraulic habitat suitability of each ri
 
 ```{r hss-map-rkm, results = 'hide', fig.cap = "Map showing the hydraulic habitat suitability by life stage and year for Chinook salmon and steelhead in the Upper Walla Walla watershed, plotted by river kilometer with geomorphic reaches also shown."}
 
-# map by scenario
+# HHS map by scenario
 rkm = (st_read(here("analysis/data/derived_data/hsi/rkm_poly.shp"))) %>%
   select(Reach_ID, Strm_Name, geometry) %>%
   rename(watershed = Strm_Name)
 
-geo = (st_read(here("analysis/data/derived_data/hsi/geom_poly.shp"))) %>%
+geo = (st_read(here("analysis/data/derived_data/hsi/geom_buffer.shp"))) %>%
   select(Reach, geometry)
 
-geo_ww = geo %>%
+geo_ms = geo %>%
   filter(str_starts(Reach, "MS"))
 
 geo_nf = geo %>%
@@ -389,7 +391,7 @@ geo_nf = geo %>%
 geo_sf = geo %>%
   filter(str_starts(Reach, "SF"))
 
-hhs = list.files("analysis/hsi_outputs/csvs", pattern = "*.csv", full.names = T) %>%
+hhs = list.files("analysis/hsi_outputs/csvs", pattern = "*.csv", full.names = T)%>%
   map_df(~read_csv(.)) %>%
   rename(Reach_ID = ID) %>%
   filter(str_starts(Reach_ID, "RKM"))
@@ -397,24 +399,26 @@ hhs = list.files("analysis/hsi_outputs/csvs", pattern = "*.csv", full.names = T)
 scenario_labs = c("Chinook Juvenile", "Chinook Spawning", "Steelhead Juvenile")
 names(scenario_labs) = c("chnk_juv", "chnk_spw", "sthd_juv")
 
-# HHS map
+# HHS maps
 hhs_rkm = merge(rkm, hhs, by = "Reach_ID") %>%
-  ggplot() +
-  geom_sf(aes(fill = HHS)) +
-  scale_fill_distiller(palette = "Spectral",
-                        direction = 1,
-                        name = "Hydraulic Habitat Suitability (HHS)") +
-  geom_sf_label(data = geo_ww, aes(label = Reach),
+ggplot() +
+geom_sf(aes(fill = HHS)) +
+scale_fill_distiller(palette = "Spectral",
+                      direction = 1,
+                      name = "Hydraulic Habitat Suitability (HHS)") +
+  geom_sf(data = geo, color = 'grey50',
+          fill = NA) +
+  geom_sf_text(data = geo_ms, aes(label = Reach),
                 color = 'black',
                 size = 2,
-                nudge_x = -3500,
-                nudge_y = -1500) +
-  geom_sf_label(data = geo_nf, aes(label = Reach),
+                nudge_x = -4000,
+                nudge_y = -1000) +
+  geom_sf_text(data = geo_nf, aes(label = Reach),
                 color = 'black',
                 size = 2,
                 nudge_x = 50,
                 nudge_y = 2000) +
-  geom_sf_label(data = geo_sf, aes(label = Reach),
+  geom_sf_text(data = geo_sf, aes(label = Reach),
                 color = 'black',
                 size = 2,
                 nudge_x = 50,
@@ -433,23 +437,26 @@ Figure \@ref(fig:depth-map-rkm) shows the habitat suitability by depth of each r
 ```{r depth-map-rkm, results = 'hide', fig.cap = "Map showing the depth suitability by life stage and year for Chinook salmon and steelhead in the Upper Walla Walla River, plotted by river kilometer with geomorphic reaches also shown."}
 
 # Depth maps
+# HHS maps
 depth_rkm = merge(rkm, hhs, by = "Reach_ID") %>%
-  ggplot() +
-  geom_sf(aes(fill = d_HSI)) +
-  scale_fill_distiller(palette = "Spectral",
-                       direction = 1,
-                       name = "Habitat Suitability by Depth") +
-  geom_sf_label(data = geo_ww, aes(label = Reach),
+ggplot() +
+geom_sf(aes(fill = d_HSI)) +
+scale_fill_distiller(palette = "Spectral",
+                      direction = 1,
+                      name = "Depth Suitability") +
+  geom_sf(data = geo, color = 'grey50',
+          fill = NA) +
+  geom_sf_text(data = geo_ms, aes(label = Reach),
                 color = 'black',
                 size = 2,
-                nudge_x = -3500,
-                nudge_y = -1500) +
-  geom_sf_label(data = geo_nf, aes(label = Reach),
+                nudge_x = -3000,
+                nudge_y = -1000) +
+  geom_sf_text(data = geo_nf, aes(label = Reach),
                 color = 'black',
                 size = 2,
                 nudge_x = 50,
                 nudge_y = 2000) +
-  geom_sf_label(data = geo_sf, aes(label = Reach),
+  geom_sf_text(data = geo_sf, aes(label = Reach),
                 color = 'black',
                 size = 2,
                 nudge_x = 50,
@@ -458,6 +465,7 @@ depth_rkm = merge(rkm, hhs, by = "Reach_ID") %>%
         axis.title = element_blank(),
         axis.ticks = element_blank(),
         panel.grid = element_blank(),
+      
         legend.position = "top") +
   facet_grid(year ~ scenario, labeller = labeller(scenario = scenario_labs))
 depth_rkm
@@ -468,23 +476,26 @@ Figure \@ref(fig:vel-map-rkm) shows the habitat suitability by depth of each riv
 ```{r vel-map-rkm, results = 'hide', fig.cap = "Map showing the velocity (depth avg) suitability by life stage and year for Chinook salmon and steelhead in the Upper Walla Walla River, plotted by river kilometer with geomorphic reaches also shown."}
 
 # Velocity maps
+# HHS maps
 vel_rkm = merge(rkm, hhs, by = "Reach_ID") %>%
-  ggplot() +
-  geom_sf(aes(fill = v_HSI)) +
-  scale_fill_distiller(palette = "Spectral",
-                       direction = 1,
-                       name = "Habitat Suitability by Velocity (depth avg)") +
-  geom_sf_label(data = geo_ww, aes(label = Reach),
+ggplot() +
+geom_sf(aes(fill = v_HSI)) +
+scale_fill_distiller(palette = "Spectral",
+                      direction = 1,
+                      name = "Velocity Suitability") +
+  geom_sf(data = geo, color = 'grey50',
+          fill = NA) +
+  geom_sf_text(data = geo_ms, aes(label = Reach),
                 color = 'black',
                 size = 2,
-                nudge_x = -3500,
-                nudge_y = -1500) +
-  geom_sf_label(data = geo_nf, aes(label = Reach),
+                nudge_x = -3000,
+                nudge_y = -1000) +
+  geom_sf_text(data = geo_nf, aes(label = Reach),
                 color = 'black',
                 size = 2,
                 nudge_x = 50,
                 nudge_y = 2000) +
-  geom_sf_label(data = geo_sf, aes(label = Reach),
+  geom_sf_text(data = geo_sf, aes(label = Reach),
                 color = 'black',
                 size = 2,
                 nudge_x = 50,
@@ -494,7 +505,7 @@ vel_rkm = merge(rkm, hhs, by = "Reach_ID") %>%
         axis.ticks = element_blank(),
         panel.grid = element_blank(),
         legend.position = "top") +
-  facet_grid(year ~ scenario, labeller = labeller(scenario = scenario_labs))
+  facet_grid(year ~ scenario,  labeller = labeller(scenario = scenario_labs))
 vel_rkm
 
 ```
