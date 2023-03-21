@@ -15,6 +15,7 @@ library(sf)
 library(reshape2)
 library(readr)
 library(dplyr)
+library(forcats)
 
 # upload hsi metric raw files for each species/life stage and year into one df
 hsi_raw = list.files("S:/main/data/habitat/HSI/UWW_hsi_results/raw_results", pattern = "*.rda", full.names = T) %>%
@@ -607,9 +608,26 @@ sthd_juv_2021_rkm_sf
 #### Geo Reach Summary Table Script #####
 geo_reach = read_csv(here("analysis/data/raw_data/reach_partitions/Geo_reaches_corrected.csv")) %>%
   rename(Watershed = Strm_Name,
-         min = From_RKM,
-         max = To_RKM,
-         'Geomorphic Reach' = Reach_ID) %>%
-  arrange(Watershed, min) %>%
+  min = From_RKM,
+  max = To_RKM,
+  'Geomorphic Reach' = Reach_ID) %>%
   relocate("Watershed", "Geomorphic Reach", "min", "max") %>%
   select(Watershed, 'Geomorphic Reach', min, max)
+
+geo_reach$`Geomorphic Reach`= ordered(geo_reach$`Geomorphic Reach`, levels = c("GR_01_MS",
+                                                                               "GR_02_MS",
+                                                                               "GR_03_MS",
+                                                                               "GR_04_MS",
+                                                                               "GR_05_MS",
+                                                                               "GR_01_NF",
+                                                                               "GR_02_NF",
+                                                                               "GR_03_NF",
+                                                                               "GR_04_NF",
+                                                                               "GR_05_NF",
+                                                                               "GR_01_SF",
+                                                                               "GR_02_SF",
+                                                                               "GR_03_SF",
+                                                                               "GR_04_SF",
+                                                                               "GR_05_SF"))
+geo_reach = geo_reach %>%
+  arrange(factor(`Geomorphic Reach`))
