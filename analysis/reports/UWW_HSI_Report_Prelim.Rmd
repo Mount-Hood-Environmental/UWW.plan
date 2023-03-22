@@ -277,10 +277,15 @@ geo_nf = geo %>%
 geo_sf = geo %>%
   filter(str_starts(Reach, "SF"))
 
-hhs = list.files(here("analysis/hsi_outputs/csvs/"), pattern = "*.csv", full.names = T) %>%
+hhs_rkm = list.files(here("analysis/hsi_outputs/csvs/"), pattern = "*.csv", full.names = T) %>%
   map_df(~ read_csv(.)) %>%
   rename(Reach_ID = ID) %>%
   filter(str_starts(Reach_ID, "RKM"))
+
+hhs_geo = list.files(here("analysis/hsi_outputs/csvs/"), pattern = "*.csv", full.names = T) %>%
+  map_df(~ read_csv(.)) %>%
+  rename(Reach_ID = ID) %>%
+  filter(str_starts(Reach_ID, "GR"))
 
 ```
 
@@ -306,7 +311,7 @@ chnk_spw_2021_geo = hsi_raw %>%
              fill = watershed)) +
   geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
-  theme_bw() +
+  theme_classic() +
   labs(x = "Geomorphic Reach",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
@@ -360,6 +365,7 @@ chnk_spw_map = merge(rkm, hhs, by = "Reach_ID") %>%
                size = 2,
                nudge_x = 50,
                nudge_y = -3000) +
+  theme_classic() +
   theme(axis.text = element_blank(),
         axis.text.x = element_blank(),
         axis.title = element_blank(),
@@ -368,6 +374,31 @@ chnk_spw_map = merge(rkm, hhs, by = "Reach_ID") %>%
         legend.position = "top") +
   facet_grid(suitability ~ year)
 chnk_spw_map  
+
+```
+
+```{r chnk-spw-hhs, fig.height = 4, fig.cap = "test"}
+chnk_spw_hhs_p = hhs %>%
+  filter(scenario == "chnk_spw") %>%
+  select(scenario,
+         year,
+         Reach_ID,
+         HHS) %>%
+  mutate(watershed = case_when(
+    grepl("MS", Reach_ID) ~ "Mainstem",
+    grepl("NF", Reach_ID) ~ "North Fork",
+    grepl("SF", Reach_ID) ~ "South Fork"
+  )) %>%
+  mutate(rkm = as.numeric(substr(Reach_ID, 5, 6))) %>%
+  ggplot(aes(x = rkm)) +
+  geom_line(aes(y = HHS), color = "royalblue4", size = 0.5) +
+  geom_smooth(aes(y = HHS), color = "royalblue4", se = F, size = 1.1) +
+  ylim(0,1) +
+  facet_wrap(~ watershed, scales = "free_x") +
+  labs(x = "River Kilometer",
+       y = "Hydraulic Suitability") +
+  theme_classic()
+chnk_spw_hhs_p
 
 ```
 
@@ -390,7 +421,7 @@ chnk_juv_2021_geo = hsi_raw %>%
              fill = watershed)) +
   geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
-  theme_bw() +
+  theme_classic() +
   labs(x = "Geomorphic Reach",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
@@ -443,6 +474,7 @@ chnk_juv_map = merge(rkm, hhs, by = "Reach_ID") %>%
                size = 2,
                nudge_x = 50,
                nudge_y = -3000) +
+  theme_classic() +
   theme(axis.text = element_blank(),
         axis.text.x = element_blank(),
         axis.title = element_blank(),
@@ -453,6 +485,32 @@ chnk_juv_map = merge(rkm, hhs, by = "Reach_ID") %>%
 chnk_juv_map  
 
 ```
+
+```{r chnk-juv-hhs, fig.height = 4, fig.cap = "test"}
+chnk_juv_hhs_p = hhs %>%
+  filter(scenario == "chnk_juv") %>%
+  select(scenario,
+         year,
+         Reach_ID,
+         HHS) %>%
+  mutate(watershed = case_when(
+    grepl("MS", Reach_ID) ~ "Mainstem",
+    grepl("NF", Reach_ID) ~ "North Fork",
+    grepl("SF", Reach_ID) ~ "South Fork"
+  )) %>%
+  mutate(rkm = as.numeric(substr(Reach_ID, 5, 6))) %>%
+  ggplot(aes(x = rkm)) +
+  geom_line(aes(y = HHS), color = "royalblue4", size = 0.5) +
+  geom_smooth(aes(y = HHS), color = "royalblue4", se = F, size = 1.1) +
+  ylim(0,1) +
+  facet_wrap(~ watershed, scales = "free_x") +
+  labs(x = "River Kilometer",
+       y = "Hydraulic Suitability") +
+  theme_classic()
+chnk_juv_hhs_p
+
+```
+
 
 ## Steelhead Juvenile Rearing
 
@@ -472,7 +530,7 @@ sthd_juv_2021_geo = hsi_raw %>%
              fill = watershed)) +
   geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
-  theme_bw() +
+  theme_classic() +
   labs(x = "Geomorphic Reach",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
@@ -525,6 +583,7 @@ sthd_juv_map = merge(rkm, hhs, by = "Reach_ID") %>%
                size = 2,
                nudge_x = 50,
                nudge_y = -3000) +
+  theme_classic() +
   theme(axis.text = element_blank(),
         axis.text.x = element_blank(),
         axis.title = element_blank(),
@@ -533,6 +592,31 @@ sthd_juv_map = merge(rkm, hhs, by = "Reach_ID") %>%
         legend.position = "top") +
   facet_grid(suitability ~ year)
 sthd_juv_map  
+
+```
+
+```{r sthd-juv-hhs, fig.height = 4, fig.cap = "test"}
+sthd_juv_hhs_p = hhs %>%
+  filter(scenario == "sthd_juv") %>%
+  select(scenario,
+         year,
+         Reach_ID,
+         HHS) %>%
+  mutate(watershed = case_when(
+    grepl("MS", Reach_ID) ~ "Mainstem",
+    grepl("NF", Reach_ID) ~ "North Fork",
+    grepl("SF", Reach_ID) ~ "South Fork"
+  )) %>%
+  mutate(rkm = as.numeric(substr(Reach_ID, 5, 6))) %>%
+  ggplot(aes(x = rkm)) +
+  geom_line(aes(y = HHS), color = "royalblue4", size = 0.5) +
+  geom_smooth(aes(y = HHS), color = "royalblue4", se = F, size = 1.1) +
+  ylim(0,1) +
+  facet_wrap(~ watershed, scales = "free_x") +
+  labs(x = "River Kilometer",
+       y = "Hydraulic Suitability") +
+  theme_classic()
+sthd_juv_hhs_p
 
 ```
 
