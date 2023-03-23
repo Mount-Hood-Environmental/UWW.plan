@@ -325,7 +325,7 @@ chnk_spw_2021_geo
 
 ```{r chnk-spw-map, results = 'hide', fig.height = 7, fig.cap = "Map showing the hydraulic habitat suitability for **Chinook salmon spawning** in the Upper Walla Walla watershed for 2019 and 2021, plotted by river kilometer with geomorphic reaches shown."}
 # Chinook spawning map
-chnk_spw_map = merge(rkm, hhs, by = "Reach_ID") %>%
+chnk_spw_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
   filter(scenario == "chnk_spw") %>%
   select(Reach_ID,
          year,
@@ -377,8 +377,8 @@ chnk_spw_map
 
 ```
 
-```{r chnk-spw-hhs, fig.height = 4, fig.cap = "test"}
-chnk_spw_hhs_p = hhs %>%
+```{r chnk-spw-hhs, fig.height = 4, fig.cap = "Hydraulic habitat suitability (composite) by river kilometer for **Chinook salmon spawning** for 2019 and 2021."}
+chnk_spw_hhs_p = hhs_rkm %>%
   filter(scenario == "chnk_spw") %>%
   select(scenario,
          year,
@@ -389,15 +389,20 @@ chnk_spw_hhs_p = hhs %>%
     grepl("NF", Reach_ID) ~ "North Fork",
     grepl("SF", Reach_ID) ~ "South Fork"
   )) %>%
-  mutate(rkm = as.numeric(substr(Reach_ID, 5, 6))) %>%
+  mutate(rkm = as.numeric(substr(Reach_ID, 5, 6)),
+         year = as.factor(year)) %>%
   ggplot(aes(x = rkm)) +
-  geom_line(aes(y = HHS), color = "royalblue4", size = 0.5) +
-  geom_smooth(aes(y = HHS), color = "royalblue4", se = F, size = 1.1) +
+  # geom_line(aes(y = HHS), color = "royalblue4", size = 0.5) +
+  # geom_smooth(aes(y = HHS), color = "royalblue4", se = F, size = 1.1) +
+  geom_line(aes(y = HHS, color = year), size = 0.5) +
+  geom_smooth(aes(y = HHS, color = year), se = F, size = 1.1) +
   ylim(0,1) +
   facet_wrap(~ watershed, scales = "free_x") +
   labs(x = "River Kilometer",
-       y = "Hydraulic Suitability") +
-  theme_classic()
+       y = "Hydraulic Suitability",
+       color = "Year") +
+  theme_classic() +
+  theme(legend.position = "top")
 chnk_spw_hhs_p
 
 ```
@@ -434,7 +439,7 @@ chnk_juv_2021_geo
 
 ```{r chnk-juv-map, results = 'hide', fig.height = 7, fig.cap = "Map showing the hydraulic habitat suitability for **Chinook salmon juvenile rearing** in the Upper Walla Walla watershed for 2019 and 2021, plotted by river kilometer with geomorphic reaches shown."}
 # Chinook juvenile rearing map
-chnk_juv_map = merge(rkm, hhs, by = "Reach_ID") %>%
+chnk_juv_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
   filter(scenario == "chnk_juv") %>%
   select(Reach_ID,
          year,
@@ -486,8 +491,8 @@ chnk_juv_map
 
 ```
 
-```{r chnk-juv-hhs, fig.height = 4, fig.cap = "test"}
-chnk_juv_hhs_p = hhs %>%
+```{r chnk-juv-hhs, fig.height = 4, fig.cap = "Hydraulic habitat suitability (composite) by river kilometer for **Chinook salmon juvenile rearing** for 2019 and 2021."}
+chnk_juv_hhs_p = hhs_rkm %>%
   filter(scenario == "chnk_juv") %>%
   select(scenario,
          year,
@@ -498,15 +503,18 @@ chnk_juv_hhs_p = hhs %>%
     grepl("NF", Reach_ID) ~ "North Fork",
     grepl("SF", Reach_ID) ~ "South Fork"
   )) %>%
-  mutate(rkm = as.numeric(substr(Reach_ID, 5, 6))) %>%
+  mutate(rkm = as.numeric(substr(Reach_ID, 5, 6)),
+         year = as.factor(year)) %>%
   ggplot(aes(x = rkm)) +
-  geom_line(aes(y = HHS), color = "royalblue4", size = 0.5) +
-  geom_smooth(aes(y = HHS), color = "royalblue4", se = F, size = 1.1) +
+  geom_line(aes(y = HHS, color = year), size = 0.5) +
+  geom_smooth(aes(y = HHS, color = year), se = F, size = 1.1) +
   ylim(0,1) +
   facet_wrap(~ watershed, scales = "free_x") +
   labs(x = "River Kilometer",
-       y = "Hydraulic Suitability") +
-  theme_classic()
+       y = "Hydraulic Suitability",
+       color = "Year") +
+  theme_classic() +
+  theme(legend.position = "top")
 chnk_juv_hhs_p
 
 ```
@@ -543,7 +551,7 @@ sthd_juv_2021_geo
 
 ```{r steelhead-juv-map, results = 'hide', fig.height = 7, fig.cap = "Map showing the hydraulic habitat suitability for **steelhead juvenile rearing** in the Upper Walla Walla watershed for 2019 and 2021, plotted by river kilometer with geomorphic reaches shown."}
 # steelhead juvenile rearing map
-sthd_juv_map = merge(rkm, hhs, by = "Reach_ID") %>%
+sthd_juv_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
   filter(scenario == "sthd_juv") %>%
   select(Reach_ID,
          year,
@@ -595,8 +603,8 @@ sthd_juv_map
 
 ```
 
-```{r sthd-juv-hhs, fig.height = 4, fig.cap = "test"}
-sthd_juv_hhs_p = hhs %>%
+```{r sthd-juv-hhs, fig.height = 4, fig.cap = "Hydraulic habitat suitability (composite) by river kilometer for **steelhead juvenile rearing** for 2019 and 2021."}
+sthd_juv_hhs_p = hhs_rkm %>%
   filter(scenario == "sthd_juv") %>%
   select(scenario,
          year,
@@ -607,15 +615,18 @@ sthd_juv_hhs_p = hhs %>%
     grepl("NF", Reach_ID) ~ "North Fork",
     grepl("SF", Reach_ID) ~ "South Fork"
   )) %>%
-  mutate(rkm = as.numeric(substr(Reach_ID, 5, 6))) %>%
+  mutate(rkm = as.numeric(substr(Reach_ID, 5, 6)),
+         year = as.factor(year)) %>%
   ggplot(aes(x = rkm)) +
-  geom_line(aes(y = HHS), color = "royalblue4", size = 0.5) +
-  geom_smooth(aes(y = HHS), color = "royalblue4", se = F, size = 1.1) +
+  geom_line(aes(y = HHS, color = year), size = 0.5) +
+  geom_smooth(aes(y = HHS, color = year), se = F, size = 1.1) +
   ylim(0,1) +
   facet_wrap(~ watershed, scales = "free_x") +
   labs(x = "River Kilometer",
-       y = "Hydraulic Suitability") +
-  theme_classic()
+       y = "Hydraulic Suitability",
+       color = "Year") +
+  theme_classic() +
+  theme(legend.position = "top")
 sthd_juv_hhs_p
 
 ```
@@ -632,7 +643,7 @@ Discussion text here...
 ::: {#refs}
 :::
 
-# Supplemental Figures
+# Supplemental Tables and Figures
 
 ```{r chnk-spw-box-p, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across geomorphic reaches in the Upper Walla Walla watershed, 2019 and 2021."}
 chnk_spw_box_p = hsi_raw %>%
@@ -706,7 +717,7 @@ scenario_labs = c("Chinook Juvenile", "Chinook Spawning", "Steelhead Juvenile")
 names(scenario_labs) = c("chnk_juv", "chnk_spw", "sthd_juv")
 
 # HHS maps
-hhs_rkm = merge(rkm, hhs, by = "Reach_ID") %>%
+hhs_rkm = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
 ggplot() +
 geom_sf(aes(fill = HHS)) +
 scale_fill_distiller(palette = "Spectral",
@@ -742,7 +753,7 @@ hhs_rkm
 
 ```{r depth-map-rkm, eval = F, results = 'hide', fig.cap = "Map showing the depth suitability by life stage and year for Chinook salmon and steelhead in the Upper Walla Walla River, plotted by river kilometer with geomorphic reaches also shown."}
 # Depth maps
-depth_rkm = merge(rkm, hhs, by = "Reach_ID") %>%
+depth_rkm = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
 ggplot() +
 geom_sf(aes(fill = d_HSI)) +
 scale_fill_distiller(palette = "Spectral",
@@ -779,7 +790,7 @@ depth_rkm
 
 ```{r vel-map-rkm, eval = F, results = 'hide', fig.cap = "Map showing the velocity (depth avg) suitability by life stage and year for Chinook salmon and steelhead in the Upper Walla Walla River, plotted by river kilometer with geomorphic reaches also shown."}
 # Velocity maps
-vel_rkm = merge(rkm, hhs, by = "Reach_ID") %>%
+vel_rkm = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
 ggplot() +
 geom_sf(aes(fill = v_HSI)) +
 scale_fill_distiller(palette = "Spectral",
@@ -810,5 +821,46 @@ scale_fill_distiller(palette = "Spectral",
         legend.position = "top") +
   facet_grid(year ~ scenario,  labeller = labeller(scenario = scenario_labs))
 vel_rkm
+
+```
+
+```{r hhs-table}
+hhs_tbl = hhs_geo %>%
+  mutate(Watershed = case_when(
+    grepl("MS", Reach_ID) ~ "Mainstem",
+    grepl("NF", Reach_ID) ~ "North Fork",
+    grepl("SF", Reach_ID) ~ "South Fork"
+  )) %>%
+  select(
+    Scenario = scenario,
+    Watershed,
+    Reach = Reach_ID,
+    Year = year,
+    `Area m2` = area_m2,
+    WUA,
+    HHS,
+    `Depth Suitability` = d_HSI,
+    `Velocity Suitability` = v_HSI
+  ) %>%
+  mutate(
+    WUA = round(WUA, 0),
+    HHS = round(HHS, 2),
+    `Depth Suitability` = round(`Depth Suitability`, 2),
+    `Velocity Suitability` = round(`Velocity Suitability`, 2)
+  ) %>%
+  mutate(Scenario = recode(Scenario,
+                           "chnk_spw" = "Chinook Spawning",
+                           "chnk_juv" = "Chinook Juvenile",
+                           "sthd_juv" = "Steelhead Juvenile")) %>%
+  arrange(Scenario,
+          Watershed,
+          Reach) %>%
+  kable(booktabs = T,
+        align = "lcccccccc",
+        caption = "Composite (HHS), depth, and velocity suitability values, area, and weighted usable area (WUA) by scenario, geomorphic reach, and year in the Upper Walla Walla watershed.") %>%
+  kable_styling(full_width = F,
+                position = "center",
+                bootstrap_options = c("striped", "condensed"))
+hhs_tbl
 
 ```
