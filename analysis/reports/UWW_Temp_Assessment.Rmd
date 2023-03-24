@@ -969,7 +969,7 @@ temp_tbl %>%
 We evaluated August mean stream temperatures under the recent historic scenario by geomorphic reaches. The goal was to determine whether summer stream temperatures are of a concern, by geomorphic reach, potentially limiting the distribution and/or productivity of each species and life stage spatially. For each geomorphic reach, we were interested in the percentage of the reach (by length) that exceeds optimum temperature thresholds (Table \@ref(tab:geo-results)). Finally, we used this information to determine the "thermal priority" of each reach. We averaged the percentage of each reach above optimum temperature thresholds among species and life stages. Reaches with 0% above optimum for all species were listed as "Low" priority whereas reaches between 0% and 50% were "Medium" and reaches with greater than or equal to 50% above optimum thresholds were listed as "High" priority. Geomorphic reach results are provided in Table \@ref(tab:geo-results). 
 
 
-```{r geo-results, message = F}
+```{r geo-results, echo = FALSE, message = FALSE}
 uww_rch_sf_w_geos = st_read(here("analysis/data/raw_data/Bull_Geo_Cleaned_rch_200.shp"))
 geo_order = c("WW1", "WW2", "WW3", "WW4", "WW5",
               "NF1", "NF2", "NF3", "NF4", "NF5", "NF6", "NF7", "NF8",
@@ -984,25 +984,25 @@ geo_df = uww_rch_sf_w_geos %>%
   expand_grid(spec_ls, thresh) %>%
   mutate(in_thresh = case_when(
     spec_ls == "Chinook Spawning" & thresh == "Within Optimum" & temp_c >= 7.2 & temp_c <= 14.5 ~ T,
-    spec_ls == "Chinook Spawning" & thresh == "Above Optimum"  & temp_c > 14.5 ~ T,
-    spec_ls == "Chinook Spawning" & thresh == "Above Maximum"  & temp_c > 17.7 ~ T,
-    spec_ls == "Chinook Spawning" & thresh == "Above Acute"    & temp_c > 20 ~ T,
+    spec_ls == "Chinook Spawning" & thresh == "Above Optimum"  & temp_c >  14.5 ~ T,
+    spec_ls == "Chinook Spawning" & thresh == "Above Maximum"  & temp_c >  17.7 ~ T,
+    spec_ls == "Chinook Spawning" & thresh == "Above Acute"    & temp_c >  20 ~ T,
     spec_ls == "Chinook Parr"     & thresh == "Within Optimum" & temp_c >= 10 & temp_c <= 16 ~ T,
-    spec_ls == "Chinook Parr"     & thresh == "Above Optimum"  & temp_c > 16 ~ T,
-    spec_ls == "Chinook Parr"     & thresh == "Above Maximum"  & temp_c > 19 ~ T,
-    spec_ls == "Chinook Parr"     & thresh == "Above Acute"    & temp_c > 22 ~ T,
+    spec_ls == "Chinook Parr"     & thresh == "Above Optimum"  & temp_c >  16 ~ T,
+    spec_ls == "Chinook Parr"     & thresh == "Above Maximum"  & temp_c >  19 ~ T,
+    spec_ls == "Chinook Parr"     & thresh == "Above Acute"    & temp_c >  22 ~ T,
     spec_ls == "Steelhead Parr"   & thresh == "Within Optimum" & temp_c >= 10 & temp_c <= 18 ~ T,
-    spec_ls == "Steelhead Parr"   & thresh == "Above Optimum"  & temp_c > 18 ~ T,
-    spec_ls == "Steelhead Parr"   & thresh == "Above Maximum"  & temp_c > 19 ~ T,
-    spec_ls == "Steelhead Parr"   & thresh == "Above Acute"    & temp_c > 22 ~ T,
+    spec_ls == "Steelhead Parr"   & thresh == "Above Optimum"  & temp_c >  18 ~ T,
+    spec_ls == "Steelhead Parr"   & thresh == "Above Maximum"  & temp_c >  19 ~ T,
+    spec_ls == "Steelhead Parr"   & thresh == "Above Acute"    & temp_c >  22 ~ T,
     spec_ls == "Bull Trout"       & thresh == "Within Optimum" & temp_c >= 10.2 & temp_c <= 16 ~ T,
-    spec_ls == "Bull Trout"       & thresh == "Above Optimum"  & temp_c > 16 ~ T,
-    spec_ls == "Bull Trout"       & thresh == "Above Maximum"  & temp_c > 18 ~ T,
-    spec_ls == "Bull Trout"       & thresh == "Above Acute"    & temp_c > 20 ~ T,
+    spec_ls == "Bull Trout"       & thresh == "Above Optimum"  & temp_c >  16 ~ T,
+    spec_ls == "Bull Trout"       & thresh == "Above Maximum"  & temp_c >  18 ~ T,
+    spec_ls == "Bull Trout"       & thresh == "Above Acute"    & temp_c >  20 ~ T,
     spec_ls == "Pacific Lamprey"  & thresh == "Within Optimum" & temp_c >= 10 & temp_c <= 17 ~ T,
-    spec_ls == "Pacific Lamprey"  & thresh == "Above Optimum"  & temp_c > 17 ~ T,
-    spec_ls == "Pacific Lamprey"  & thresh == "Above Maximum"  & temp_c > 20 ~ T,
-    spec_ls == "Pacific Lamprey"  & thresh == "Above Acute"    & temp_c > 25 ~ T,
+    spec_ls == "Pacific Lamprey"  & thresh == "Above Optimum"  & temp_c >  17 ~ T,
+    spec_ls == "Pacific Lamprey"  & thresh == "Above Maximum"  & temp_c >  20 ~ T,
+    spec_ls == "Pacific Lamprey"  & thresh == "Above Acute"    & temp_c >  25 ~ T,
     TRUE ~ F ))
 
 abv_opt_geo = geo_df %>%
