@@ -20,8 +20,6 @@ output:
     toc: yes
     toc_depth: 3
     toc_float:
-      fig_height: 8
-      fig_width: 10
       collapsed: yes
       smooth_scroll: yes
     number_sections: yes
@@ -289,15 +287,11 @@ hhs_geo = list.files(here("analysis/hsi_outputs/csvs/"), pattern = "*.csv", full
 
 ```
 
-<!--
-Here, we summarize the distribution of depth, velocity, and composite suitability values for geomorphic reaches, as box plots. Results are provided for Chinook salmon spawning and Chinook salmon and steelhead juvenile rearing. We focus on results from 2021 to describe the suitability of recent depths and velocities; however, results for 2019 are also provided in the [Supplemental Figures] to show changes resulting from the extensive flooding in 2020.
--->
+Here, we summarize the distribution of depth, velocity, and composite suitability values by geomorphic reaches across the mainstem, North Fork and South Fork watersheds.  We also summarize average suitability (depth, velocity, and composite) by river kilometer. Results are provided for Chinook salmon spawning and Chinook salmon and steelhead juvenile rearing, focusing primarily on results from 2021 to describe the suitability of recent depths and velocities; however, results for 2019 are provided in the [Supplemental Figures] to understand hydraulic conditions prior extensive flooding in 2020 and draw comparison to current conditions.
 
 ## Chinook Salmon Spawning
 
-<!--
-Figure \@ref(fig:uww-chnk-spw-plot) shows the composite hydraulic suitability, and depth and velocity suitability within the Upper Walla Walla watershed to support Chinook salmon spawning under post-flood conditions in 2021. In general, the hydraulic suitability for spawning,
--->
+The composite hydraulic suitability for spawning is highly variable across the three watersheds, with the South Fork being most suitable (Figure \@ref(fig:uww-chnk-spw-plot)).  The mainstem Walla Walla River exhibits the greatest intravariability, where geomorphic reaches four and five are highly suitable, reaches one and two are unsuitable, and reach three falls in between. Depth appears to be the limiting factor for the mainstem and South Fork watersheds, and both depth and velocity limit spawning suitability in the North Fork. Comparing average composite suitability by river kilometer from 2019 to 2021, it appears very little change resulted from flooding in 2020 (\@ref(fig:chnk-spw-hhs)).      
 
 ```{r uww-chnk-spw-plot, fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across geomorphic reaches in the Upper Walla Walla watershed in 2021."}
 # Chinook salmon spawning, 2021
@@ -323,10 +317,10 @@ chnk_spw_2021_geo
 
 ```
 
-```{r chnk-spw-map, results = 'hide', fig.height = 7, fig.cap = "Map showing the hydraulic habitat suitability for **Chinook salmon spawning** in the Upper Walla Walla watershed for 2019 and 2021, plotted by river kilometer with geomorphic reaches shown."}
+```{r chnk-spw-map, fig.height = 7, results = 'hide', fig.cap = "Map showing the hydraulic habitat suitability for **Chinook salmon spawning** in the Upper Walla Walla watershed for 2021, plotted by river kilometer with geomorphic reaches shown."}
 # Chinook spawning map
 chnk_spw_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
-  filter(scenario == "chnk_spw") %>%
+  filter(scenario == "chnk_spw", year == "2021") %>%
   select(Reach_ID,
          year,
          Composite = HHS,
@@ -372,7 +366,7 @@ chnk_spw_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
         axis.ticks = element_blank(),
         panel.grid = element_blank(),
         legend.position = "top") +
-  facet_grid(suitability ~ year)
+ facet_wrap(~ suitability, nrow = 3)
 chnk_spw_map  
 
 ```
@@ -410,9 +404,7 @@ chnk_spw_hhs_p
 
 ## Chinook Salmon Juvenile Rearing
 
-<!--
-Figure \@ref(fig:uww-chnk-juv-plot) shows the composite hydraulic suitability, and depth and velocity suitability within the Upper Walla Walla watershed to support Chinook salmon juvenile rearing under post-flood conditions in 2021. In general, the hydraulic suitability for juvenile rearing,
--->
+Comparatively across species and life stages, composite hydraulic suitability, generally, is lowest for Chinook juvenile rearing (\@ref(fig:uww-chnk-juv-plot)). Depth is the limiting factor for rearing suitability across all three watersheds, with velocities being mostly suitable in the mainstem and North Fork, and unsuitable in the South Fork. Similar to spawning, average hydraulic suitability by river kilometer for Chinook rearing changed little from 2019 to 2021 (\@ref(fig:chnk-juv-hhs)).  
 
 ```{r uww-chnk-juv-plot, fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across geomorphic reaches in the Upper Walla Walla watershed in 2021."}
 # Chinook juvenile rearing, 2021
@@ -440,7 +432,7 @@ chnk_juv_2021_geo
 ```{r chnk-juv-map, results = 'hide', fig.height = 7, fig.cap = "Map showing the hydraulic habitat suitability for **Chinook salmon juvenile rearing** in the Upper Walla Walla watershed for 2019 and 2021, plotted by river kilometer with geomorphic reaches shown."}
 # Chinook juvenile rearing map
 chnk_juv_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
-  filter(scenario == "chnk_juv") %>%
+  filter(scenario == "chnk_juv", year == "2021") %>%
   select(Reach_ID,
          year,
          Composite = HHS,
@@ -453,7 +445,7 @@ chnk_juv_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
                values_to = "value") %>%
   mutate(suitability = factor(suitability, levels = c("Composite",
                                                       "Depth",
-                                                      "Velocity"))) %>%
+                                                      "Velocity"))) %>% 
   ggplot() +
   geom_sf(aes(fill = value),
           colour = NA) +
@@ -486,7 +478,7 @@ chnk_juv_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
         axis.ticks = element_blank(),
         panel.grid = element_blank(),
         legend.position = "top") +
-  facet_grid(suitability ~ year)
+  facet_wrap(~ suitability, nrow = 3)
 chnk_juv_map  
 
 ```
@@ -522,9 +514,7 @@ chnk_juv_hhs_p
 
 ## Steelhead Juvenile Rearing
 
-<!--
-Figure \@ref(fig:uww-sthd-juv-plot) shows the composite hydraulic suitability, and depth and velocity suitability within the Upper Walla Walla watershed to support steelhead juvenile rearing under post-flood conditions in 2021. In general, the hydraulic suitability for juvenile rearing,
--->
+Composite suitability for steelhead juvenile rearing is, generally, pretty high in both the mainstem and South Fork watersheds (\@ref(fig:uww-sthd-juv-plot)). Hydraulic conditions are less suitable in the North Fork, limited by depth. The distribution of velocities across all three watersheds are consistently very suitable. Again, there is very little difference in the average suitability by river kilometer from 2019 to 2021 for steelhead juvenile rearing (\@ref(fig:uww-sthd-juv-hhs)). 
 
 ```{r uww-sthd-juv-plot, fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across geomorphic reaches in the Upper Walla Walla watershed in 2021."}
 # steelhead juvenile rearing, 2021
@@ -552,7 +542,7 @@ sthd_juv_2021_geo
 ```{r steelhead-juv-map, results = 'hide', fig.height = 7, fig.cap = "Map showing the hydraulic habitat suitability for **steelhead juvenile rearing** in the Upper Walla Walla watershed for 2019 and 2021, plotted by river kilometer with geomorphic reaches shown."}
 # steelhead juvenile rearing map
 sthd_juv_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
-  filter(scenario == "sthd_juv") %>%
+  filter(scenario == "sthd_juv", year == "2021") %>%
   select(Reach_ID,
          year,
          Composite = HHS,
@@ -598,7 +588,7 @@ sthd_juv_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
         axis.ticks = element_blank(),
         panel.grid = element_blank(),
         legend.position = "top") +
-  facet_grid(suitability ~ year)
+  facet_wrap(~ suitability, nrow = 3)
 sthd_juv_map  
 
 ```
@@ -633,8 +623,15 @@ sthd_juv_hhs_p
 
 # Discussion
 
-Discussion text here...
+Overall, current composite hydraulic suitability in the upper Walla Walla River watershed is most suitable for steelhead juvenile rearing and least suitable for Chinook juvenile rearing.  Suitable habitat for steelhead juveniles includes slightly shallower depths and higher velocities when compared to Chinook juveniles.  A lack of habitat with depths greater than 0.25 meters at low flows limits Chinook rearing in the upper Walla Walla watershed, with velocities contributing to unsuitable conditions in the South Fork too.  Chinook spawning composite suitability is more nuanced, with suitable spawning conditions in the South Fork, unsuitable conditions in the North Fork and a varied distribution across reaches in the mainstem. Depth is limiting for all three species/life stages in the North Fork, but, interestingly, North Fork velocities appear to be suitable for Chinook rearing. This is counter-intuitive because shallower habitat is typically associated with higher velocities found in riffles and rapids.
 
+## Bull Trout
+
+Based on habitat preference research in eastern Oregon conducted by Al-Chokachy and Budy (2007), bull trout prefer deep, slow-water habitat, aligning closest with Chinook juvenile suitability curves used in this analysis. As discussed above, of the three species/life stages analyzed, composite hydraulic suitability is most limiting for Chinook juvenile rearing across all three watersheds, indicating that similar limitations for bull trout in the upper Walla Walla exist.
+
+## Model Limitations
+
+While HHS analyses provide insight on hydraulic limitations for species and life stages of interest, it should be viewed in the context of fish habitat preferences holistically. It is generally accepted that high quality salmonid habitat is comprised of multiple habitat characteristics in addition to depth and velocity including cover, water temperature and food availability. Because of this, we encourage the integration of the information summarized here with the other biological and geomorphological assessments provided in this report.    
 
 # Literature Cited
 
