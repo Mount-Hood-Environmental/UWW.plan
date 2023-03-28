@@ -101,7 +101,7 @@ theme_set(theme_pubr(x.text.angle = 45,
 
 ```
 
-```{r load-data}
+```{r load-data, results = "hide"}
 # Project area polygons and 200m layer (with habitat attributes) within project area
 load(here("analysis/data/derived_data/uww_spatial.rda"))
 
@@ -117,6 +117,8 @@ domain_km = uww_rch_sf %>%
   filter(value == T) %>%
   group_by(species) %>%
   summarize(domain_km = round(sum(reach_leng) / 1000, 1))
+
+uww_rch_sf_w_geos = st_read(here("analysis/data/raw_data/Bull_Geo_Cleaned_rch_200.shp"))
 
 ```
 
@@ -966,11 +968,9 @@ temp_tbl %>%
 
 ## Geomorphic Reaches
 
-We evaluated August mean stream temperatures under the recent historic scenario by geomorphic reaches. The goal was to determine whether summer stream temperatures are of a concern, by geomorphic reach, potentially limiting the distribution and/or productivity of each species and life stage spatially. For each geomorphic reach, we were interested in the percentage of the reach (by length) that exceeds optimum temperature thresholds (Table \@ref(tab:geo-results)). Finally, we used this information to determine the "thermal priority" of each reach. We averaged the percentage of each reach above optimum temperature thresholds among species and life stages. Reaches with 0% above optimum for all species were listed as "Low" priority whereas reaches between 0% and 50% were "Medium" and reaches with greater than or equal to 50% above optimum thresholds were listed as "High" priority. Geomorphic reach results are provided in Table \@ref(tab:geo-results). 
+August mean stream temperatures under the recent historic scenario were also evaluated by geomorphic reach. The goal was to determine whether summer stream temperatures are of a concern, by geomorphic reach, potentially limiting the distribution and/or productivity of each species and life stage spatially. For each geomorphic reach, we were interested in the percentage of the reach (by length) that exceeds optimum temperature thresholds (Table \@ref(tab:geo-results)) and used this information to determine the "thermal priority" of each reach. We averaged the percentage of each reach above optimum temperature thresholds among species and life stages. Reaches with 0% above optimum for all species were listed as "Low" priority whereas reaches between 0% and 50% were "Medium" and reaches with greater than or equal to 50% above optimum thresholds were listed as "High" priority.
 
-
-```{r geo-results, echo = FALSE, message = FALSE}
-uww_rch_sf_w_geos = st_read(here("analysis/data/raw_data/Bull_Geo_Cleaned_rch_200.shp"))
+```{r geo-results}
 geo_order = c("WW1", "WW2", "WW3", "WW4", "WW5",
               "NF1", "NF2", "NF3", "NF4", "NF5", "NF6", "NF7", "NF8",
               "SF1", "SF2", "SF3", "SF4", "SF5", "SF6", "SF7", "SF8")
@@ -1049,14 +1049,82 @@ abv_opt_geo %>%
 
 ```
 
+Finally, we summarized the proportion of each geomorphic reach, by length, that exceeded optimum, maximum, and acute temperature thresholds for each species and life stage and under the recent composite (2002-2011) scenario (Figure \@ref(fig:geo-plot)). Every geomorphic reach in the mainstem Walla Walla (WW1 - WW5) had reaches that exceeded optimum temperatures for every species by life stage considered and three of five (WW1, WW2, and WW4) had reaches exceeding maximum thresholds. Some lower reaches in the North Fork Walla Walla (WW1 - WW3) are also of concern; the South Fork Walla Walla is of little concern for exceeding temperature thresholds, at least under the recent composite scenario.  
+
+```{r geo-plot, fig.height = 7, fig.cap = "The percentage of each geomorphic reach, by length, that exceeds optimum, maximum, and acute temperature thresholds for each species x life stage and under the recent composite (2002-2011) scenario."}
+geo_p_df = geo_df %>%
+  filter(thresh != "Within Optimum") %>%
+  pivot_wider(names_from = spec_ls,
+              values_from = in_thresh) %>%
+  group_by(Geo_Reach) %>%
+  summarize(length_km = round(sum(reach_leng) / 1000, 1),
+            chsp_opt = round(sum(reach_leng[`Chinook Spawning` == T & thresh == "Above Optimum"]) / sum(reach_leng[thresh == "Above Optimum"]) * 100, 1),
+            chsp_max = round(sum(reach_leng[`Chinook Spawning` == T & thresh == "Above Maximum"]) / sum(reach_leng[thresh == "Above Maximum"]) * 100, 1),
+            chsp_acu = round(sum(reach_leng[`Chinook Spawning` == T & thresh == "Above Acute"]) / sum(reach_leng[thresh == "Above Acute"]) * 100, 1),
+            chjv_opt = round(sum(reach_leng[`Chinook Parr` == T & thresh == "Above Optimum"]) / sum(reach_leng[thresh == "Above Optimum"]) * 100, 1),
+            chjv_max = round(sum(reach_leng[`Chinook Parr` == T & thresh == "Above Maximum"]) / sum(reach_leng[thresh == "Above Maximum"]) * 100, 1),
+            chjv_acu = round(sum(reach_leng[`Chinook Parr` == T & thresh == "Above Acute"]) / sum(reach_leng[thresh == "Above Acute"]) * 100, 1),
+            sthd_opt = round(sum(reach_leng[`Steelhead Parr` == T & thresh == "Above Optimum"]) / sum(reach_leng[thresh == "Above Optimum"]) * 100, 1),
+            sthd_max = round(sum(reach_leng[`Steelhead Parr` == T & thresh == "Above Maximum"]) / sum(reach_leng[thresh == "Above Maximum"]) * 100, 1),
+            sthd_acu = round(sum(reach_leng[`Steelhead Parr` == T & thresh == "Above Acute"]) / sum(reach_leng[thresh == "Above Acute"]) * 100, 1),
+            bull_opt = round(sum(reach_leng[`Bull Trout` == T & thresh == "Above Optimum"]) / sum(reach_leng[thresh == "Above Optimum"]) * 100, 1),
+            bull_max = round(sum(reach_leng[`Bull Trout` == T & thresh == "Above Maximum"]) / sum(reach_leng[thresh == "Above Maximum"]) * 100, 1),
+            bull_acu = round(sum(reach_leng[`Bull Trout` == T & thresh == "Above Acute"]) / sum(reach_leng[thresh == "Above Acute"]) * 100, 1),
+            lamp_opt = round(sum(reach_leng[`Pacific Lamprey` == T & thresh == "Above Optimum"]) / sum(reach_leng[thresh == "Above Optimum"]) * 100, 1),
+            lamp_max = round(sum(reach_leng[`Pacific Lamprey` == T & thresh == "Above Maximum"]) / sum(reach_leng[thresh == "Above Maximum"]) * 100, 1),
+            lamp_acu = round(sum(reach_leng[`Pacific Lamprey` == T & thresh == "Above Acute"]) / sum(reach_leng[thresh == "Above Acute"]) * 100, 1)) %>%
+  pivot_longer(cols = chsp_opt:lamp_acu,
+               names_to = "case",
+               values_to = "Percent") %>%
+  mutate(spec_ls = str_sub(case, 1, 4),
+         scenario = str_sub(case, -3)) %>%
+  mutate(spec_ls = recode(spec_ls,
+                          "chsp" = "Chinook Spawning",
+                          "chjv" = "Chinook Parr",
+                          "sthd" = "Steelhead Parr",
+                          "bull" = "Bull Trout",
+                          "lamp" = "Pacific Lamprey")) %>%
+  mutate(scenario = recode(scenario,
+                           "opt" = "Optimum",
+                           "max" = "Maximum",
+                           "acu" = "Acute")) %>%
+  select(Reach = Geo_Reach,
+         `Species & Life Stage` = spec_ls,
+         Threshold = scenario,
+         `Length (km)` = length_km,
+         Percent) %>%
+  mutate(`Species & Life Stage` = factor(`Species & Life Stage`, levels = c("Chinook Spawning",
+                                                                            "Chinook Parr",
+                                                                            "Steelhead Parr",
+                                                                            "Bull Trout",
+                                                                            "Pacific Lamprey"))) %>%
+  mutate(Threshold = factor(Threshold, levels = c("Optimum",
+                                                  "Maximum",
+                                                  "Acute")))
+    
+geo_p_df %>%
+  ggplot(aes(x = Reach,
+             y = Percent,
+             fill = Threshold)) +
+  geom_col(color = "black",
+           position = position_dodge()) +
+  ylim(0, 100) +
+  #geom_bar(stat = "identity") +
+  facet_wrap(~ `Species & Life Stage`, ncol = 1) +
+  theme_bw() +
+  theme(legend.position = "top",
+        axis.text.x = element_text(angle = 45,
+                                   vjust = 0.5))
+
+```
 
 # Discussion
 
-Under nearly all scenarios, a larger portion of stream length within the Upper Walla Walla watershed exceeded optimum, maximum, and acute temperature thresholds when moving from the recent historic to projected mid- and late-century climate warming scenarios (Figures \@ref:fig(chnk-spw-map)-\@ref:fig(lamp-map), Tables \@ref:tab(chnk-spw-map)-\@ref:tab(lamp-map)). The single exception was for Pacific lamprey where stream temperatures didn't exceed their acute threshold of 25^o^C under any scenario. The evaluation of recent historic (2002 - 2011) mean August stream temperatures estimated that greater than 21% of each species' domain within the Upper Walla Walla watershed exceeds optimum temperature, and that value increased to 33% and 38% under projected 2040 and 2080 climate warming scenarios, respectively. Chinook salmon spawning, which typically occurs mid-August to mid-September for spring-run Chinook salmon in the Snake River, was of greatest concern. We estimated that 83.5 rkm, 65.2% of their domain, currently exceeds optimum temperatures for Chinook salmon spawning; that value increased to 87.3 rkm (68.1%) and 96.6 rkm (75.4%) under the 2040 and 2080 warming scenarios, respectively.
+Under nearly all scenarios, a larger portion of stream length within the Upper Walla Walla watershed exceeded optimum, maximum, and acute temperature thresholds when moving from the recent historic to projected mid- and late-century climate warming scenarios (Figures \@ref(fig:chnk-spw-map) - \@ref(fig:lamp-map), Tables \@ref(tab:chnk-spw-map) - \@ref(tab:lamp-map)). The single exception was for Pacific lamprey where stream temperatures didn't exceed their acute threshold of 25^o^C under any scenario. The evaluation of recent historic (2002 - 2011) mean August stream temperatures estimated that greater than 21% of each species' domain within the Upper Walla Walla watershed exceeds optimum temperature, and that value increased to 33% and 38% under projected 2040 and 2080 climate warming scenarios, respectively. Chinook salmon spawning, which typically occurs mid-August to mid-September for spring-run Chinook salmon in the Snake River, was of greatest concern. We estimated that 83.5 rkm, 65.2% of their domain, currently exceeds optimum temperatures for Chinook salmon spawning; that value increased to 87.3 rkm (68.1%) and 96.6 rkm (75.4%) under the 2040 and 2080 warming scenarios, respectively.
 
-In some cases, the amount of stream habitat that fell within optimum temperature ranges actually increased when going from recent historic to 2040 or from 2040 to 2080 scenarios (Table \@ref:tab(within-optimum-tbl)), including for Chinook parr, bull trout, and Pacific lamprey. This observation results from upstream (headwater) reaches warming to be within optimum ranges at a higher rate than downstream reaches warming to exceed optimum ranges, and related, that the number of warming upstream smaller tributaries often exceeds the number of warming downstream "mainstems". However, this result can be misleading especially in cases where the cooler headwater reaches are inaccessible either due to partial or full and manmade or partial barriers, including temperature barriers resulting from downstream reaches being too warm. Further, even though temperature ranges might improve (i.e., warm slightly) in headwater reaches in future scenarios, practical habitat suitability for upper reaches is likely somewhat overstated due to small tributary sizes, low flows, etc. The loss of thermally suitable habitats in the lower reaches of the watershed are of greatest concern.
+In some cases, the amount of stream habitat that fell within optimum temperature ranges actually increased when going from recent historic to 2040 or from 2040 to 2080 scenarios (Table \@ref(tab:within-optimum-tbl)), including for Chinook parr, bull trout, and Pacific lamprey. This observation results from upstream (headwater) reaches warming to be within optimum ranges at a higher rate than downstream reaches warming to exceed optimum ranges, and related, that the number of warming upstream smaller tributaries often exceeds the number of warming downstream "mainstems". However, this result can be misleading especially in cases where the cooler headwater reaches are inaccessible either due to partial or full and manmade or partial barriers, including temperature barriers resulting from downstream reaches being too warm. Further, even though temperature ranges might improve (i.e., warm slightly) in headwater reaches in future scenarios, practical habitat suitability for upper reaches is likely somewhat overstated due to small tributary sizes, low flows, etc. The loss of thermally suitable habitats in the lower reaches of the watershed are of greatest concern.
 
-The results of this assessment highlights the importance of conducting restoration projects in the middle and lower reaches of the Upper Walla Walla watershed that exceed optimum, maximum, and acute temperature thresholds for focal species. Actions to reduce peak summer water temperatures, such as riparian restoration, improved grazing practices, and channel narrowing should be considered in the Upper Walla Walla watershed, particularly in reaches identfied in Figures \@ref:fig(chnk-spw-map)-\@ref:fig(lamp-map). \@@Justice2017 similarly evaluated a 2080s climate change scenario and demonstrated that despite substantial increases in summer stream temperatures, basin-wide restoration of riparian vegetation and channel width could offset climate impacts in the Upper Grande Ronde and Catherine Creek watersheds in eastern Oregon. We recognize that the -1^o^C scenario is unrealistic, but illustrative of how restoration actions throughout the watershed could help mitigate the impacts of a warming climate.
+The results of this assessment highlights the importance of conducting restoration projects in the middle and lower reaches of the Upper Walla Walla watershed that exceed optimum, maximum, and acute temperature thresholds for focal species. Actions to reduce peak summer water temperatures, such as riparian restoration, improved grazing practices, and channel narrowing should be considered in the Upper Walla Walla watershed, particularly in reaches identified in Figures \@ref(fig:chnk-spw-map) - \@ref(fig:lamp-map). @Justice2017 similarly evaluated a 2080s climate change scenario and demonstrated that despite substantial increases in summer stream temperatures, basin-wide restoration of riparian vegetation and channel width could offset climate impacts in the Upper Grande Ronde and Catherine Creek watersheds in eastern Oregon. We recognize that the -1^o^C scenario is unrealistic, but illustrative of how restoration actions throughout the watershed could help mitigate the impacts of a warming climate.
 
 # Literature Cited
 
