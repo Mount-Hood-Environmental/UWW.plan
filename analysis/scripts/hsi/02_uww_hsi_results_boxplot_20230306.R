@@ -20,9 +20,28 @@ library(forcats)
 # upload hsi metric raw files for each species/life stage and year into one df
 hsi_raw = list.files("S:/main/data/habitat/HSI/UWW_hsi_results/raw_results", pattern = "*.rda", full.names = T) %>%
   map_df(~read_rds(.)) %>%
-  mutate(watershed = if_else(grepl("MS", ID), "Mainstem", ID)) %>%
-  mutate(watershed = if_else(grepl("NF", ID), "North Fork", watershed)) %>%
-  mutate(watershed = if_else(grepl("SF", ID), "South Fork", watershed))
+  as_tibble() %>%
+  mutate(watershed = case_when(
+    grepl("MS", ID) ~ "Mainstem",
+    grepl("NF", ID) ~ "North Fork",
+    grepl("SF", ID) ~ "South Fork"
+  ))
+
+geo_order = c("GR_01_MS",
+              "GR_02_MS",
+              "GR_03_MS",
+              "GR_04_MS",
+              "GR_05_MS",
+              "GR_01_NF",
+              "GR_02_NF",
+              "GR_03_NF",
+              "GR_04_NF",
+              "GR_05_NF",
+              "GR_01_SF",
+              "GR_02_SF",
+              "GR_03_SF",
+              "GR_04_SF",
+              "GR_05_SF")
 
 
 ##################################

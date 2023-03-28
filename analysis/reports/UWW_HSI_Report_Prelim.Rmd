@@ -20,8 +20,6 @@ output:
     toc: yes
     toc_depth: 3
     toc_float:
-      fig_height: 8
-      fig_width: 10
       collapsed: yes
       smooth_scroll: yes
     number_sections: yes
@@ -109,9 +107,7 @@ While our HHS models specifically address Chinook salmon and steelhead, any upli
 
 ## Study Area
 
-This assessment will be focused on the alluvial channel of the Walla Walla River from the confluence with Dry Creek near Lowden, Washington, to the headwaters of the North and South forks of the Walla Walla River. The primary study area includes approximately 70 miles of stream. The secondary study area includes the catchment of the primary study area which encompasses approximately 885 square miles.
-<!-- Let's make this study area description more specific to the reach(es) where LiDAR and hydraulic models were available -->
-
+The spatial domain of this assessment is limited to the sections of the mainstem upper Walla Walla River, and the North and South forks where LiDAR data and hydraulic model results are available.  The downstream extent is defined by the mainstem's confluence with Dry Creek near Lowden, Washington, and upstream extents continue into the North and South forks, approximately 18.5 km (11.5 miles), and 33 km (20.5 miles), respectively. This assessment includes approximately 38.5 km (24 miles) of the mainstem Walla Walla River (Table \@ref(tab:rkm-geo-rch)).
 
 # Methods
 
@@ -289,15 +285,11 @@ hhs_geo = list.files(here("analysis/hsi_outputs/csvs/"), pattern = "*.csv", full
 
 ```
 
-<!--
-Here, we summarize the distribution of depth, velocity, and composite suitability values for geomorphic reaches, as box plots. Results are provided for Chinook salmon spawning and Chinook salmon and steelhead juvenile rearing. We focus on results from 2021 to describe the suitability of recent depths and velocities; however, results for 2019 are also provided in the [Supplemental Figures] to show changes resulting from the extensive flooding in 2020.
--->
+Here, we summarize the distribution of depth, velocity, and composite suitability values by geomorphic reaches across the mainstem, North Fork and South Fork watersheds.  We also summarize average suitability (depth, velocity, and composite) by river kilometer. Results are provided for Chinook salmon spawning and Chinook salmon and steelhead juvenile rearing, focusing primarily on results from 2021 to describe the suitability of recent depths and velocities; however, results for 2019 are provided in the [Supplemental Tables and Figures] to understand hydraulic conditions prior extensive flooding in 2020 and draw comparison to current conditions.
 
 ## Chinook Salmon Spawning
 
-<!--
-Figure \@ref(fig:uww-chnk-spw-plot) shows the composite hydraulic suitability, and depth and velocity suitability within the Upper Walla Walla watershed to support Chinook salmon spawning under post-flood conditions in 2021. In general, the hydraulic suitability for spawning,
--->
+The composite hydraulic suitability for spawning is highly variable across the three watersheds, with the South Fork being most suitable (Figure \@ref(fig:uww-chnk-spw-plot)).  The mainstem Walla Walla River exhibits the greatest intravariability, where geomorphic reaches four and five are highly suitable, reaches one and two are unsuitable, and reach three falls in between. Depth appears to be the limiting factor for the mainstem and South Fork watersheds, and both depth and velocity limit spawning suitability in the North Fork. Comparing average composite suitability by river kilometer from 2019 to 2021, it appears very little change resulted from flooding in 2020 (Figure \@ref(fig:chnk-spw-hhs)).      
 
 ```{r uww-chnk-spw-plot, fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across geomorphic reaches in the Upper Walla Walla watershed in 2021."}
 # Chinook salmon spawning, 2021
@@ -323,10 +315,10 @@ chnk_spw_2021_geo
 
 ```
 
-```{r chnk-spw-map, results = 'hide', fig.height = 7, fig.cap = "Map showing the hydraulic habitat suitability for **Chinook salmon spawning** in the Upper Walla Walla watershed for 2019 and 2021, plotted by river kilometer with geomorphic reaches shown."}
+```{r chnk-spw-map, fig.height = 7, results = 'hide', fig.cap = "Map showing the hydraulic habitat suitability for **Chinook salmon spawning** in the Upper Walla Walla watershed for 2021, plotted by river kilometer with geomorphic reaches shown."}
 # Chinook spawning map
 chnk_spw_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
-  filter(scenario == "chnk_spw") %>%
+  filter(scenario == "chnk_spw", year == "2021") %>%
   select(Reach_ID,
          year,
          Composite = HHS,
@@ -371,13 +363,13 @@ chnk_spw_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
         axis.title = element_blank(),
         axis.ticks = element_blank(),
         panel.grid = element_blank(),
-        legend.position = "top") +
-  facet_grid(suitability ~ year)
+        legend.position = "left") +
+ facet_wrap(~ suitability, nrow = 3)
 chnk_spw_map  
 
 ```
 
-```{r chnk-spw-hhs, fig.height = 4, fig.cap = "Hydraulic habitat suitability (composite) by river kilometer for **Chinook salmon spawning** for 2019 and 2021."}
+```{r chnk-spw-hhs, fig.height = 3, fig.cap = "Hydraulic habitat suitability (composite) by river kilometer for **Chinook salmon spawning** for 2019 and 2021."}
 chnk_spw_hhs_p = hhs_rkm %>%
   filter(scenario == "chnk_spw") %>%
   select(scenario,
@@ -407,12 +399,9 @@ chnk_spw_hhs_p
 
 ```
 
-
 ## Chinook Salmon Juvenile Rearing
 
-<!--
-Figure \@ref(fig:uww-chnk-juv-plot) shows the composite hydraulic suitability, and depth and velocity suitability within the Upper Walla Walla watershed to support Chinook salmon juvenile rearing under post-flood conditions in 2021. In general, the hydraulic suitability for juvenile rearing,
--->
+Comparatively across species, life stages, and watersheds, composite hydraulic suitability is lowest for Chinook juvenile rearing (Figure \@ref(fig:uww-chnk-juv-plot)). Depth is a limiting factor for Chinook rearing suitability in all three watersheds, with velocities being mostly suitable in the mainstem and North Fork, and unsuitable in the South Fork. Similar to spawning, average hydraulic suitability by river kilometer for Chinook rearing changed little from 2019 to 2021 (Figure \@ref(fig:chnk-juv-hhs)).  
 
 ```{r uww-chnk-juv-plot, fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across geomorphic reaches in the Upper Walla Walla watershed in 2021."}
 # Chinook juvenile rearing, 2021
@@ -440,7 +429,7 @@ chnk_juv_2021_geo
 ```{r chnk-juv-map, results = 'hide', fig.height = 7, fig.cap = "Map showing the hydraulic habitat suitability for **Chinook salmon juvenile rearing** in the Upper Walla Walla watershed for 2019 and 2021, plotted by river kilometer with geomorphic reaches shown."}
 # Chinook juvenile rearing map
 chnk_juv_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
-  filter(scenario == "chnk_juv") %>%
+  filter(scenario == "chnk_juv", year == "2021") %>%
   select(Reach_ID,
          year,
          Composite = HHS,
@@ -453,7 +442,7 @@ chnk_juv_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
                values_to = "value") %>%
   mutate(suitability = factor(suitability, levels = c("Composite",
                                                       "Depth",
-                                                      "Velocity"))) %>%
+                                                      "Velocity"))) %>% 
   ggplot() +
   geom_sf(aes(fill = value),
           colour = NA) +
@@ -485,13 +474,13 @@ chnk_juv_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
         axis.title = element_blank(),
         axis.ticks = element_blank(),
         panel.grid = element_blank(),
-        legend.position = "top") +
-  facet_grid(suitability ~ year)
+        legend.position = "left") +
+  facet_wrap(~ suitability, nrow = 3)
 chnk_juv_map  
 
 ```
 
-```{r chnk-juv-hhs, fig.height = 4, fig.cap = "Hydraulic habitat suitability (composite) by river kilometer for **Chinook salmon juvenile rearing** for 2019 and 2021."}
+```{r chnk-juv-hhs, fig.height = 3, fig.cap = "Hydraulic habitat suitability (composite) by river kilometer for **Chinook salmon juvenile rearing** for 2019 and 2021."}
 chnk_juv_hhs_p = hhs_rkm %>%
   filter(scenario == "chnk_juv") %>%
   select(scenario,
@@ -522,9 +511,7 @@ chnk_juv_hhs_p
 
 ## Steelhead Juvenile Rearing
 
-<!--
-Figure \@ref(fig:uww-sthd-juv-plot) shows the composite hydraulic suitability, and depth and velocity suitability within the Upper Walla Walla watershed to support steelhead juvenile rearing under post-flood conditions in 2021. In general, the hydraulic suitability for juvenile rearing,
--->
+Composite suitability for steelhead juvenile rearing is moderate to high in both the mainstem and South Fork watersheds (Figure \@ref(fig:uww-sthd-juv-plot)). Hydraulic conditions are less suitable in the North Fork, limited by depth. The distribution of velocities across all three watersheds are consistently very suitable. Again, there is very little difference in the average suitability by river kilometer from 2019 to 2021 for steelhead juvenile rearing (Figure \@ref(fig:sthd-juv-hhs)). 
 
 ```{r uww-sthd-juv-plot, fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across geomorphic reaches in the Upper Walla Walla watershed in 2021."}
 # steelhead juvenile rearing, 2021
@@ -552,7 +539,7 @@ sthd_juv_2021_geo
 ```{r sthd-juv-map, results = 'hide', fig.height = 7, fig.cap = "Map showing the hydraulic habitat suitability for **steelhead juvenile rearing** in the Upper Walla Walla watershed for 2019 and 2021, plotted by river kilometer with geomorphic reaches shown."}
 # steelhead juvenile rearing map
 sthd_juv_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
-  filter(scenario == "sthd_juv") %>%
+  filter(scenario == "sthd_juv", year == "2021") %>%
   select(Reach_ID,
          year,
          Composite = HHS,
@@ -597,13 +584,13 @@ sthd_juv_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
         axis.title = element_blank(),
         axis.ticks = element_blank(),
         panel.grid = element_blank(),
-        legend.position = "top") +
-  facet_grid(suitability ~ year)
+        legend.position = "left") +
+  facet_wrap(~ suitability, nrow = 3)
 sthd_juv_map  
 
 ```
 
-```{r sthd-juv-hhs, fig.height = 4, fig.cap = "Hydraulic habitat suitability (composite) by river kilometer for **steelhead juvenile rearing** for 2019 and 2021."}
+```{r sthd-juv-hhs, fig.height = 3, fig.cap = "Hydraulic habitat suitability (composite) by river kilometer for **steelhead juvenile rearing** for 2019 and 2021."}
 sthd_juv_hhs_p = hhs_rkm %>%
   filter(scenario == "sthd_juv") %>%
   select(scenario,
@@ -633,8 +620,15 @@ sthd_juv_hhs_p
 
 # Discussion
 
-Discussion text here...
+Overall, current composite hydraulic suitability in the upper Walla Walla River watershed is most suitable for steelhead juvenile rearing and least suitable for Chinook juvenile rearing.  Suitable habitat for steelhead juveniles includes slightly shallower depths and higher velocities when compared to Chinook juveniles.  A lack of habitat with depths greater than 0.25 meters at low flows limits Chinook rearing in the upper Walla Walla watershed, with velocities contributing to unsuitable conditions in the South Fork.  Chinook spawning composite suitability is more variable, with suitable spawning conditions in the South Fork, unsuitable conditions in the North Fork and a wide distribution across reaches in the mainstem. Depth is limiting for all three species/life stages in the North Fork, but, interestingly, North Fork velocities appear to be suitable for Chinook rearing. This is counter-intuitive because shallower habitat is typically associated with higher velocities found in riffles and rapids.
 
+## Other Focal Species
+
+Based on habitat preference research in eastern Oregon conducted by @Al-Chokhachy2007, bull trout prefer deep, slow-water habitat, aligning closest with Chinook juvenile suitability curves used in this analysis. As discussed above, of the three species/life stages analyzed, composite hydraulic suitability is most limiting for Chinook juvenile rearing, indicating that similar limitations for bull trout in the upper Walla Walla watershed exist. A literature review on Pacific Lamprey habitat preferences did not yield any hydraulic suitability information, prohibiting further discussion on the species.
+
+## Model Limitations
+
+While this HHS analysis provide insight on hydraulic limitations for Chinook salmon spawning and rearing, and steelhead rearing, it should be viewed in the context of fish habitat preferences holistically. It is generally accepted that high quality salmonid habitat is comprised of multiple habitat characteristics in addition to depth and velocity, including cover, water temperature and food availability. Because of this, we encourage the integration of the information summarized here with the other biological and geomorphological assessments provided for the upper Walla Walla watershed to inform rehabilitation efforts.    
 
 # Literature Cited
 
@@ -781,7 +775,6 @@ scale_fill_distiller(palette = "Spectral",
         axis.title = element_blank(),
         axis.ticks = element_blank(),
         panel.grid = element_blank(),
-      
         legend.position = "top") +
   facet_grid(year ~ scenario, labeller = labeller(scenario = scenario_labs))
 depth_rkm
@@ -864,3 +857,212 @@ hhs_tbl = hhs_geo %>%
 hhs_tbl
 
 ```
+
+```{r chnk-spw-box-rkm-ms, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across river kilometers in the mainstem Upper Walla Walla River, 2021."}
+
+# Box-plot by rkm, Chinook spawning, mainstem
+chnk_spw_2021_rkm_ms = hsi_raw %>%
+  filter(year == "2021",
+         scenario == "chnk_spw",
+         str_starts(ID, "RKM"),
+         str_ends(ID, "MS")) %>%
+  ggplot(aes(x = ID, 
+             y = value, 
+             fill = metric)) +
+  geom_boxplot() +
+  facet_wrap(~ metric, nrow = 3) +
+  theme_classic() +
+  labs(x = "River Kilometer",
+       y = "Suitability Index") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+chnk_spw_2021_rkm_ms
+
+```
+
+```{r chnk-spw-box-rkm-nf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across river kilometers in the North Fork Walla Walla River, 2021."}
+
+# Box-plot by rkm, Chinook spawning, North Fork
+chnk_juv_2021_rkm_nf = hsi_raw %>%
+  filter(year == "2021",
+         scenario == "chnk_spw",
+         str_starts(ID, "RKM"),
+         str_ends(ID, "NF")) %>%
+  ggplot(aes(x = ID, 
+             y = value, 
+             fill = metric)) +
+  geom_boxplot() +
+  facet_wrap(~ metric, nrow = 3) +
+  theme_classic() +
+  labs(x = "River Kilometer",
+       y = "Suitability Index") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+chnk_spw_2021_rkm_nf
+```
+
+```{r chnk-spw-box-rkm-sf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across river kilometers in the South Fork Walla Walla River, 2021."}
+
+# Box-plot by rkm, Chinook spawning, South Fork
+chnk_juv_2021_rkm_sf = hsi_raw %>%
+  filter(year == "2021",
+         scenario == "chnk_spw",
+         str_starts(ID, "RKM"),
+         str_ends(ID, "SF")) %>%
+  ggplot(aes(x = ID, 
+             y = value, 
+             fill = metric)) +
+  geom_boxplot() +
+  facet_wrap(~ metric, nrow = 3) +
+  theme_classic() +
+  labs(x = "River Kilometer",
+       y = "Suitability Index") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+chnk_spw_2021_rkm_sf
+```
+
+```{r chnk-juv-box-rkm-ms, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across river kilometers in the mainstem Upper Walla Walla River, 2021."}
+
+# Box-plot by rkm, Chinook juvenile rearing, Mainstem
+chnk_juv_2021_rkm_ms = hsi_raw %>%
+  filter(year == "2021",
+         scenario == "chnk_juv",
+         str_starts(ID, "RKM"),
+         str_ends(ID, "MS")) %>%
+  ggplot(aes(x = ID, 
+             y = value, 
+             fill = metric)) +
+  geom_boxplot() +
+  facet_wrap(~ metric, nrow = 3) +
+  theme_classic() +
+  labs(x = "River Kilometer",
+       y = "Suitability Index") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+chnk_juv_2021_rkm_ms
+```
+
+```{r chnk-juv-box-rkm-nf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across river kilometers in the North Fork Walla Walla River, 2021."}
+
+# Box-plot by rkm, Chinook spawning, North Fork
+chnk_juv_2021_rkm_nf = hsi_raw %>%
+  filter(year == "2021",
+         scenario == "chnk_juv",
+         str_starts(ID, "RKM"),
+         str_ends(ID, "NF")) %>%
+  ggplot(aes(x = ID, 
+             y = value, 
+             fill = metric)) +
+  geom_boxplot() +
+  facet_wrap(~ metric, nrow = 3) +
+  theme_classic() +
+  labs(x = "River Kilometer",
+       y = "Suitability Index") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+chnk_juv_2021_rkm_nf
+```
+
+```{r chnk-juv-box-rkm-sf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across river kilometers in the South Fork Walla Walla River, 2021."}
+
+# Box-plot by rkm, Chinook spawning, South Fork
+chnk_juv_2021_rkm_sf = hsi_raw %>%
+  filter(year == "2021",
+         scenario == "chnk_juv",
+         str_starts(ID, "RKM"),
+         str_ends(ID, "SF")) %>%
+  ggplot(aes(x = ID, 
+             y = value, 
+             fill = metric)) +
+  geom_boxplot() +
+  facet_wrap(~ metric, nrow = 3) +
+  theme_classic() +
+  labs(x = "River Kilometer",
+       y = "Suitability Index") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+chnk_juv_2021_rkm_sf
+```
+
+```{r sthd-juv-box-rkm-ms, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across river kilometers in the mainstem Upper Walla Walla River, 2021."}
+
+# Box-plot by rkm, steelhead juvenile rearing, Mainstem
+sthd_juv_2021_rkm_ms = hsi_raw %>%
+  filter(year == "2021",
+         scenario == "sthd_juv",
+         str_starts(ID, "RKM"),
+         str_ends(ID, "MS")) %>%
+  ggplot(aes(x = ID, 
+             y = value, 
+             fill = metric)) +
+  geom_boxplot() +
+  facet_wrap(~ metric, nrow = 3) +
+  theme_classic() +
+  labs(x = "River Kilometer",
+       y = "Suitability Index") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+sthd_juv_2021_rkm_ms
+```
+
+```{r sthd-juv-box-rkm-nf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across river kilometers in the North Fork Walla Walla River, 2021."}
+
+# Box-plot by rkm, steelhead juvenile rearing, North Fork
+sthd_juv_2021_rkm_nf = hsi_raw %>%
+  filter(year == "2021",
+         scenario == "sthd_juv",
+         str_starts(ID, "RKM"),
+         str_ends(ID, "NF")) %>%
+  ggplot(aes(x = ID, 
+             y = value, 
+             fill = metric)) +
+  geom_boxplot() +
+  facet_wrap(~ metric, nrow = 3) +
+  theme_classic() +
+  labs(x = "River Kilometer",
+       y = "Suitability Index") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+sthd_juv_2021_rkm_nf
+```
+
+```{r sthd-juv-box-rkm-sf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across river kilometers in the South Fork Walla Walla River, 2021."}
+
+# Box-plot by rkm, steelhead juvenile rearing, South Fork
+sthd_juv_2021_rkm_sf = hsi_raw %>%
+  filter(year == "2021",
+         scenario == "sthd_juv",
+         str_starts(ID, "RKM"),
+         str_ends(ID, "SF")) %>%
+  ggplot(aes(x = ID, 
+             y = value, 
+             fill = metric)) +
+  geom_boxplot() +
+  facet_wrap(~ metric, nrow = 3) +
+  theme_classic() +
+  labs(x = "River Kilometer",
+       y = "Suitability Index") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+sthd_juv_2021_rkm_sf
+```
+
