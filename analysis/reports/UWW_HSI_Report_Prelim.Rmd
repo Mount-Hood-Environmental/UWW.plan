@@ -536,7 +536,7 @@ sthd_juv_2021_geo
 
 ```
 
-```{r steelhead-juv-map, results = 'hide', fig.height = 7, fig.cap = "Map showing the hydraulic habitat suitability for **steelhead juvenile rearing** in the Upper Walla Walla watershed for 2019 and 2021, plotted by river kilometer with geomorphic reaches shown."}
+```{r sthd-juv-map, results = 'hide', fig.height = 7, fig.cap = "Map showing the hydraulic habitat suitability for **steelhead juvenile rearing** in the Upper Walla Walla watershed for 2019 and 2021, plotted by river kilometer with geomorphic reaches shown."}
 # steelhead juvenile rearing map
 sthd_juv_map = merge(rkm, hhs_rkm, by = "Reach_ID") %>%
   filter(scenario == "sthd_juv", year == "2021") %>%
