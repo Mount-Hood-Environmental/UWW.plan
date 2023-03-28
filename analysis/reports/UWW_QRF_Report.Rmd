@@ -990,7 +990,7 @@ Similar, currently available habitat capacity estimates from the QRF and associa
 # Habitat Capacity by Geomorphic Reach
 
 ```{r chnk-geo-reaches}
-uww_sum_sf_rch<- uww_sum_sf %>%
+uww_sum_sf_rch = uww_sum_sf %>%
   rename(GNIS_Name_orig = GNIS_Name,
          GNIS_Name = Geo_Reach)
 
@@ -1007,7 +1007,7 @@ chnk_sum_cap_rch = calc_watershed_cap(uww_huc_sf,
          'Geo_Reach' = replace_na(`Geo_Reach`, 'Total'))
 
 # Chinook salmon, winter presmolt
-uww_win_sf_rch<- uww_win_sf %>%
+uww_win_sf_rch = uww_win_sf %>%
   rename(GNIS_Name_orig = GNIS_Name,
          GNIS_Name = Geo_Reach)
 
@@ -1023,7 +1023,7 @@ chnk_win_cap_rch = calc_watershed_cap(uww_huc_sf,
          'Geo_Reach' = replace_na(`Geo_Reach`, 'Total'))
 
 # Chinook salmon, redds
-uww_redd_sf_rch<- uww_redd_sf %>%
+uww_redd_sf_rch = uww_redd_sf %>%
   rename(GNIS_Name_orig = GNIS_Name,
          GNIS_Name = Geo_Reach)
 
@@ -1038,21 +1038,21 @@ chnk_redd_cap_rch = calc_watershed_cap(uww_huc_sf,
          'Avg. Capacity/km' = tot_cap/tot_length,
          'Geo_Reach' = replace_na(`Geo_Reach`, 'Total'))
 
-#### Append the avg cap/km back to geo rch shp for graphing
+#### Append the avg cap/km back to geo rch .shp for graphing
 uww_sum_sf = uww_sum_sf %>%
   left_join(chnk_sum_cap_rch %>%
-              select(Geo_Reach,'Avg. Capacity/km')) %>%
-  rename(chnk_sum='Avg. Capacity/km') 
+              select(Geo_Reach, 'Avg. Capacity/km')) %>%
+  rename(chnk_sum = `Avg. Capacity/km`) 
 
 uww_win_sf = uww_win_sf %>%
   left_join(chnk_win_cap_rch %>%
-              select(Geo_Reach,'Avg. Capacity/km')) %>%
-  rename(chnk_win='Avg. Capacity/km') 
+              select(Geo_Reach, 'Avg. Capacity/km')) %>%
+  rename(chnk_win = 'Avg. Capacity/km') 
 
 uww_redd_sf = uww_redd_sf %>%
   left_join(chnk_redd_cap_rch %>%
-              select(Geo_Reach,'Avg. Capacity/km')) %>%
-  rename(chnk_redd='Avg. Capacity/km') 
+              select(Geo_Reach, 'Avg. Capacity/km')) %>%
+  rename(chnk_redd = 'Avg. Capacity/km') 
 
 ```
 
