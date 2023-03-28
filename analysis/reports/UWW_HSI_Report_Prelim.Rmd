@@ -624,7 +624,7 @@ Overall, current composite hydraulic suitability in the upper Walla Walla River 
 
 ## Other Focal Species
 
-Based on habitat preference research in eastern Oregon conducted by Al-Chokachy and Budy (2007), bull trout prefer deep, slow-water habitat, aligning closest with Chinook juvenile suitability curves used in this analysis. As discussed above, of the three species/life stages analyzed, composite hydraulic suitability is most limiting for Chinook juvenile rearing collectively, indicating that similar limitations for bull trout in the upper Walla Walla watershed exist. A literature review on Pacific Lamprey habitat preferences did not yield any hydraulic suitability information, prohibiting further discussion on the species.
+Based on habitat preference research in eastern Oregon conducted by @Al-Chokhachy2007, bull trout prefer deep, slow-water habitat, aligning closest with Chinook juvenile suitability curves used in this analysis. As discussed above, of the three species/life stages analyzed, composite hydraulic suitability is most limiting for Chinook juvenile rearing, indicating that similar limitations for bull trout in the upper Walla Walla watershed exist. A literature review on Pacific Lamprey habitat preferences did not yield any hydraulic suitability information, prohibiting further discussion on the species.
 
 ## Model Limitations
 
@@ -858,7 +858,7 @@ hhs_tbl
 
 ```
 
-```{r chnk-spw-box-rkm-ms, eval = F, results = 'hide', fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across river kilometers in the mainstem Upper Walla Walla River, 2021."}
+```{r chnk-spw-box-rkm-ms, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across river kilometers in the mainstem Upper Walla Walla River, 2021."}
 
 # Box-plot by rkm, Chinook spawning, mainstem
 chnk_spw_2021_rkm_ms = hsi_raw %>%
@@ -882,7 +882,7 @@ chnk_spw_2021_rkm_ms
 
 ```
 
-```{r chnk-spw-box-rkm-nf, eval = F, results = 'hide', fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across river kilometers in the North Fork Walla Walla River, 2021."}
+```{r chnk-spw-box-rkm-nf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across river kilometers in the North Fork Walla Walla River, 2021."}
 
 # Box-plot by rkm, Chinook spawning, North Fork
 chnk_juv_2021_rkm_nf = hsi_raw %>%
@@ -905,7 +905,7 @@ chnk_juv_2021_rkm_nf = hsi_raw %>%
 chnk_spw_2021_rkm_nf
 ```
 
-```{r chnk-spw-box-rkm-sf, eval = F, results = 'hide', fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across river kilometers in the South Fork Walla Walla River, 2021."}
+```{r chnk-spw-box-rkm-sf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across river kilometers in the South Fork Walla Walla River, 2021."}
 
 # Box-plot by rkm, Chinook spawning, South Fork
 chnk_juv_2021_rkm_sf = hsi_raw %>%
@@ -928,7 +928,7 @@ chnk_juv_2021_rkm_sf = hsi_raw %>%
 chnk_spw_2021_rkm_sf
 ```
 
-```{r chnk-juv-box-rkm-ms, eval = F, results = 'hide', fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across river kilometers in the mainstem Upper Walla Walla River, 2021."}
+```{r chnk-juv-box-rkm-ms, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across river kilometers in the mainstem Upper Walla Walla River, 2021."}
 
 # Box-plot by rkm, Chinook juvenile rearing, Mainstem
 chnk_juv_2021_rkm_ms = hsi_raw %>%
@@ -951,7 +951,7 @@ chnk_juv_2021_rkm_ms = hsi_raw %>%
 chnk_juv_2021_rkm_ms
 ```
 
-```{r chnk-juv-box-rkm-nf, eval = F, results = 'hide', fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across river kilometers in the North Fork Walla Walla River, 2021."}
+```{r chnk-juv-box-rkm-nf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across river kilometers in the North Fork Walla Walla River, 2021."}
 
 # Box-plot by rkm, Chinook spawning, North Fork
 chnk_juv_2021_rkm_nf = hsi_raw %>%
@@ -974,7 +974,7 @@ chnk_juv_2021_rkm_nf = hsi_raw %>%
 chnk_juv_2021_rkm_nf
 ```
 
-```{r chnk-juv-box-rkm-sf, eval = F, results = 'hide', fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across river kilometers in the South Fork Walla Walla River, 2021."}
+```{r chnk-juv-box-rkm-sf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across river kilometers in the South Fork Walla Walla River, 2021."}
 
 # Box-plot by rkm, Chinook spawning, South Fork
 chnk_juv_2021_rkm_sf = hsi_raw %>%
@@ -997,7 +997,7 @@ chnk_juv_2021_rkm_sf = hsi_raw %>%
 chnk_juv_2021_rkm_sf
 ```
 
-```{r sthd-juv-box-rkm-ms, eval = F, results = 'hide', fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across river kilometers in the mainstem Upper Walla Walla River, 2021."}
+```{r sthd-juv-box-rkm-ms, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across river kilometers in the mainstem Upper Walla Walla River, 2021."}
 
 # Box-plot by rkm, steelhead juvenile rearing, Mainstem
 sthd_juv_2021_rkm_ms = hsi_raw %>%
@@ -1020,7 +1020,7 @@ sthd_juv_2021_rkm_ms = hsi_raw %>%
 sthd_juv_2021_rkm_ms
 ```
 
-```{r sthd-juv-box-rkm-nf, eval = F, results = 'hide', fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across river kilometers in the North Fork Walla Walla River, 2021."}
+```{r sthd-juv-box-rkm-nf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across river kilometers in the North Fork Walla Walla River, 2021."}
 
 # Box-plot by rkm, steelhead juvenile rearing, North Fork
 sthd_juv_2021_rkm_nf = hsi_raw %>%
@@ -1043,7 +1043,7 @@ sthd_juv_2021_rkm_nf = hsi_raw %>%
 sthd_juv_2021_rkm_nf
 ```
 
-```{r sthd-juv-box-rkm-sf, eval = F, results = 'hide', fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across river kilometers in the South Fork Walla Walla River, 2021."}
+```{r sthd-juv-box-rkm-sf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across river kilometers in the South Fork Walla Walla River, 2021."}
 
 # Box-plot by rkm, steelhead juvenile rearing, South Fork
 sthd_juv_2021_rkm_sf = hsi_raw %>%
