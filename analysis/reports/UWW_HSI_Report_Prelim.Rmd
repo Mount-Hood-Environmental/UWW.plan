@@ -11,8 +11,8 @@ author:
     institute: [mhe_mccall]
     correspondence: true
 institute:
-  - mhe_mccall: Mount Hood Environmental, PO Box 4282, McCall, Idaho, 83638, USA
   - mhe_salmon: Mount Hood Environmental, 1009 South Daisy Street, Salmon, ID 83467, USA
+  - mhe_mccall: Mount Hood Environmental, PO Box 4282, McCall, Idaho, 83638, USA
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
   bookdown::html_document2:
@@ -43,6 +43,7 @@ always_allow_html: yes
    });
 </script>
 ```
+
 ```{r setup, echo = FALSE, message = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -91,27 +92,28 @@ In this document, we assess the hydraulic habitat suitability (HHS) in the upper
 
 ## Objective
 
-Evaluate the depth, velocity, and composite suitability of reaches in the North Fork (NF), South Fork (SF), and upper mainstem Walla Walla (MS) rivers based on modeled depth and depth averaged velocity rasters supported by multi-year LIDAR sampling events that encompass the study reaches. Composite suitability is the geometric mean of depth and velocity suitabilities. Suitability results are summarized both by river kilometers and geomorphic reaches. Hydraulic suitability is evaluated for both spring-run Chinook salmon (hereafter Chinook salmon) and Middle Columbia River summer-run steelhead (hereafter steelhead) at multiple life stages, including adult spawning and juvenile rearing for Chinook salmon and juvenile rearing for steelhead, at base flow discharge scenarios (see Table \@ref(tab:scenarios-tab)). Hydraulic models were available from LiDAR for both 2019 (pre-flood) and 2021 (post-flood), and thus, we evaluate hydraulic suitability for both years to consider changes in HHS resulting from extensive flooding in 2020.
+Our objective was to estimate the suitability of available depths and depth averaged velocities of reaches in the North Fork (NF), South Fork (SF), and upper mainstem Walla Walla (MS) rivers available from multi-year LiDAR sampling events that encompass the primary study area. We also evaluated the composite suitability throughout these reaches, calculated as the geometric mean of depth and velocity suitabilities. Suitability results were summarized both by river kilometers and geomorphic reaches. Hydraulic suitability was considered for both spring-run Chinook salmon (hereafter Chinook salmon) and Middle Columbia River summer-run steelhead (hereafter steelhead) at multiple life stages, including adult spawning and juvenile rearing for Chinook salmon and juvenile rearing for steelhead, and at base flow discharge scenarios (see Table \@ref(tab:scenarios-tab)). Hydraulic models were available from LiDAR for both 2019 (pre-flood) and 2021 (post-flood), and thus, we evaluate hydraulic suitability for both years to consider changes in HHS resulting from extensive flooding in 2020.
 
 ## Focal Species
 
-The focal species for the HHS analyses are:
+The focal species for the HHS analyses were:
 
 -   Chinook salmon (*Oncorhynchus tshawytscha*)
--   steelhead (*O. mykiss*, ESA-listed "threatened")
+-   Steelhead (*O. mykiss*, ESA-listed "threatened")
 
 While our HHS models specifically address Chinook salmon and steelhead, any uplift in habitat for these species are also expected to benefit:
 
--   Columbia River bull trout (*Salvelinus confluentus*; ESA-listed "threatened")
+-   Columbia River bull trout (*Salvelinus confluentus*; hereafter bull trout, ESA-listed "threatened")
 -   Pacific lamprey (*Lampetra tridentata*)
 
 ## Study Area
 
-The spatial domain of this assessment is limited to the sections of the mainstem upper Walla Walla River, and the North and South forks where LiDAR data and hydraulic model results are available.  The downstream extent is defined by the mainstem's confluence with Dry Creek near Lowden, Washington, and upstream extents continue into the North and South forks, approximately 18.5 km (11.5 miles), and 33 km (20.5 miles), respectively. This assessment includes approximately 38.5 km (24 miles) of the mainstem Walla Walla River (Table \@ref(tab:rkm-geo-rch)).
+The spatial domain of this assessment was limited to the sections of the mainstem upper Walla Walla River, and the North and South forks where LiDAR data and hydraulic model results were available. The downstream extent was defined by the mainstem's confluence with Dry Creek near Lowden, Washington, and upstream extents continued into the North and South forks, approximately 18.5 km (11.5 miles), and 33 km (20.5 miles), respectively. The assessment also includes approximately 38.5 km (24 miles) of the mainstem Walla Walla River (Table \@ref(tab:rkm-geo-rch)).
+
 
 # Methods
 
-We provide methods for calculating the depth, velocity, and composite suitability, including for each pixel in a raster, for a single "model scenario". A given scenario includes a species by life stage combination and a year (2019 or 2021). Suitability results are then summarized both by river kilometer (rkm) and geomorphic reach. For reference, Table \@ref(tab:rkm-geo-rch) shows the minimum and maximum river kilometer for each geomorphic reach and watershed. Here, we provide detailed methods for Scenario 1 in Table \@ref(tab:scenarios-tab): Chinook salmon juvenile rearing in 2019. The same methods were then applied across all scenarios using the appropriate depth and velocity curves (depending on species and adult versus juvenile) or differing input depth and depth averaged velocity rasters (depending on year). Scenarios are summarized in Table \@ref(tab:scenarios-tab). Data, code, outputs, and reports for this analysis can be found in a GitHub repository at https://github.com/Mount-Hood-Environmental/UWW.plan.
+We provide methods for calculating the depth, velocity, and composite suitability, including for each pixel in a raster, for a single "model scenario". A given scenario includes a species by life stage combination and a year (2019 or 2021). Suitability results were then summarized both by river kilometer (rkm) and geomorphic reach. For reference, Table \@ref(tab:rkm-geo-rch) shows the minimum and maximum river kilometer for each geomorphic reach and watershed. Here, we provide detailed methods for Scenario 1 in Table \@ref(tab:scenarios-tab): Chinook salmon juvenile rearing in 2019. The same methods were then applied across all scenarios using the appropriate depth and velocity curves (depending on species and adult versus juvenile) or differing input depth and depth averaged velocity rasters (depending on year). Scenarios evaluated are shown in Table \@ref(tab:scenarios-tab). Data, code, outputs, and reports for this analysis can be found in a GitHub repository at https://github.com/Mount-Hood-Environmental/UWW.plan.
 
 Detailed methods are as follows:
 
@@ -127,13 +129,13 @@ Detailed methods are as follows:
 
 6. Extract the depth, velocity, and composite suitability values located within each rkm and geomorphic reach for each pixel into a data frame. The resulting data frame can be used to summarize and visualize the suitability results by rkm or geomorphic reach for the juvenile Chinook salmon rearing in 2019.
 
-7. Store the depth, velocity, and composite suitability values, rkms and geomorphic reaches for each pixel. These results are currently stored in the [output/hsi_raw/](https://github.com/Mount-Hood-Environmental/analysis/hsi_outputs) directory in the [repo](https://github.com/Mount-Hood-Environmental/UWW.plan/).
+7. Store the depth, velocity, and composite suitability values, rkms and geomorphic reaches for each pixel. These results are currently stored in the [output/hsi_raw/](https://github.com/Mount-Hood-Environmental/analysis/hsi_outputs) directory in the  [repo](https://github.com/Mount-Hood-Environmental/UWW.plan/).
 
-8. Calculate the total wetted area, weighted usable area, and normalized weighted usable area (i.e., HHS) for juvenile Chinook salmon by rkm and geomorphic reach. The total wetted area was calculated by counting the total number of pixels (each with an area of 1m^2), that occur within each rkm and geomorphic reach. The weighted usable area (WUA) was calculated by summing the composite suitability values of all pixels within that same area. And finally, the normalized weighted usable area i.e., HHS, was calculated by dividing the WUA by the total wetted area for each rkm and geomorphic reach.
+8. Finally, calculate the total wetted area, weighted usable area, and normalized weighted usable area (i.e., HHS) for juvenile Chinook salmon by rkm and geomorphic reach. The total wetted area was calculated by counting the total number of pixels (each with an area of 1m^2), that occur within each rkm and geomorphic reach. The weighted usable area (WUA) was calculated by summing the composite suitability values of all pixels within that same area. And finally, the normalized weighted usable area i.e., HHS, was calculated by dividing the WUA by the total wetted area for each rkm and geomorphic reach.
 
 The process can then be repeated for each model "run" (Table \@ref(tab:scenarios-tab)). The resulting raster .tifs are also available in the GitHub repository at https://github.com/Mount-Hood-Environmental/UWW.plan. 
 
-Finally, suitability values were summarized and visualized by year, species, and life stage (Chinook salmon adult spawning, Chinook salmon and steelhead juvenile rearing), and rkm / geomorphic reach. Box plots were used to show the distribution of depth, velocity, and composite suitability values and are provided in the [Results]. Maps showing the HHS, by rkm / geomorphic reach, are provided by species, and life stage, as well as plots showing the HHS for each scenario considered.
+Finally, suitability values were summarized and visualized by year, species, and life stage (Chinook salmon adult spawning, Chinook salmon and steelhead juvenile rearing), and rkm / geomorphic reach. Box plots were used to show the distribution of depth, velocity, and composite suitability values and are provided in the [Results]. Maps showing the depth and velocity suitability and HHS by rkm are provided by species and life stage, as well as plots showing the HHS, by year, for each species and life stage. Additional summaries of results are provided in the [Supplemental Tables and Figures] section.
 
 ```{r rkm-geo-rch}
 geo_order = c("GR_01_MS", 
