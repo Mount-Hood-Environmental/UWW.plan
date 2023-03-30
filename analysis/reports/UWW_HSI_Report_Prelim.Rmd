@@ -256,7 +256,17 @@ hsi_raw = list.files("S:/main/data/habitat/HSI/UWW_hsi_results/raw_results", pat
     grepl("MS", ID) ~ "Mainstem",
     grepl("NF", ID) ~ "North Fork",
     grepl("SF", ID) ~ "South Fork"
-  ))
+  ),
+  Reach_ID_adjust = recode(ID, RKM_01_MS = "RKM_44_MS", RKM_02_MS = "RKM_45_MS", RKM_03_MS = "RKM_46_MS", 
+  RKM_04_MS = "RKM_47_MS",RKM_05_MS = "RKM_48_MS",RKM_06_MS = "RKM_49_MS",RKM_07_MS = "RKM_50_MS",
+  RKM_08_MS = "RKM_51_MS",RKM_09_MS = "RKM_52_MS",RKM_10_MS = "RKM_53_MS",RKM_11_MS = "RKM_54_MS",
+  RKM_12_MS = "RKM_55_MS",RKM_13_MS = "RKM_56_MS",RKM_14_MS = "RKM_57_MS",RKM_15_MS = "RKM_58_MS",
+  RKM_16_MS = "RKM_59_MS",RKM_17_MS = "RKM_60_MS",RKM_18_MS = "RKM_61_MS",RKM_19_MS = "RKM_62_MS",
+  RKM_20_MS = "RKM_63_MS",RKM_21_MS = "RKM_64_MS",RKM_22_MS = "RKM_65_MS",RKM_23_MS = "RKM_66_MS",
+  RKM_24_MS = "RKM_67_MS",RKM_25_MS = "RKM_68_MS",RKM_26_MS = "RKM_69_MS",RKM_27_MS = "RKM_70_MS",
+  RKM_28_MS = "RKM_71_MS",RKM_29_MS = "RKM_72_MS",RKM_30_MS = "RKM_73_MS",RKM_31_MS = "RKM_74_MS",
+  RKM_32_MS = "RKM_75_MS",RKM_33_MS = "RKM_76_MS",RKM_34_MS = "RKM_77_MS",RKM_35_MS = "RKM_78_MS",
+  RKM_36_MS = "RKM_79_MS",RKM_37_MS = "RKM_80_MS",RKM_38_MS = "RKM_81_MS",RKM_39_MS = "RKM_82_MS"))
 
 ```
 
@@ -278,7 +288,17 @@ geo_sf = geo %>%
 hhs_rkm = list.files(here("analysis/hsi_outputs/csvs/"), pattern = "*.csv", full.names = T) %>%
   map_df(~ read_csv(.)) %>%
   rename(Reach_ID = ID) %>%
-  filter(str_starts(Reach_ID, "RKM"))
+  filter(str_starts(Reach_ID, "RKM")) %>%
+  mutate(Reach_ID_adjust = recode(Reach_ID, RKM_01_MS = "RKM_44_MS", RKM_02_MS = "RKM_45_MS", RKM_03_MS = "RKM_46_MS", RKM_04_MS = "RKM_47_MS",
+                           RKM_05_MS = "RKM_48_MS",RKM_06_MS = "RKM_49_MS",RKM_07_MS = "RKM_50_MS",RKM_08_MS = "RKM_51_MS",
+                           RKM_09_MS = "RKM_52_MS",RKM_10_MS = "RKM_53_MS",RKM_11_MS = "RKM_54_MS",RKM_12_MS = "RKM_55_MS",
+                           RKM_13_MS = "RKM_56_MS",RKM_14_MS = "RKM_57_MS",RKM_15_MS = "RKM_58_MS",RKM_16_MS = "RKM_59_MS",
+                           RKM_17_MS = "RKM_60_MS",RKM_18_MS = "RKM_61_MS",RKM_19_MS = "RKM_62_MS",RKM_20_MS = "RKM_63_MS",
+                           RKM_21_MS = "RKM_64_MS",RKM_22_MS = "RKM_65_MS",RKM_23_MS = "RKM_66_MS",RKM_24_MS = "RKM_67_MS",
+                           RKM_25_MS = "RKM_68_MS",RKM_26_MS = "RKM_69_MS",RKM_27_MS = "RKM_70_MS",RKM_28_MS = "RKM_71_MS",
+                           RKM_29_MS = "RKM_72_MS",RKM_30_MS = "RKM_73_MS",RKM_31_MS = "RKM_74_MS",RKM_32_MS = "RKM_75_MS",
+                           RKM_33_MS = "RKM_76_MS",RKM_34_MS = "RKM_77_MS",RKM_35_MS = "RKM_78_MS",RKM_36_MS = "RKM_79_MS",
+                           RKM_37_MS = "RKM_80_MS",RKM_38_MS = "RKM_81_MS",RKM_39_MS = "RKM_82_MS"))
 
 hhs_geo = list.files(here("analysis/hsi_outputs/csvs/"), pattern = "*.csv", full.names = T) %>%
   map_df(~ read_csv(.)) %>%
@@ -291,7 +311,7 @@ Here, we summarize depth, depth averaged velocity, and composite suitability res
 
 ## Chinook Salmon Spawning
 
-The composite hydraulic suitability for spawning is highly variable across the three watersheds, with the South Fork Walla Walla River, on average, being most suitable (Figures \@ref(fig:uww-chnk-spw-plot) and \@ref(fig:chnk-spw-map)). The mainstem Walla Walla River exhibits the greatest intravariability, where geomrophic reaches four and five are most suitable, reaches one and two are least suitable, and reach three is in between. For mainstem reaches 1-3 (44.1-72.8 rkm), velocities limit suitability, and both depth and velocity are limiting in the North Fork. In contrast, the South Fork exhibits very suitable velocities for spawning, and moderate to high depth suitability too. Comparing the HHS by river kilometer between 2019 and 2021, it appears little change in HHS resulting from the flooding event in 2020 (Figure \@ref(fig:chnk-spw-hhs)). In general, HHS in the South Fork Walla Walla watershed and in the mainstem Walla Walla above approximately rkm 33 appear relatively suitable with average HHS above 0.65; however, HHS in downstream reaches of the mainstem and in the North Fork Walla Walla River are generally poor for Chinook salmon spawning.
+The composite hydraulic suitability for spawning is highly variable across the three watersheds, with the South Fork Walla Walla River, on average, being most suitable (Figures \@ref(fig:uww-chnk-spw-plot) and \@ref(fig:chnk-spw-map)). The mainstem Walla Walla River exhibits the greatest intravariability, where geomrophic reaches four and five are most suitable, reaches one and two are least suitable, and reach three is in between. For mainstem reaches 1-3 (44.1-72.8 rkm), velocities limit suitability, and both depth and velocity are limiting in the North Fork. In contrast, the South Fork exhibits very suitable velocities for spawning, and moderate to high depth suitability too. Comparing the HHS by river kilometer between 2019 and 2021, it appears little change in HHS resulting from the flooding event in 2020 (Figure \@ref(fig:chnk-spw-hhs)). In general, HHS in the South Fork Walla Walla watershed and in the mainstem Walla Walla above approximately rkm 75 appear relatively suitable with average HHS above 0.65; however, HHS in downstream reaches of the mainstem and in the North Fork Walla Walla River are generally poor for Chinook salmon spawning.
 
 ```{r uww-chnk-spw-plot, fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across geomorphic reaches in the Upper Walla Walla watershed in 2021."}
 # Chinook salmon spawning, 2021
@@ -377,13 +397,14 @@ chnk_spw_hhs_p = hhs_rkm %>%
   select(scenario,
          year,
          Reach_ID,
+         Reach_ID_adjust,
          HHS) %>%
   mutate(watershed = case_when(
     grepl("MS", Reach_ID) ~ "Mainstem",
     grepl("NF", Reach_ID) ~ "North Fork",
     grepl("SF", Reach_ID) ~ "South Fork"
   )) %>%
-  mutate(rkm = as.numeric(substr(Reach_ID, 5, 6)),
+  mutate(rkm = as.numeric(substr(Reach_ID_adjust, 5, 6)),
          year = as.factor(year)) %>%
   ggplot(aes(x = rkm)) +
   # geom_line(aes(y = HHS), color = "royalblue4", size = 0.5) +
@@ -403,7 +424,7 @@ chnk_spw_hhs_p
 
 ## Chinook Salmon Juvenile Rearing
 
-Among species and life stages, composite hydraulic suitability is lowest for Chinook salmon juvenile rearing (Figure \@ref(fig:uww-chnk-juv-plot)). Composite suitability is relatively low across all geomorphic reaches and watersheds and lowest in the South Fork Walla Walla watershed; three geomorphic reaches in the mainstem Walla Walla (01 - 02) appear moderate, but still below 0.50 (Figure \@ref(fig:uww-chnk-juv-plot)). Depth appears to be a limiting factor for Chinook salmon juvenile rearing in all three watersheds, with velocities being mostly suitable in the mainstem and North Fork, but unsuitable in the South Fork. In general, HHS for Chinook salmon juvenile rearing is poor in all watersheds, with only lower portions of the mainstem (approximately below rkm 25) being moderately suitable (Figures \@ref(fig:chnk-juv-map) and \@ref(fig:chnk-juv-hhs)). Similar to spawning, average HHS by rkm for Chinook salmon rearing changed little from 2019 to 2021 (Figure \@ref(fig:chnk-juv-hhs))
+Among species and life stages, composite hydraulic suitability is lowest for Chinook salmon juvenile rearing (Figure \@ref(fig:uww-chnk-juv-plot)). Composite suitability is relatively low across all geomorphic reaches and watersheds and lowest in the South Fork Walla Walla watershed; three geomorphic reaches in the mainstem Walla Walla (01 - 02) appear moderate, but still below 0.50 (Figure \@ref(fig:uww-chnk-juv-plot)). Depth appears to be a limiting factor for Chinook salmon juvenile rearing in all three watersheds, with velocities being mostly suitable in the mainstem and North Fork, but unsuitable in the South Fork. In general, HHS for Chinook salmon juvenile rearing is poor in all watersheds, with only lower portions of the mainstem (approximately below rkm 65) being moderately suitable (Figures \@ref(fig:chnk-juv-map) and \@ref(fig:chnk-juv-hhs)). Similar to spawning, average HHS by rkm for Chinook salmon rearing changed little from 2019 to 2021 (Figure \@ref(fig:chnk-juv-hhs))
 
 ```{r uww-chnk-juv-plot, fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across geomorphic reaches in the Upper Walla Walla watershed in 2021."}
 # Chinook juvenile rearing, 2021
@@ -488,13 +509,14 @@ chnk_juv_hhs_p = hhs_rkm %>%
   select(scenario,
          year,
          Reach_ID,
+         Reach_ID_adjust,
          HHS) %>%
   mutate(watershed = case_when(
     grepl("MS", Reach_ID) ~ "Mainstem",
     grepl("NF", Reach_ID) ~ "North Fork",
     grepl("SF", Reach_ID) ~ "South Fork"
   )) %>%
-  mutate(rkm = as.numeric(substr(Reach_ID, 5, 6)),
+  mutate(rkm = as.numeric(substr(Reach_ID_adjust, 5, 6)),
          year = as.factor(year)) %>%
   ggplot(aes(x = rkm)) +
   geom_line(aes(y = HHS, color = year), size = 0.5) +
@@ -597,13 +619,14 @@ sthd_juv_hhs_p = hhs_rkm %>%
   select(scenario,
          year,
          Reach_ID,
+         Reach_ID_adjust,
          HHS) %>%
   mutate(watershed = case_when(
     grepl("MS", Reach_ID) ~ "Mainstem",
     grepl("NF", Reach_ID) ~ "North Fork",
     grepl("SF", Reach_ID) ~ "South Fork"
   )) %>%
-  mutate(rkm = as.numeric(substr(Reach_ID, 5, 6)),
+  mutate(rkm = as.numeric(substr(Reach_ID_adjust, 5, 6)),
          year = as.factor(year)) %>%
   ggplot(aes(x = rkm)) +
   geom_line(aes(y = HHS, color = year), size = 0.5) +
@@ -625,7 +648,7 @@ Composite hydraulic suitability in the upper Walla Walla River watershed at base
 
 ## Other Focal Species
 
-Based on habitat preference information from the South Fork Walla Walla River [@Al-Chokhachy2007], adult (>220mm) and juvenile (<220mm) bull trout prefer low velocity habitat, with depths <0.8m more suitable for juvenile rearing. Hydrualic preferences for both adult and juvenile bull trout align closest with Chinook salmon juvenile suitability curves used in this analysis. As discussed above, of the three species and life stages analyzed, HHS is most limiting for Chinook salmon juvenile rearing, indicating that similar limitations may exist for bull trout in the upper Walla Walla watershed. A literature review of Pacific lamprey habitat preferences did not yield any hydraulic suitability information, prohibiting further discussion on the species.
+Based on habitat preference information from the South Fork Walla Walla River [@Al-Chokhachy2007], adult (>220mm) and juvenile (<220mm) bull trout prefer similar hydraulic habitat defined by low velocities near the river bed. Juvenile bull trout appear to tolerate shallower depths (0.4m-1m) than adults (>1m). Hydraulic preferences for juvenile bull trout align closest with Chinook salmon juvenile suitability curves used in this analysis. As discussed above, of the three species and life stages analyzed, HHS is most limiting for Chinook salmon juvenile rearing, indicating that similar limitations may exist for juvenile bull trout in the upper Walla Walla watershed. Understanding depth preferences of adult bull trout may prove useful for rehabilitation design, helping to mitigate creation of habitat that will encourage predation of juvenile Chinook and steelhead. A literature review of Pacific lamprey habitat preferences did not yield any hydraulic suitability information, prohibiting further discussion on the species.
 
 ## Model Limitations
 
@@ -633,7 +656,7 @@ While this HHS analysis provide insight on hydraulic conditions in the Upper Wal
 
 Moreover, HHS are univariate by nature. That is, the suitability of depths and depth averaged velocities are considered independently of each other, and do not consider relationships with other variable e.g., temperature. For example, as stream temperatures exceed optimal or maximum temperature thresholds, higher water velocities may become less suitable for a given species or life stage. Similar, cover (e.g., large woody debris, boulders) may provide small-scale refuge from high stream velocities and increase the suitability of a pixel or channel unit not captured by HHS analysis.    
 
-The scale of inference used by this HHS analysis must also be taken into account when considering results. Suitability summarized at the  geomorphic reach and river kilometer scale is relatively granular; i.e., it likely does not capture all the hydraulic nuances at the microhabitat scale that fish take advantage of and prefer. The analysis output rasters, which display composite, depth, and depth-averaged velocity suitability at a 1m x 1m (pixel) resolution can be used for further microhabitat analysis, and can be found in the [output/hsi_raw/](https://github.com/Mount-Hood-Environmental/analysis/hsi_outputs) directory in the  [repo](https://github.com/Mount-Hood-Environmental/UWW.plan/). 
+The scale of inference used in this HHS analysis must also be taken into account when considering results. Suitability summarized at the  geomorphic reach and river kilometer scale likely does not capture all the hydraulic nuances at the microhabitat scale that fish take advantage of and prefer. The analysis output rasters, which display composite, depth, and depth averaged velocity suitability at a 1m x 1m (pixel) resolution can be used for further microhabitat analysis, and can be found in the [output/hsi_raw/](https://github.com/Mount-Hood-Environmental/analysis/hsi_outputs) directory in the  [repo](https://github.com/Mount-Hood-Environmental/UWW.plan/). 
 
 # Literature Cited
 
@@ -705,7 +728,7 @@ chnk_spw_box_p = hsi_raw %>%
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), 
         legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 chnk_spw_box_p  
@@ -727,7 +750,7 @@ chnk_juv_box_p = hsi_raw %>%
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), 
         legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 chnk_juv_box_p  
@@ -749,7 +772,7 @@ sthd_juv_box_p = hsi_raw %>%
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), 
         legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 sthd_juv_box_p  
@@ -767,7 +790,7 @@ chnk_spw_2021_rkm_ms = hsi_raw %>%
          scenario == "chnk_spw",
          str_starts(ID, "RKM"),
          str_ends(ID, "MS")) %>%
-  ggplot(aes(x = ID, 
+  ggplot(aes(x = Reach_ID_adjust, 
              y = value, 
              fill = metric)) +
   geom_boxplot() +
@@ -776,7 +799,7 @@ chnk_spw_2021_rkm_ms = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 chnk_spw_2021_rkm_ms
@@ -799,7 +822,7 @@ chnk_spw_2021_rkm_nf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 chnk_spw_2021_rkm_nf
@@ -822,7 +845,7 @@ chnk_spw_2021_rkm_sf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 chnk_spw_2021_rkm_sf
@@ -838,7 +861,7 @@ chnk_juv_2021_rkm_ms = hsi_raw %>%
          scenario == "chnk_juv",
          str_starts(ID, "RKM"),
          str_ends(ID, "MS")) %>%
-  ggplot(aes(x = ID, 
+  ggplot(aes(x = Reach_ID_adjust, 
              y = value, 
              fill = metric)) +
   geom_boxplot() +
@@ -847,7 +870,7 @@ chnk_juv_2021_rkm_ms = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 chnk_juv_2021_rkm_ms
@@ -870,7 +893,7 @@ chnk_juv_2021_rkm_nf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 chnk_juv_2021_rkm_nf
@@ -893,7 +916,7 @@ chnk_juv_2021_rkm_sf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 chnk_juv_2021_rkm_sf
@@ -909,7 +932,7 @@ sthd_juv_2021_rkm_ms = hsi_raw %>%
          scenario == "sthd_juv",
          str_starts(ID, "RKM"),
          str_ends(ID, "MS")) %>%
-  ggplot(aes(x = ID, 
+  ggplot(aes(x = Reach_ID_adjust, 
              y = value, 
              fill = metric)) +
   geom_boxplot() +
@@ -918,7 +941,7 @@ sthd_juv_2021_rkm_ms = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 sthd_juv_2021_rkm_ms
@@ -941,7 +964,7 @@ sthd_juv_2021_rkm_nf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 sthd_juv_2021_rkm_nf
@@ -964,7 +987,7 @@ sthd_juv_2021_rkm_sf = hsi_raw %>%
   labs(x = "River Kilometer",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 sthd_juv_2021_rkm_sf
