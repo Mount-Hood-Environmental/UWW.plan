@@ -1140,14 +1140,14 @@ kable(booktabs = T,
         digits = c(0,0,1,0,00),
         align = "lcccccc",
         format.args = list(big.mark = ","),
-        caption = "Estimated available habitat for **juvenile summer rearing** Chinook salmon in the Upper Walla Walla watershed by geomorphically  delineated reaches.") %>%
+        caption = "Estimated available habitat for **Chinook salmon juvenile rearing, during summer months**, in the Upper Walla Walla watershed by geomorphic reach.") %>%
   kable_styling(full_width = F,
                 position = "center",
                 bootstrap_options = c("striped", "condensed"))
 
 ```
 
-```{r chnk-sum-georch-fig, fig.cap = "Average Chinook summar parr (capacity/km) by geomorphic reach for the Upper Walla Walla"}
+```{r chnk-sum-georch-fig, fig.cap = "Average Chinook salmon summer parr (fish/km) capacity, by geomorphic reach, for the Upper Walla Walla watershed."}
 chnk_sum_georch
 
 ```
@@ -1166,15 +1166,15 @@ kable(booktabs = T,
         digits = c(0,0,1,0,00),
         align = "lcccccc",
         format.args = list(big.mark = ","),
-        caption = "Estimated available habitat for **juvenile winter rearing** Chinook salmon in the Upper Walla Walla watershed by geomorphically delineated reaches.") %>%
+        caption = "Estimated available habitat for **Chinook salmon juvenile rearing, during winter months**, in the Upper Walla Walla watershed by geomorphic reach.") %>%
   kable_styling(full_width = F,
                 position = "center",
                 bootstrap_options = c("striped", "condensed"))
 
 ```
 
-```{r chnk-redd-georch-fig, fig.cap = "Average Chinook redds (capacity/km) by geomorphic reach for the Upper Walla Walla"}
-chnk_redd_georch
+```{r chnk-win-georch-fig, fig.cap = "Average Chinook salmon winter presmolt (fish/km) capacity, by geomorphic reach, for the Upper Walla Walla watershed."}
+chnk_win_georch
 
 ```
 
@@ -1192,18 +1192,17 @@ kable(booktabs = T,
         digits = c(0,0,1,1,1,1),
         align = "lcccccc",
         format.args = list(big.mark = ","),
-        caption = "Estimated available habitat for **adult (redds)** Chinook salmon in the Upper Walla Walla watershed by geomorphically delineated reaches.") %>%
+        caption = "Estimated available habitat for **Chinook salmon spawning (redds)** in the Upper Walla Walla watershed by geomorphic reach.") %>%
   kable_styling(full_width = F,
                 position = "center",
                 bootstrap_options = c("striped", "condensed"))
 
 ```
 
-```{r chnk-win-georch-fig, fig.cap = "Average Chinook winter presmolt (capacity/km) by geomorphic reach for the Upper Walla Walla"}
-chnk_win_georch
+```{r chnk-redd-georch-fig, fig.cap = "Average Chinook salmon spawning (redds/km) capacity, by geomorphic reach, for the Upper Walla Walla watershed."}
+chnk_redd_georch
 
 ```
-
 
 ```{r sthd-geo-reaches}
 sthd_sum_cap_rch = calc_watershed_cap(uww_huc_sf,
@@ -1343,14 +1342,14 @@ kable(booktabs = T,
         digits = c(0,0,1,0,0,0),
         align = "lcccccc",
         format.args = list(big.mark = ","),
-        caption = "Estimated available habitat for **juvenile summer rearing** steelhead in the Upper Walla Walla watershed by geomorphically  delineated reaches.") %>%
+        caption = "Estimated available habitat for **steelhead juvenile rearing, during summer months**, in the Upper Walla Walla watershed by geomorphic delineated reach.") %>%
   kable_styling(full_width = F,
                 position = "center",
                 bootstrap_options = c("striped", "condensed"))
 
 ```
 
-```{r sthd-sum-georch-fig, fig.cap = "Average steelhead summar parr (capacity/km) by geomorphic reach for the Upper Walla Walla"}
+```{r sthd-sum-georch-fig, fig.cap = "Average steelhead summer parr (fish/km) capacity, by geomorphic reach, for the Upper Walla Walla watershed."}
 sthd_sum_georch
 
 ```
@@ -1369,15 +1368,15 @@ kable(booktabs = T,
         digits = c(0,0,1,0,0,0),
         align = "lcccccc",
         format.args = list(big.mark = ","),
-        caption = "Estimated available habitat for **juvenile winter rearing** steelhead in the Upper Walla Walla watershed by geomorphically delineated reaches.") %>%
+        caption = "Estimated available habitat for **steelhead juvenile rearing, during winter months**, in the Upper Walla Walla watershed by geomorphic reach.") %>%
   kable_styling(full_width = F,
                 position = "center",
                 bootstrap_options = c("striped", "condensed"))
 
 ```
 
-```{r sthd-redd-georch-fig, fig.cap = "Average steelhead redds (capacity/km) by geomorphic reach for the Upper Walla Walla"}
-sthd_redd_georch
+```{r sthd-win-georch-fig, fig.cap = "Average steelhead winter presmolt (fish/km) capacity, by geomorphic reach, for the Upper Walla Walla watershed."}
+sthd_win_georch
 
 ```
 
@@ -1395,18 +1394,17 @@ kable(booktabs = T,
         digits = c(0,0,1,1,1,1),
         align = "lcccccc",
         format.args = list(big.mark = ","),
-        caption = "Estimated available habitat for **adult (redds)** steelhead in the Upper Walla Walla watershed by geomorphically delineated reaches.") %>%
+        caption = "Estimated available habitat for **steelhead spawning (redds)** in the Upper Walla Walla watershed by geomorphic reach.") %>%
   kable_styling(full_width = F,
                 position = "center",
                 bootstrap_options = c("striped", "condensed"))
 
 ```
 
-```{r sthd-win-georch-fig, fig.cap = "Average Chinook winter presmolt (capacity/km) by geomorphic reach for the Upper Walla Walla"}
-sthd_win_georch
+```{r sthd-redd-georch-fig, fig.cap = "Average steelhead spawning (redds/km) capacity, by geomorphic reach, for the Upper Walla Walla watershed."}
+sthd_redd_georch
 
 ```
-
 
 <!-- ### Capacity by Stream -->
 
