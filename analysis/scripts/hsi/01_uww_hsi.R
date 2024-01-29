@@ -485,3 +485,18 @@ for(scn in scenarios) {
 }   # end scenarios loop
 
 # END SCRIPT
+
+#####################################################
+#
+#
+# Updated flow scenario for steelhead spawning
+#
+# Spring flow
+#
+# Curves will need to be sthd_spw_d, sthd_spw_v
+# Data are "Combined_2019lidar_Spring_..." & #Combined_2021lidar_Spring..."
+#
+#
+#####################################################
+
+
