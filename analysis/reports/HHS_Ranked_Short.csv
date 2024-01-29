@@ -1,0 +1,16 @@
+"","Scenario","Watershed","Reach","Year","Area m2","WUA","HHS","Depth Suitability","Velocity Suitability","HHS_Mean"
+"1","Chinook Juvenile","Mainstem","GR_01_MS",2021,202666,102092,0.5,0.38,0.89,0.463333333333333
+"2","Chinook Juvenile","Mainstem","GR_02_MS",2021,149558,75593,0.51,0.36,0.94,0.383333333333333
+"3","Chinook Juvenile","Mainstem","GR_03_MS",2021,61472,22792,0.37,0.25,0.82,0.456666666666667
+"4","Chinook Juvenile","Mainstem","GR_04_MS",2021,70396,15928,0.23,0.35,0.37,0.546666666666667
+"5","Chinook Juvenile","Mainstem","GR_05_MS",2021,93833,14878,0.16,0.35,0.31,0.483333333333333
+"6","Chinook Juvenile","North Fork","GR_01_NF",2021,43771,11001,0.25,0.14,0.75,0.403333333333333
+"7","Chinook Juvenile","North Fork","GR_02_NF",2021,27893,7048,0.25,0.12,0.92,0.286666666666667
+"8","Chinook Juvenile","North Fork","GR_03_NF",2021,34623,8664,0.25,0.11,0.94,0.273333333333333
+"9","Chinook Juvenile","North Fork","GR_04_NF",2021,24411,5508,0.23,0.09,0.94,0.25
+"10","Chinook Juvenile","North Fork","GR_05_NF",2021,159,51,0.32,0.15,0.94,0.33
+"11","Chinook Juvenile","South Fork","GR_01_SF",2021,182242,15696,0.09,0.35,0.19,0.5
+"12","Chinook Juvenile","South Fork","GR_02_SF",2021,100783,10683,0.11,0.32,0.21,0.496666666666667
+"13","Chinook Juvenile","South Fork","GR_03_SF",2021,48544,7207,0.15,0.29,0.3,0.47
+"14","Chinook Juvenile","South Fork","GR_04_SF",2021,46654,6918,0.15,0.26,0.3,0.466666666666667
+"15","Chinook Juvenile","South Fork","GR_05_SF",2021,35644,5094,0.14,0.28,0.23,0.493333333333333

@@ -1,43 +1,92 @@
-# Functions for calculating HSI for Chinook salmon ("chnk") juvenile ("juv") and spawning ("spw") life stages
-# and steelhead ("sthd") juvenile ("juv") life stage
-# from Maret et al. 2006
+# Functions for calculating HSI for Chinook salmon ("chnk") and steelhead ("sthd")
+# and for the juvenile ("juv") and spawning ("spw") life stages
+# from Maret et al. 2006.
 
-## Chinook salmon, juvenile, depth
+# The juvenile winter models are taken from the Tucannon 2020 LiDAR Analysis done by Anchor QEA.
+# These are just modified summer models.
+# Primarily, slower velocity water = 1 suitability and shallower depths have a slight bump as well.
+# These curves were used at the request of the clients.
+
+## Chinook salmon, juvenile, summer, depth
 chnk_juv_d <- function(x) {
-  y = if_else(x <= 0.061, 0,
-              if_else(x > 0.061 & x <= 0.1219, 0.8202 * x -0.03,
-                      if_else(x > 0.1219 & x <= 0.1829, 1.4764 * x -0.11,
-                              if_else(x > 0.1829 & x <= 0.2438, 1.6404 * x -0.14,
-                                      if_else(x > 0.2438 & x <= 0.3048, 1.8045 * x -0.18,
-                                              if_else(x > 0.3048 & x <= 0.3658, 1.8045 * x -0.18,
-                                                      if_else(x > 0.3658 & x <= 0.4267, 1.8045 * x -0.18,
-                                                              if_else(x > 0.4267 & x <= 0.4877, 1.4764 * x -0.04,
-                                                                      if_else(x > 0.4877 & x <= 0.5486, 1.3123 * x + 0.04,
-                                                                              if_else(x > 0.5486 & x <= 0.6096, 3.937 * x - 1.4,
-                                                                                      if_else(x > 0.6096, 1,
-                                                                                              as.numeric(NA))))))))))))
-  return(y)
-} # end chnk_juv_d
+  y <- ifelse(x <= 0.061, 0 + (x - 0) / (0.061 - 0) * (0.02 - 0),
+              ifelse(x <= 0.1219, 0.02 + (x - 0.061) / (0.1219 - 0.061) * (0.07 - 0.02),
+                     ifelse(x <= 0.1829, 0.07 + (x - 0.1219) / (0.1829 - 0.1219) * (0.16 - 0.07),
+                            ifelse(x <= 0.2438, 0.16 + (x - 0.1829) / (0.2438 - 0.1829) * (0.26 - 0.16),
+                                   ifelse(x <= 0.3048, 0.26 + (x - 0.2438) / (0.3048 - 0.2438) * (0.37 - 0.26),
+                                          ifelse(x <= 0.3658, 0.37 + (x - 0.3048) / (0.3658 - 0.3048) * (0.48 - 0.37),
+                                                 ifelse(x <= 0.4267, 0.48 + (x - 0.3658) / (0.4267 - 0.3658) * (0.59 - 0.48),
+                                                        ifelse(x <= 0.4877, 0.59 + (x - 0.4267) / (0.4877 - 0.4267) * (0.68 - 0.59),
+                                                               ifelse(x <= 0.5486, 0.68 + (x - 0.4877) / (0.5486 - 0.4877) * (0.76 - 0.68),
+                                                                      ifelse(x <= 0.6096, 0.76 + (x - 0.5486) / (0.6096 - 0.5486) * (1 - 0.76),
+                                                                             ifelse(x <= 3.048, 1 + (x - 0.6096) / (3.048 - 0.6096) * (1 - 1),
+                                                                                    NA
+                                                                             )
+                                                                      )
+                                                               )
+                                                        )
+                                                 )
+                                          )
+                                   )
+                            )
+                     )
+              ))
+              return(y)
+}
 
-# Chinook salmon, juvenile, velocity
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Chinook salmon, juvenile, summer, velocity
 chnk_juv_v <- function(x) {
-  y = if_else(x >= 0 & x <= 0.0305, 2.2966 * x + 0.88,
-              if_else(x > 0.0305 & x <= 0.0610, 1.3123 * x + 0.91,
-                      if_else(x > 0.0610 & x <= 0.0914, 0.3281 * x + 0.97,
-                              if_else(x > 0.0914 & x <= 0.1219, -0.3281 * x + 1.03,
-                                      if_else(x > 0.1219 & x <= 0.1524, -1.3123 * x + 1.15,
-                                              if_else(x > 0.1524 & x <= 0.3962, -2.9364 * x + 1.4205,
-                                                      if_else(x > 0.3962 & x <= 0.4572, -1.8045 * x + 0.9733,
-                                                              if_else(x > 0.4572 & x <= 0.5182, -1.3123 * x + 0.75,
-                                                                      if_else(x > 0.5182 & x <= 0.5791, -0.6562 * x + 0.41,
-                                                                              if_else(x > 0.5791 & x <= 0.6401, -0.3281 * x + 0.22,
-                                                                                      if_else(x > 0.6401 & x <= 0.6706, 0.01,
-                                                                                              if_else(x > 0.6706 & x <= 0.7010, -0.3281 * x + 0.23,
-                                                                                                      if_else(x > 0.7010, 0,
-                                                                                                              as.numeric(NA))))))))))))))
-  return(y)
-} # end chnk_juv_v
+  y <- ifelse(x <= 0.0305, 0.88 + (x - 0) / (0.0305 - 0) * (0.95 - 0.88),
+              ifelse(x <= 0.061, 0.95 + (x - 0.0305) / (0.061 - 0.0305) * (0.99 - 0.95),
+                     ifelse(x <= 0.0914, 0.99 + (x - 0.061) / (0.0914 - 0.061) * (1 - 0.99),
+                            ifelse(x <= 0.1219, 1 + (x - 0.0914) / (0.1219 - 0.0914) * (0.99 - 1),
+                                   ifelse(x <= 0.1524, 0.99 + (x - 0.1219) / (0.1524 - 0.1219) * (0.95 - 0.99),
+                                          ifelse(x <= 0.1829, 0.95 + (x - 0.1524) / (0.1829 - 0.1524) * (0.89 - 0.95),
+                                                 ifelse(x <= 0.2134, 0.89 + (x - 0.1829) / (0.2134 - 0.1829) * (0.81 - 0.89),
+                                                        ifelse(x <= 0.2438, 0.81 + (x - 0.2134) / (0.2438 - 0.2134) * (0.72 - 0.81),
+                                                               ifelse(x <= 0.3048, 0.72 + (x - 0.2438) / (0.3048 - 0.2438) * (0.52 - 0.72),
+                                                                      ifelse(x <= 0.3353, 0.52 + (x - 0.3048) / (0.3353 - 0.3048) * (0.43 - 0.52),
+                                                                             ifelse(x <= 0.3658, 0.43 + (x - 0.3353) / (0.3658 - 0.3353) * (0.34 - 0.43),
+                                                                                    ifelse(x <= 0.3962, 0.34 + (x - 0.3658) / (0.3962 - 0.3658) * (0.26 - 0.34),
+                                                                                           ifelse(x <= 0.4267, 0.26 + (x - 0.3962) / (0.4267 - 0.3962) * (0.2 - 0.26),
+                                                                                                  ifelse(x <= 0.4572, 0.2 + (x - 0.4267) / (0.4572 - 0.4267) * (0.15 - 0.2),
+                                                                                                         ifelse(x <= 0.4877, 0.15 + (x - 0.4572) / (0.4877 - 0.4572) * (0.11 - 0.15),
+                                                                                                                ifelse(x <= 0.5182, 0.11 + (x - 0.4877) / (0.5182 - 0.4877) * (0.07 - 0.11),
+                                                                                                                       ifelse(x <= 0.5486, 0.07 + (x - 0.5182) / (0.5486 - 0.5182) * (0.05 - 0.07),
+                                                                                                                              ifelse(x <= 0.5791, 0.05 + (x - 0.5486) / (0.5791 - 0.5486) * (0.03 - 0.05),
+                                                                                                                                     ifelse(x <= 0.6096, 0.03 + (x - 0.5791) / (0.6096 - 0.5791) * (0.02 - 0.03),
+                                                                                                                                            ifelse(x <= 0.6401, 0.02 + (x - 0.6096) / (0.6401 - 0.6096) * (0.01 - 0.02),
+                                                                                                                                                   ifelse(x <= 0.6706, 0.01 + (x - 0.6401) / (0.6706 - 0.6401) * (0.01 - 0.01),
+                                                                                                                                                          ifelse(x <= 0.701, 0.01 + (x - 0.6706) / (0.701 - 0.6706) * (0 - 0.01),
+                                                                                                                                                                 ifelse(x <= 2.4384, 0 + (x - 0.701) / (2.4384 - 0.701) * (0 - 0),
+                                                                                                                                                                        NA
+                                                                                                                                                                 )
+                                                                                                                                                          )
+                                                                                                                                                   )
+                                                                                                                                            )
+                                                                                                                                     )
+                                                                                                                              )
+                                                                                                                       )
+                                                                                                                )
+                                                                                                         )
+                                                                                                  )
+                                                                                           )
+                                                                                    )
+                                                                             )
+                                                                      )
+                                                               )
+                                                        )
+                                                 )
+                                          )
+                                   )
+                            )
+                     )
+              ))
+              return(y)
+}
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Chinook salmon, spawning, depth
 chnk_spw_d <- function(x) {
   y = if_else(x < 0.06096, 0,
@@ -49,6 +98,7 @@ chnk_spw_d <- function(x) {
   return(y)
 } # end chnk_spw_d
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Chinook salmon, spawning, velocity
 chnk_spw_v <- function(x) {
   y = if_else(x <= 0.15240, 0,
@@ -60,7 +110,8 @@ chnk_spw_v <- function(x) {
   return(y)
 } # end chnk_spw_v
 
-# Steelhead, juvenile, depth
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Steelhead, juvenile, summer, depth
 sthd_juv_d <- function(x) {
   y = if_else(x >= 0 & x <= 0.0914, 2.1872 * x,
               if_else(x > 0.0914 & x <= 0.1829, 4.9213 * x - 0.25,
@@ -71,7 +122,8 @@ sthd_juv_d <- function(x) {
   return(y)
 } # end sthd_juv_d
 
-# Steelhead, juvenile, velocity
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Steelhead, juvenile, summer, velocity
 sthd_juv_v <- function(x) {
   y = if_else(x >= 0 & x <= 0.061, 2.4606 * x,
               if_else(x > 0.061 & x <= 0.0914, 24.606 * x - 1.35,
@@ -79,9 +131,115 @@ sthd_juv_v <- function(x) {
                               if_else(x > 0.1524 & x <= 0.2134, 0.4921 * x + 0.895,
                                       if_else(x > 0.2134 & x <= 0.3658, 1,
                                               if_else(x > 0.3658 & x <= 0.6096, -4.101 * x + 2.5,
-                                                      if_else(x > 0.6096, 1,
+                                                      if_else(x > 0.6096, 0, # Updated this to be correct instead of ifelse = 1
                                                               as.numeric(NA))))))))
   return(y)
 } # end sthd_juv_v
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Steelhead, spawning, depth
+sthd_spw_d <- function(x) {
+  y = if_else(x <= 0.061, 0,
+              if_else(x > 0.061 & x <= 0.0914, 6.5617 * x - 0.4,
+                      if_else(x > 0.0914 & x <= 0.1768, 2.3435 * x + -0.0143,
+                              if_else(x > 0.1768 & x <= 0.2438, 5.9652 * x - 0.6545,
+                                      if_else(x > 0.2438 & x <= 0.2896, 4.3745 * x - 0.2667,
+                                              if_else(x > 0.2896, 1,
+                                                      as.numeric(NA)))))))
+  return(y)
+} # end sthd_spw_d
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Steelhead, spawning, velocity
+sthd_spw_v <- function(x) {
+  y = if_else(x <= 0.15240, 0,
+              if_else(x > 0.15240 & x <= 0.3048, 6.5617 * x - 1,
+                      if_else(x > 0.3048 & x <= 0.9144, 1,
+                              if_else(x > 0.9144 & x <= 1.2192, -3.2808 * x + 4,
+                                      if_else(x > 1.2192, 0,
+                                              as.numeric(NA))))))
+  return(y)
+} # end sthd_spw_v
+
+
+#####################################################################################
+#
+# The juvenile winter models are taken from the Tucannon 2020 LiDAR Analysis done by Anchor QEA.
+# These are just modified summer models.
+# Primarily, slower velocity water = 1 suitability and shallower depths have a slight bump as well.
+# These curves were used at the request of the clients.
+#
+###################################################################################
+
+## Chinook salmon, winter, juvenile, depth
+chnk_win_d <- function(x) {
+  y <- ifelse(x <= 0.06096, 0 + (x - 0) / (0.06096 - 0) * (0.3 - 0),
+              ifelse(x <= 0.32004, 0.3 + (x - 0.06096) / (0.32004 - 0.06096) * (0.3 - 0.3),
+                     ifelse(x <= 0.50292, 0.3 + (x - 0.32004) / (0.50292 - 0.32004) * (0.85 - 0.3),
+                            ifelse(x <= 0.62484, 0.85 + (x - 0.50292) / (0.62484 - 0.50292) * (0.95 - 0.85),
+                                   ifelse(x <= 0.74676, 0.95 + (x - 0.62484) / (0.74676 - 0.62484) * (1 - 0.95),
+                                          ifelse(x <= 3.048, 1 + (x - 0.74676) / (3.048 - 0.74676) * (1 - 1),
+                                                 NA
+                                          )
+                                   )
+                            )
+                     )
+              ))
+              return(y)
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Chinook salmon, winter, juvenile, velocity
+chnk_win_v <- function(x) {
+  y <- ifelse(x <= 0.32004, 1 + (x - 0) / (0.32004 - 0) * (1 - 1),
+              ifelse(x <= 0.56388, 1 + (x - 0.32004) / (0.56388 - 0.32004) * (0.45 - 1),
+                     ifelse(x <= 1.11252, 0.45 + (x - 0.56388) / (1.11252 - 0.56388) * (0 - 0.45),
+                            ifelse(x <= 3.048, 0 + (x - 1.11252) / (3.048 - 1.11252) * (0 - 0),
+                                   NA
+                            )
+                     )
+              ))
+              return(y)
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Steelhead, winter, juvenile, depth
+sthd_win_d <- function(x) {
+  y <- ifelse(x <= 0.06096, 0 + (x - 0) / (0.06096 - 0) * (0.1 - 0),
+              ifelse(x <= 0.19812, 0.1 + (x - 0.06096) / (0.19812 - 0.06096) * (0.1 - 0.1),
+                     ifelse(x <= 0.41148, 0.1 + (x - 0.19812) / (0.41148 - 0.19812) * (0.63 - 0.1),
+                            ifelse(x <= 0.80772, 0.63 + (x - 0.41148) / (0.80772 - 0.41148) * (1 - 0.63),
+                                   ifelse(x <= 3.048, 1 + (x - 0.80772) / (3.048 - 0.80772) * (1 - 1),
+                                          NA
+                                   )
+                            )
+                     )
+              ))
+              return(y)
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Steelhead, winter, juvenile, velocity
+sthd_win_v <- function(x) {
+  y <- ifelse(x <= 0.2286, 1,
+              ifelse(x > 0.2286 & x <= 0.28956, 1,
+                     ifelse(x > 0.28956 & x <= 0.35052, 0.87 + (x - 0.35052) / (0.28956 - 0.35052) * (1 - 0.87),
+                            ifelse(x > 0.35052 & x <= 0.47244, 0.78 + (x - 0.47244) / (0.35052 - 0.47244) * (0.87 - 0.78),
+                                   ifelse(x > 0.47244 & x <= 0.56388, 0.54 + (x - 0.56388) / (0.47244 - 0.56388) * (0.78 - 0.54),
+                                          ifelse(x > 0.56388 & x <= 0.96012, 0.3 + (x - 0.96012) / (0.56388 - 0.96012) * (0.54 - 0.3),
+                                                 ifelse(x > 0.96012 & x <= 1.17348, 0.07 + (x - 1.17348) / (0.96012 - 1.17348) * (0.3 - 0.07),
+                                                        ifelse(x > 1.17348 & x <= 1.524, 0 + (x - 1.524) / (1.17348 - 1.524) * (0.07 - 0),
+                                                               ifelse(x > 1.524 & x <= 3.048, 0 + (x - 3.048) / (1.524 - 3.048) * (0 - 0),
+                                                                      NA
+                                                               )
+                                                        )
+                                                 )
+                                          )
+                                   )
+                            )
+                     )
+              ))
+              return(y)
+}
 
 ## END hsi_curves.R
