@@ -43,7 +43,6 @@ always_allow_html: yes
    });
 </script>
 ```
-
 ```{r setup, echo = FALSE, message = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -57,7 +56,7 @@ knitr::opts_chunk$set(
 
 options(knitr.kable.NA = '--')
 
-``` 
+```
 
 ```{r load-library, echo = FALSE, message = FALSE, warning = FALSE, results = 'hide'}
 
@@ -86,7 +85,7 @@ theme_set(theme_pubr(x.text.angle = 45,
 
 # Background
 
-Water is the cornerstone of First Foods production and inherently tied to the five fundamental touchstones: hydrology, geomorphology, habitat and network connectivity, riverine biotic community, and riparian vegetation [@Jones2008]. These touchstones form the Umatilla River Vision, a holistic approach to water quality restoration. In support of the Vision, population status and habitat use of riverine fishes defined as First Foods (including Endangered Species Act [ESA] listed middle Columbia River summer-run steelhead, spring-run Chinook salmon, bull trout, and Pacific lamprey have been identified as critical data needs in the assessment of biotic communities [@Jones2008]. 
+Water is the cornerstone of First Foods production and inherently tied to the five fundamental touchstones: hydrology, geomorphology, habitat and network connectivity, riverine biotic community, and riparian vegetation [@Jones2008]. These touchstones form the Umatilla River Vision, a holistic approach to water quality restoration. In support of the Vision, population status and habitat use of riverine fishes defined as First Foods (including Endangered Species Act [ESA] listed middle Columbia River summer-run steelhead, spring-run Chinook salmon, bull trout, and Pacific lamprey have been identified as critical data needs in the assessment of biotic communities [@Jones2008].
 
 In this document, we assess the hydraulic habitat suitability (HHS) in the upper Walla Walla watershed to support select life stages of spring-run Chinook salmon and summer-run steelhead. By comparing depth and velocity suitability curves for Chinook salmon and steelhead, developed by [@Maret2006], to continuous modeled depths and depth averaged velocities (supported by bathymetric Light Detection and Ranging; LiDAR) available for the upper Walla Walla watershed, we can further the understanding of how habitat, related specifically to hydraulics and the governing morphology, may be limiting recovery of Chinook salmon and steelhead. This information can help identify reaches at multiple scales where existing depth and velocity may be limiting particular species and life stages, which could prove useful for prioritizing habitat rehabilitation. The incorporation of a HHS analysis with habitat capacity (QRF), summer stream temperature, and morphological analyses allows for a robust assessment of the existing habitat conditions and limiting factors for target species and life stages.
 
@@ -110,30 +109,29 @@ While our HHS models specifically address Chinook salmon and steelhead, any upli
 
 The spatial domain of this assessment was limited to the sections of the mainstem upper Walla Walla River, and the North and South forks where LiDAR data and hydraulic model results were available. The downstream extent was defined by the mainstem's confluence with Dry Creek near Lowden, Washington, and upstream extents continued into the North and South forks, approximately 18.5 km (11.5 miles), and 33 km (20.5 miles), respectively. The assessment also includes approximately 38.5 km (24 miles) of the mainstem Walla Walla River (Table \@ref(tab:rkm-geo-rch)).
 
-
 # Methods
 
-We provide methods for calculating the depth, velocity, and composite suitability, including for each pixel in a raster, for a single "model scenario". A given scenario includes a species by life stage combination and a year (2019 or 2021). Suitability results were then summarized both by river kilometer (rkm) and geomorphic reach. For reference, Table \@ref(tab:rkm-geo-rch) shows the minimum and maximum river kilometer for each geomorphic reach and watershed. Here, we provide detailed methods for Scenario 1 in Table \@ref(tab:scenarios-tab): Chinook salmon juvenile rearing in 2019. The same methods were then applied across all scenarios using the appropriate depth and velocity curves (depending on species and adult versus juvenile) or differing input depth and depth averaged velocity rasters (depending on year). Scenarios evaluated are shown in Table \@ref(tab:scenarios-tab). Data, code, outputs, and reports for this analysis can be found in a GitHub repository at https://github.com/Mount-Hood-Environmental/UWW.plan.
+We provide methods for calculating the depth, velocity, and composite suitability, including for each pixel in a raster, for a single "model scenario". A given scenario includes a species by life stage combination and a year (2019 or 2021). Suitability results were then summarized both by river kilometer (rkm) and geomorphic reach. For reference, Table \@ref(tab:rkm-geo-rch) shows the minimum and maximum river kilometer for each geomorphic reach and watershed. Here, we provide detailed methods for Scenario 1 in Table \@ref(tab:scenarios-tab): Chinook salmon juvenile rearing in 2019. The same methods were then applied across all scenarios using the appropriate depth and velocity curves (depending on species and adult versus juvenile) or differing input depth and depth averaged velocity rasters (depending on year). Scenarios evaluated are shown in Table \@ref(tab:scenarios-tab). Data, code, outputs, and reports for this analysis can be found in a GitHub repository at <https://github.com/Mount-Hood-Environmental/UWW.plan>.
 
 Detailed methods are as follows:
 
-1. Raster .tifs containing modeled depth and velocity values derived from 2019 LiDAR were imported into R [@RCoreTeam2021] with a raster pixel resolution of 1m x 1m. Rasters were provided by Rio Applied Science and Engineering (Rio ASE).
+1.  Raster .tifs containing modeled depth and velocity values derived from 2019 LiDAR were imported into R [@RCoreTeam2021] with a raster pixel resolution of 1m x 1m. Rasters were provided by Rio Applied Science and Engineering (Rio ASE).
 
-2. Import polygon shapefiles delineating river kilometers and geomorphic reaches. Shapefiles were used to "assign" each pixel to a river kilometer and geomorphic reach.
+2.  Import polygon shapefiles delineating river kilometers and geomorphic reaches. Shapefiles were used to "assign" each pixel to a river kilometer and geomorphic reach.
 
-3. Read in the juvenile Chinook salmon rearing depth and velocity suitability curves from @Maret2006.  Functions to calculate the suitability for a given depth or velocity are available [here](https://github.com/Mount-Hood-Environmental/UWW.plan/analysis/scripts/hsi/hsi_curves.R). The [Suitability Curves] section below shows the suitability curves used from @Maret2006.
+3.  Read in the juvenile Chinook salmon rearing depth and velocity suitability curves from @Maret2006. Functions to calculate the suitability for a given depth or velocity are available [here](https://github.com/Mount-Hood-Environmental/UWW.plan/analysis/scripts/hsi/hsi_curves.R). The [Suitability Curves] section below shows the suitability curves used from @Maret2006.
 
-4. Use the suitability curves to calculate the depth and velocity suitability for each raster pixel. The result is two new rasters each containing the calculated depth and velocity suitability indices for each pixel, respectively.
+4.  Use the suitability curves to calculate the depth and velocity suitability for each raster pixel. The result is two new rasters each containing the calculated depth and velocity suitability indices for each pixel, respectively.
 
-5. Calculate the composite suitability value for each raster pixel as the geometric mean of the depth and velocity suitability values. The result is a third composite suitability raster.
+5.  Calculate the composite suitability value for each raster pixel as the geometric mean of the depth and velocity suitability values. The result is a third composite suitability raster.
 
-6. Extract the depth, velocity, and composite suitability values located within each rkm and geomorphic reach for each pixel into a data frame. The resulting data frame can be used to summarize and visualize the suitability results by rkm or geomorphic reach for the juvenile Chinook salmon rearing in 2019.
+6.  Extract the depth, velocity, and composite suitability values located within each rkm and geomorphic reach for each pixel into a data frame. The resulting data frame can be used to summarize and visualize the suitability results by rkm or geomorphic reach for the juvenile Chinook salmon rearing in 2019.
 
-7. Store the depth, velocity, and composite suitability values, rkms and geomorphic reaches for each pixel. These results are currently stored in the [output/hsi_raw/](https://github.com/Mount-Hood-Environmental/analysis/hsi_outputs) directory in the  [repo](https://github.com/Mount-Hood-Environmental/UWW.plan/).
+7.  Store the depth, velocity, and composite suitability values, rkms and geomorphic reaches for each pixel. These results are currently stored in the [output/hsi_raw/](https://github.com/Mount-Hood-Environmental/analysis/hsi_outputs) directory in the [repo](https://github.com/Mount-Hood-Environmental/UWW.plan/).
 
-8. Finally, calculate the total wetted area, weighted usable area, and normalized weighted usable area (i.e., HHS) for juvenile Chinook salmon by rkm and geomorphic reach. The total wetted area was calculated by counting the total number of pixels (each with an area of 1m^2), that occur within each rkm and geomorphic reach. The weighted usable area (WUA) was calculated by summing the composite suitability values of all pixels within that same area. And finally, the normalized weighted usable area i.e., HHS, was calculated by dividing the WUA by the total wetted area for each rkm and geomorphic reach.
+8.  Finally, calculate the total wetted area, weighted usable area, and normalized weighted usable area (i.e., HHS) for juvenile Chinook salmon by rkm and geomorphic reach. The total wetted area was calculated by counting the total number of pixels (each with an area of 1m\^2), that occur within each rkm and geomorphic reach. The weighted usable area (WUA) was calculated by summing the composite suitability values of all pixels within that same area. And finally, the normalized weighted usable area i.e., HHS, was calculated by dividing the WUA by the total wetted area for each rkm and geomorphic reach.
 
-The process can then be repeated for each model "run" (Table \@ref(tab:scenarios-tab)). The resulting raster .tifs are also available in the GitHub repository at https://github.com/Mount-Hood-Environmental/UWW.plan. 
+The process can then be repeated for each model "run" (Table \@ref(tab:scenarios-tab)). The resulting raster .tifs are also available in the GitHub repository at <https://github.com/Mount-Hood-Environmental/UWW.plan>.
 
 Finally, suitability values were summarized and visualized by year, species, and life stage (Chinook salmon adult spawning, Chinook salmon and steelhead juvenile rearing), and rkm / geomorphic reach. Box plots were used to show the distribution of depth, velocity, and composite suitability values and are provided in the [Results]. Maps showing the depth and velocity suitability and HHS by rkm are provided by species and life stage, as well as plots showing the HHS, by year, for each species and life stage. Additional summaries of results are provided in the [Supplemental Tables and Figures] section.
 
@@ -244,7 +242,6 @@ sthd_hsi
 
 ```
 
-
 # Results
 
 ```{r raw-results}
@@ -287,7 +284,7 @@ hhs_geo = list.files(here("analysis/hsi_outputs/csvs/"), pattern = "*.csv", full
 
 ```
 
-Here, we summarize depth, depth averaged velocity, and composite suitability results for the mainstem, North Fork, and South Fork rivers within the primary study area. Results are parsed by each species and life stage considered including Chinook salmon spawning, Chinook salmon juvenile rearing, and steelhead juvenile rearing. First, we summarize the distribution of suitability values by geomorphic reach. Results are also provided spatially as maps; those results are summarized and displayed by rkm, but we provide geomorphic reach delineations to place results in context. We focus primarily on results from 2021 to describe "current" hydraulic suitability; however, HHS results for 2019 are also provided by rkm to understand hydraulic conditions prior to extensive flooding in 2020 and to draw comparison to current conditions. Additional results, including higher-resolution summaries and results for 2019, are additionally provided in the [Supplemental Tables and Figures] section. 
+Here, we summarize depth, depth averaged velocity, and composite suitability results for the mainstem, North Fork, and South Fork rivers within the primary study area. Results are parsed by each species and life stage considered including Chinook salmon spawning, Chinook salmon juvenile rearing, and steelhead juvenile rearing. First, we summarize the distribution of suitability values by geomorphic reach. Results are also provided spatially as maps; those results are summarized and displayed by rkm, but we provide geomorphic reach delineations to place results in context. We focus primarily on results from 2021 to describe "current" hydraulic suitability; however, HHS results for 2019 are also provided by rkm to understand hydraulic conditions prior to extensive flooding in 2020 and to draw comparison to current conditions. Additional results, including higher-resolution summaries and results for 2019, are additionally provided in the [Supplemental Tables and Figures] section.
 
 ## Chinook Salmon Spawning
 
@@ -403,7 +400,7 @@ chnk_spw_hhs_p
 
 ## Chinook Salmon Juvenile Rearing
 
-Among species and life stages, composite hydraulic suitability is lowest for Chinook salmon juvenile rearing (Figure \@ref(fig:uww-chnk-juv-plot)). *Composite suitability is relatively low across all geomorphic reaches and watersheds and lowest in the South Fork Walla Walla watershed; three geomorphic reaches in the mainstem Walla Walla (01 - 02) appear moderate, but still below 0.50 (Figure \@ref(fig:uww-chnk-juv-plot)). Depth appears to be a limiting factor for Chinook salmon juvenile rearing in all three watersheds, with velocities being mostly suitable in the mainstem and North Fork, but unsuitable in the South Fork.* In general, HHS for Chinook salmon juvenile rearing is poor in all watersheds, with only lower portions of the mainstem (approximately below rkm 25) being moderately suitable (Figures \@ref(fig:chnk-juv-map) and \@ref(fig:chnk-juv-hhs)). Similar to spawning, average HHS by rkm for Chinook salmon rearing changed little from 2019 to 2021 (Figure \@ref(fig:chnk-juv-hhs))
+Among species and life stages, composite hydraulic suitability is lowest for Chinook salmon juvenile rearing (Figure \@ref(fig:uww-chnk-juv-plot)). *Composite suitability is relatively low across all geomorphic reaches and watersheds and lowest in the South Fork Walla Walla watershed; three geomorphic reaches in the mainstem Walla Walla (01 - 02) appear moderate, but still below 0.50 (Figure* \@ref(fig:uww-chnk-juv-plot)*). Depth appears to be a limiting factor for Chinook salmon juvenile rearing in all three watersheds, with velocities being mostly suitable in the mainstem and North Fork, but unsuitable in the South Fork.* In general, HHS for Chinook salmon juvenile rearing is poor in all watersheds, with only lower portions of the mainstem (approximately below rkm 25) being moderately suitable (Figures \@ref(fig:chnk-juv-map) and \@ref(fig:chnk-juv-hhs)). Similar to spawning, average HHS by rkm for Chinook salmon rearing changed little from 2019 to 2021 (Figure \@ref(fig:chnk-juv-hhs))
 
 ```{r uww-chnk-juv-plot, fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across geomorphic reaches in the Upper Walla Walla watershed in 2021."}
 # Chinook juvenile rearing, 2021
@@ -512,7 +509,7 @@ chnk_juv_hhs_p
 
 ## Steelhead Juvenile Rearing
 
-Composite suitability for steelhead juvenile rearing is moderate to high in both the mainstem and South Fork watersheds (Figure \@ref(fig:uww-sthd-juv-plot)). *Hydraulic habitat conditions are less suitable (moderate) in the North Fork, largely due to lower suitability of available depths (Figures \@ref(fig:uww-sthd-juv-plot) and \@ref(fig:sthd-juv-map)). The distribution of velocity suitabilities across all three watershed are consistently higher.* Figure \@ref(fig:sthd-juv-hhs) also shows that HHS among all three watersheds is moderate to high for steelhead juvenile rearing. Again, there is little difference in the average suitability by river kilometer from 2019 to 2021 for steelhead juvenile rearing (Figure \@ref(fig:sthd-juv-hhs)).
+Composite suitability for steelhead juvenile rearing is moderate to high in both the mainstem and South Fork watersheds (Figure \@ref(fig:uww-sthd-juv-plot)). *Hydraulic habitat conditions are less suitable (moderate) in the North Fork, largely due to lower suitability of available depths (Figures* \@ref(fig:uww-sthd-juv-plot) *and* \@ref(fig:sthd-juv-map)*). The distribution of velocity suitabilities across all three watershed are consistently higher.* Figure \@ref(fig:sthd-juv-hhs) also shows that HHS among all three watersheds is moderate to high for steelhead juvenile rearing. Again, there is little difference in the average suitability by river kilometer from 2019 to 2021 for steelhead juvenile rearing (Figure \@ref(fig:sthd-juv-hhs)).
 
 ```{r uww-sthd-juv-plot, fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across geomorphic reaches in the Upper Walla Walla watershed in 2021."}
 # steelhead juvenile rearing, 2021
@@ -621,7 +618,7 @@ sthd_juv_hhs_p
 
 # Discussion
 
-Composite hydraulic suitability in the upper Walla Walla River watershed at base flow appears to be most suitable for steelhead juvenile rearing and least suitable for Chinook salmon juvenile rearing.  Suitable habitat for steelhead juveniles includes a tolerance for slightly shallower depths and higher velocities when compared to Chinook salmon juveniles. A lack of habitat with depths greater than 0.25 meters at low flows appears to limit Chinook salmong rearing throughout the upper Walla Walla watershed, with velocities contributing to unsuitable conditions in the South Fork. Chinook salmon spawning composite suitability is more variable, with suitable spawning conditions in the South Fork, unsuitable conditions in the North Fork and a wide distribution across reaches in the mainstem. Depth is limiting for all three species and life stages in the North Fork, but interestingly, North Fork velocities appear to be suitable for Chinook salmon rearing. This is counter-intuitive as shallower habitat is sometimes associated with higher velocities found in riffles and rapids.
+Composite hydraulic suitability in the upper Walla Walla River watershed at base flow appears to be most suitable for steelhead juvenile rearing and least suitable for Chinook salmon juvenile rearing. Suitable habitat for steelhead juveniles includes a tolerance for slightly shallower depths and higher velocities when compared to Chinook salmon juveniles. A lack of habitat with depths greater than 0.25 meters at low flows appears to limit Chinook salmong rearing throughout the upper Walla Walla watershed, with velocities contributing to unsuitable conditions in the South Fork. Chinook salmon spawning composite suitability is more variable, with suitable spawning conditions in the South Fork, unsuitable conditions in the North Fork and a wide distribution across reaches in the mainstem. Depth is limiting for all three species and life stages in the North Fork, but interestingly, North Fork velocities appear to be suitable for Chinook salmon rearing. This is counter-intuitive as shallower habitat is sometimes associated with higher velocities found in riffles and rapids.
 
 ## Other Focal Species
 
@@ -629,9 +626,9 @@ Based on habitat preference information from eastern Oregon [@Al-Chokhachy2007],
 
 ## Model Limitations
 
-While this HHS analysis provide insight on hydraulic conditions in the Upper Walla Walla watershed to support Chinook salmon spawning and rearing, and steelhead rearing, during base flow conditions, it should be viewed in the context of fish habitat preferences holistically. It is generally accepted that high quality salmonid habitat is comprised of a multitude of habitat characteristics in addition to appropriate depths and velocity. For example, high quality spawning and rearing habitat typically contains sufficient cover, appropriate water temperatures, available food, etc. Because of this, we encourage the integration of the information summarized here with other biological and geomorphic assessments provided for the upper Walla Walla watershed to inform rehabilitation efforts and target conditions to address limiting factors. 
+While this HHS analysis provide insight on hydraulic conditions in the Upper Walla Walla watershed to support Chinook salmon spawning and rearing, and steelhead rearing, during base flow conditions, it should be viewed in the context of fish habitat preferences holistically. It is generally accepted that high quality salmonid habitat is comprised of a multitude of habitat characteristics in addition to appropriate depths and velocity. For example, high quality spawning and rearing habitat typically contains sufficient cover, appropriate water temperatures, available food, etc. Because of this, we encourage the integration of the information summarized here with other biological and geomorphic assessments provided for the upper Walla Walla watershed to inform rehabilitation efforts and target conditions to address limiting factors.
 
-Moreover, HHS are univariate by nature. That is, the suitability of depths and depth averaged velocities are considered independently of each other, and do not consider relationships with other variable e.g., temperature. For example, as stream temperatures exceed optimal or maximum temperature thresholds, higher water velocities may become less suitable for a given species or life stage. Similar, cover (e.g., large woody debris, boulders) may provide small-scale refuge from high stream velocities and increase the suitability of a pixel or channel unit not captured by HHS analysis.    
+Moreover, HHS are univariate by nature. That is, the suitability of depths and depth averaged velocities are considered independently of each other, and do not consider relationships with other variable e.g., temperature. For example, as stream temperatures exceed optimal or maximum temperature thresholds, higher water velocities may become less suitable for a given species or life stage. Similar, cover (e.g., large woody debris, boulders) may provide small-scale refuge from high stream velocities and increase the suitability of a pixel or channel unit not captured by HHS analysis.
 
 <!-- Statement about scale of inference i.e., summarizing HHS by rkm and geomorphic reaches doesn't capture some of the nuances within them -->
 
@@ -641,7 +638,6 @@ Moreover, HHS are univariate by nature. That is, the suitability of depths and d
 
 ::: {#refs}
 :::
-
 
 # Supplemental Tables and Figures
 

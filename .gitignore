@@ -38,3 +38,4 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 .Rproj.user
+analysis/data/raw_data/winter_spring_dv_tiffs/Combined_2021lidar_Winter_depth.tif
