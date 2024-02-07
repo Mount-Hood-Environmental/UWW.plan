@@ -1,5 +1,5 @@
-######################################
-#
+
+
 # Purpose: Script for calculating WUA and HHS using depth and velocity
 #   rasters for the Upper Walla Walla watershed. Loops over all possible
 #   scenarios/runs
@@ -10,7 +10,7 @@
 # Created on: February 20, 2023
 #   Last modified: Jan 29, 2024
 #
-#####################################################################
+############################# Summer FLow #######################################
 
 # clear environment
 rm(list = ls())
@@ -257,35 +257,41 @@ for(scn in scenarios) {
   } # end years loop
 }   # end scenarios loop
 
-#####################################################
-#
-#
+
+
+
 # Updated flow scenario for juvenile winter rearing
 #
 # 50% Exceedence flow needs to correspond to juvenile winter rearing
 # This will have 2019 and 2021
 #
 # Curves will need to be chnk_win_d, chnk_win_v, sthd_win_d & sthd_win_v
-# Data are "Combined_2019lidar_Winter_..." & #Combined_2021lidar_Winter..."
 #
 #
-#####################################################
+################ Winter Flow #####################################
 
 # to loop over scenarios
-scenarios  = c("chnk_win", "sthd_win") # Change to "chnk_win" and "sthd_win"
-years      = c("2019", "2021") # Keep same
+scenarios  = c("chnk_win", "sthd_win")
+years      = c("2019", "2021")
+
+
+# Trouble Shooting Parameters
+# scenarios = "chn_win"
+# years = "2019"
+# scn == "chn_win"
+# ys == "2019"
 
 for(scn in scenarios) {
   for(yr in years) {
 
   #  read in appropriate depth and velocity rasters
     if(yr == "2019") {
-      d_rast = raster("S:/main/data/habitat/HSI/UWW_LowFlowHydraulicResults/winter_spring_hydraulics_tiff/Combined_2019lidar_Winter_depth.tif")
-      v_rast = raster(here("analysis/data/raw_data/hsi_d_v_tifs/Combined_2019lidar_Winter_velocity.tif"))
+      d_rast = raster(here("analysis/data/raw_data/reduced_winter_tiffs/reduced_2019_winter_depth.tif"))
+      v_rast = raster(here("analysis/data/raw_data/reduced_winter_tiffs/reduced_2019_winter_velocity.tif"))
     }
     if(yr == "2021") {
-      d_rast = raster(here("analysis/data/raw_data/hsi_d_v_tifs/Combined_2021lidar_Winter_depth.tif"))
-      v_rast = raster(here("analysis/data/raw_data/hsi_d_v_tifs/Combined_2021lidar_Winter_velocity.tif"))
+      d_rast = raster(here("analysis/data/raw_data/reduced_winter_tiffs/reduced_2021_winter_depth.tif"))
+      v_rast = raster(here("analysis/data/raw_data/reduced_winter_tiffs/reduced_2021_winter_velocity.tif"))
     }
 
 
@@ -372,7 +378,7 @@ for(scn in scenarios) {
 
     # write raw geomorphic reach results
     write_rds(geo_values,
-              paste0(here(), "/analysis/hsi_outputs/raw_results/", scn, "_", yr, "_geo.rda"))
+              paste0(here(), "/analysis/hsi_outputs/rdas/", scn, "_", yr, "_geo.rda"))
 
     # now, river kilometers
     for(rkm in rkm_names) {
@@ -428,7 +434,7 @@ for(scn in scenarios) {
 
     # write raw river kilometer results
     write_rds(rkm_values,
-              paste0(here(), "/analysis/hsi_outputs/raw_results/", scn, "_", yr, "_rkm.rda"))
+              paste0(here(), "/analysis/hsi_outputs/rdas/", scn, "_", yr, "_rkm.rda"))
 
     # get pixel area, UWW seems to be 1m x 1m
     pix_area = prod(res(comp_suit))
@@ -483,9 +489,9 @@ for(scn in scenarios) {
 
 # END SCRIPT
 
-#####################################################
-#
-#
+
+
+
 # Updated flow scenario for steelhead spawning
 #
 # Spring flow
@@ -494,7 +500,7 @@ for(scn in scenarios) {
 # Data are "Combined_2019lidar_Spring_..." & #Combined_2021lidar_Spring..."
 #
 #
-#####################################################
+###################### Spring FLow ###############################
 
 
 scenarios  = c("sthd_spw")
@@ -505,12 +511,12 @@ for(scn in scenarios) {
 
     #  read in appropriate depth and velocity rasters
     if(yr == "2019") {
-      d_rast = raster("S:/main/data/habitat/HSI/UWW_LowFlowHydraulicResults/winter_spring_hydraulics_tiff/Combined_2019lidar_Spring_depth.tif")
-      v_rast = raster(here("analysis/data/raw_data/hsi_d_v_tifs/Combined_2019lidar_Winter_velocity.tif"))
+      d_rast =  raster(here("analysis/data/raw_data/reduced_spring_tiffs/reduced_2019_spring_depth.tif"))
+      v_rast = raster(here("analysis/data/raw_data/reduced_springs_tiffs/reduced_2019_spring_velocity.tif"))
     }
     if(yr == "2021") {
-      d_rast = raster(here("analysis/data/raw_data/hsi_d_v_tifs/Combined_2021lidar_Winter_depth.tif"))
-      v_rast = raster(here("analysis/data/raw_data/hsi_d_v_tifs/Combined_2021lidar_Winter_velocity.tif"))
+      d_rast = raster(here("analysis/data/raw_data/reduced_spring_tiffs/reduced_2021_spring_depth.tif"))
+      v_rast = raster(here("analysis/data/raw_data/reduced_spring_tiffs/reduced_2021_spring_velocity.tif"))
     }
 
 
@@ -519,14 +525,6 @@ for(scn in scenarios) {
       d_curve = get("sthd_spw_d")
       v_curve = get("sthd_spw_v")
     }
-    # if(scn == "sthd_win") {
-    #   d_curve = get("sthd_win_d")
-    #   v_curve = get("sthd_win_v")
-    # }
-    # if(scn == "sthd_juv") {
-    #   d_curve = get("sthd_juv_d")
-    #   v_curve = get("sthd_juv_v")
-    # }
 
     # calculate depth and velocity suitabilities
     d_suit = calc(d_rast, d_curve)
@@ -601,7 +599,7 @@ for(scn in scenarios) {
 
     # write raw geomorphic reach results
     write_rds(geo_values,
-              paste0(here(), "/analysis/hsi_outputs/raw_results/", scn, "_", yr, "_geo.rda"))
+              paste0(here(), "/analysis/hsi_outputs/rdas/", scn, "_", yr, "_geo.rda"))
 
     # now, river kilometers
     for(rkm in rkm_names) {
@@ -657,7 +655,7 @@ for(scn in scenarios) {
 
     # write raw river kilometer results
     write_rds(rkm_values,
-              paste0(here(), "/analysis/hsi_outputs/raw_results/", scn, "_", yr, "_rkm.rda"))
+              paste0(here(), "/analysis/hsi_outputs/rdas/", scn, "_", yr, "_rkm.rda"))
 
     # get pixel area, UWW seems to be 1m x 1m
     pix_area = prod(res(comp_suit))

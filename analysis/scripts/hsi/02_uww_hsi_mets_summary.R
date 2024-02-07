@@ -1,10 +1,10 @@
-##############
+
 # Plotting raw results ##
 #
 # Created by: Tulley Mackey
 #
 # This script reads in raw results for each metric (composite, depth, velocity) and plots them
-#############
+####### Summer FLow   ######
 
 # load library
 library(tidyverse)
@@ -16,8 +16,15 @@ library(reshape2)
 library(readr)
 
 # upload hsi metric raw files for each species/life stage and year into one df
-hsi_raw = list.files("S:/main/data/habitat/HSI/UWW_hsi_results/raw_results", pattern = "*.rda", full.names = T) %>%
-  map_df(~read_rds(.))
+# upload from NAS
+
+hsi_raw = list.files("S:/main/data/habitat/HSI/UWW_hsi_results/rdas", pattern = "*.rda", full.names = T) %>%
+map_df(~read_rds(.))
+
+# upload hsi metric from local
+
+#hsi_raw = list.files(here("analysis/hsi_outputs/rdas"), pattern = "*.rda", full.names = T) %>%
+ # map_df(~read_rds(.))
 
 ##################################
 # Box plot metrics (composite, depth, velocity) by geo reach and year #
@@ -536,3 +543,122 @@ geo_reach = read_csv(here("analysis/data/raw_data/reach_partitions/Geo_reaches_c
   arrange(Watershed, min) %>%
   relocate("Watershed", "Geomorphic Reach", "min", "max") %>%
   select(Watershed, 'Geomorphic Reach', min, max)
+
+
+############ Winter Flow  ############
+# Same as above for Winter Flow Scenario
+# Chinook & Steelhead Juvenile Winter HSI Metrics
+
+#Load Librarys & HSI Metics in "hsi_outputs/rdas"
+#
+#
+############# Box plot metrics (composite, depth, velocity) by geo reach and year ################
+#
+# Chinook Winter 2019 #
+
+chnk_win_2019_geo = hsi_raw %>%
+  filter(year == "2019",
+         scenario == "chnk_win",
+         str_starts(ID, "GR")) %>%
+  mutate(ID = factor(ID, levels = c("GR_01_MS",
+                                    "GR_02_MS",
+                                    "GR_03_MS",
+                                    "GR_04_MS",
+                                    "GR_05_MS",
+                                    "GR_01_NF",
+                                    "GR_02_NF",
+                                    "GR_03_NF",
+                                    "GR_04_NF",
+                                    "GR_05_NF",
+                                    "GR_01_SF",
+                                    "GR_02_SF",
+                                    "GR_03_SF",
+                                    "GR_04_SF",
+                                    "GR_05_SF"))) %>%
+  ggplot(aes(x = ID, y = value, fill = metric)) +
+  geom_boxplot() +
+  facet_wrap(~ metric, nrow = 3) +
+  theme_bw() +
+  labs(x = "Geomorphic Reach",
+       y = "Suitability Index",
+       title = "Chinook Juvenile Winter 2019") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+chnk_win_2019_geo
+
+
+
+######## Box plot metrics (composite, depth, velocity) by rkm and year ################
+
+# define rkm levels #
+rkm_levels = c("RKM_01_MS","RKM_02_MS","RKM_03_MS","RKM_04_MS","RKM_05_MS","RKM_06_MS","RKM_07_MS","RKM_08_MS",
+               "RKM_09_MS","RKM_10_MS","RKM_11_MS","RKM_12_MS","RKM_13_MS","RKM_14_MS","RKM_15_MS","RKM_16_MS",
+               "RKM_17_MS","RKM_18_MS","RKM_19_MS","RKM_20_MS","RKM_21_MS","RKM_22_MS","RKM_23_MS","RKM_24_MS",
+               "RKM_25_MS","RKM_26_MS","RKM_27_MS","RKM_28_MS","RKM_29_MS","RKM_30_MS","RKM_31_MS","RKM_32_MS",
+               "RKM_33_MS","RKM_34_MS","RKM_35_MS","RKM_36_MS","RKM_37_MS","RKM_38_MS","RKM_39_MS",
+               "RKM_01_NF","RKM_02_NF","RKM_03_NF","RKM_04_NF","RKM_05_NF","RKM_06_NF","RKM_07_NF","RKM_08_NF",
+               "RKM_09_NF","RKM_10_NF","RKM_11_NF","RKM_12_NF","RKM_13_NF","RKM_14_NF","RKM_15_NF","RKM_16_NF",
+               "RKM_17_NF","RKM_18_NF","RKM_19_NF",
+               "RKM_01_SF","RKM_02_SF","RKM_03_SF","RKM_04_SF","RKM_05_SF","RKM_06_SF","RKM_07_SF","RKM_08_SF",
+               "RKM_09_SF","RKM_10_SF","RKM_11_SF","RKM_12_SF","RKM_13_SF","RKM_14_SF","RKM_15_SF","RKM_16_SF",
+               "RKM_17_SF","RKM_18_SF","RKM_19_SF","RKM_20_SF","RKM_21_SF","RKM_22_SF","RKM_23_SF","RKM_24_SF",
+               "RKM_25_SF","RKM_26_SF","RKM_27_SF","RKM_28_SF","RKM_29_SF","RKM_30_SF","RKM_31_SF","RKM_32_SF")
+
+# Chinook winter 2019 MS #
+chnk_win_2019_rkm_ms = hsi_raw %>%
+  filter(year == "2019",
+         scenario == "chnk_win",
+         str_starts(ID, "RKM"),
+         str_ends(ID, "MS")) %>%
+  mutate(ID = factor(ID, levels = rkm_levels)) %>%
+  ggplot(aes(x = ID, y = value, fill = metric)) +
+  geom_boxplot() +
+  facet_wrap(~ metric, nrow = 3) +
+  theme_bw() +
+  labs(x = "River Kilometer",
+       y = "Suitability Index",
+       title = "Mainstem Chinook Juvenile Winter Rearing 2019") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+chnk_win_2019_rkm_ms
+
+# Chinook winter 2019 NF #
+chnk_win_2019_rkm_nf = hsi_raw %>%
+  filter(year == "2019",
+         scenario == "chnk_win",
+         str_starts(ID, "RKM"),
+         str_ends(ID, "NF")) %>%
+  mutate(ID = factor(ID, levels = rkm_levels)) %>%
+  ggplot(aes(x = ID, y = value, fill = metric)) +
+  geom_boxplot() +
+  facet_wrap(~ metric, nrow = 3) +
+  theme_bw() +
+  labs(x = "River Kilometer",
+       y = "Suitability Index",
+       title = "NF Chinook Juvenile Winter Rearing 2019") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+chnk_win_2019_rkm_nf
+
+# Chinook winter 2019 SF #
+chnk_win_2019_rkm_sf = hsi_raw %>%
+  filter(year == "2019",
+         scenario == "chnk_win",
+         str_starts(ID, "RKM"),
+         str_ends(ID, "SF")) %>%
+  mutate(ID = factor(ID, levels = rkm_levels)) %>%
+  ggplot(aes(x = ID, y = value, fill = metric)) +
+  geom_boxplot() +
+  facet_wrap(~ metric, nrow = 3) +
+  theme_bw() +
+  labs(x = "River Kilometer",
+       y = "Suitability Index",
+       title = "SF Chinook Juvenile Winter Rearing 2019") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+chnk_win_2019_rkm_sf
+
+
+
+
+
+
+
+
+
