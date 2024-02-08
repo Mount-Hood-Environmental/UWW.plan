@@ -186,22 +186,35 @@ geo_reach
 ```
 
 ```{r scenarios-tab}
-scenarios_tab = tibble(Scenario = c(1:6),
-                       Species = c("Chinook salmon", "Chinook salmon", "Chinook salmon", "Chinook salmon", "Steelhead", "Steelhead"),
-                       `Life Stage` = c("Juvenile", "Juvenile", "Spawning", "Spawning", "Juvenile", "Juvenile"),
-                       Year = c("2019", "2021", "2019", "2021", "2019", "2021"),
+scenarios_tab = tibble(Scenario = c(1:12),
+                       Species = c("Chinook salmon", "Chinook salmon", "Chinook salmon", "Chinook salmon","Chinook Salmon","Chinook Salmon","Steelhead", "Steelhead","Steelhead",                                         "Steelhead","Steelhead","Steelhead"),
+                       `Life Stage` = c("Juvenile", "Juvenile", "Spawning", "Spawning","Juvenile","Juvenile", "Juvenile", "Juvenile","Juvenile","Juvenile","Spawning","Spawning"),
+                       Season = c("Summer","Summer","Summer","Summer","Winter","Winter","Summer","Summer","Winter","Winter","Spring","Spring"),
+                       Year = c("2019", "2021", "2019", "2021","2019","2021", "2019", "2021","2019","2021","2019","2021"),
                        `Depth Raster` = c("Combined_2019lidar_LowFlow_Depth_metric.tif",
                                           "Combined_2021lidar_LowFlow_Depth_metric.tif",
                                           "Combined_2019lidar_LowFlow_Depth_metric.tif",
                                           "Combined_2021lidar_LowFlow_Depth_metric.tif",
+                                          "Combined_2019lidar_Winter_depth.tif",
+                                          "Combined_2021lidar_Winter_depth.tif",
                                           "Combined_2019lidar_LowFlow_Depth_metric.tif",
-                                          "Combined_2021lidar_LowFlow_Depth_metric.tif"),
+                                          "Combined_2021lidar_LowFlow_Depth_metric.tif",
+                                          "Combined_2019lidar_Winter_depth.tif",
+                                          "Combined_2021lidar_Winter_depth.tif",
+                                          "Combined_2019lidar_Spring_depth.tif",
+                                          "Combined_2021lidar_Spring_depth.tif"),
                        `Velocity Raster` = c("Combined_2019lidar_LowFlow_Velocity_metric.tif",
                                              "Combined_2021lidar_LowFlow_Velocity_metric.tif",
                                              "Combined_2019lidar_LowFlow_Velocity_metric.tif",
                                              "Combined_2021lidar_LowFlow_Velocity_metric.tif",
+                                             "Combined_2019lidar_Winter_velocity.tif",
+                                             "Combined_2021lidar_Winter_velocity.tif",
                                              "Combined_2019lidar_LowFlow_Velocity_metric.tif",
-                                             "Combined_2021lidar_LowFlow_Velocity_metric.tif")) %>%
+                                             "Combined_2021lidar_LowFlow_Velocity_metric.tif",
+                                             "Combined_2019lidar_Winter_velocity.tif",
+                                             "Combined_2021lidar_Winter_velocity.tif",
+                                             "Combined_2019lidar_Spring_velocity.tif",
+                                             "Combined_2021lidar_Spring_velocity.tif")) %>%
   kable(booktabs = T,
         align = "cccccc",
         caption = "Model scenarios for which we evaluated depth, velocity, and composite suitabilites including the corresponding depth and velocity rasters used for each scenario.") %>%
@@ -217,19 +230,44 @@ scenarios_tab
 ```{r hsi-curves}
 hsi_df = read_csv(here("analysis/data/raw_data/maret_hsi_curves_for_r_uww.csv"))
 
+
 ```
 
 Depth and velocity suitability curves for Chinook salmon and steelhead were derived from @Maret2006 (Figures \@ref(fig:chnk-hsi) and \@ref(fig:sthd-hsi)). These curves were used to calculate the depth or velocity suitability for each pixel within a given scenario. As an example, using juvenile Chinook salmon and depth, if a pixel has a depth of 0 m, that pixel is assigned a suitability of 0 whereas if the depth is greater than approximately 0.6 m it is assigned a suitability of 1. A depth of 0.5 m would be assigned a suitability of $\sim$ 0.7. The composite suitability for a pixel is then calculated as the geometric mean of the depth and velocity suitability values.
 
 ```{r chnk-hsi, fig.height = 4, fig.cap = "Suitability indices at varying depths and velocities for juvenile rearing and adult spawning for Chinook salmon from Maret et al. (2006)."}
 # chinook hsi curves
-chnk_hsi = hsi_df %>%
-  filter(species == "Chinook") %>%
-  ggplot(aes(x = value_m, y = si)) +
+#chnk_hsi = hsi_df %>%
+#  filter(species == "Chinook") %>%
+#  ggplot(aes(x = value_m, y = si)) +
+#  geom_line(color = "royalblue3", size = 1.5) +
+#  coord_cartesian(xlim = c(0,2)) +
+#  theme_bw() +
+#  facet_grid(variable ~ life_stage) +
+#  labs(x = "Value (m | m/s)",
+#       y = "Suitability Index",
+#       title = "Chinook salmon")
+#chnk_hsi
+
+#Set x values to plug into function
+x_values <- seq(0, 2, length.out = 100)
+chnk_curves_df <- data.frame (x_values,
+                             `Chinook Winter Juvenile Depth`    = chnk_win_d(x_values),
+                             `Chinook Winter Juvenile Velocity` = chnk_win_v(x_values),
+                             `Chinook Summer Juvenile Depth`    = chnk_juv_d(x_values),
+                             `Chinook Summer Juvenile Velocity` = chnk_juv_v(x_values),
+                             `Chinook Summer Spawning Depth`    = chnk_spw_d(x_values),
+                             `Chinook Summer Spawning Velocity` = chnk_spw_v(x_values))
+chnk_curves <- tidyr::gather(chnk_curves_df, key = "curve", value = "y_value", -x_values)
+chnk_curves$curve <- factor(chnk_curves$curve, levels = c( "Chinook.Winter.Juvenile.Depth",    "Chinook.Summer.Juvenile.Depth",    "Chinook.Summer.Spawning.Depth",
+                                                           "Chinook.Winter.Juvenile.Velocity", "Chinook.Summer.Juvenile.Velocity", "Chinook.Summer.Spawning.Velocity"))
+
+# Plot the function using ggplot2
+chnk_hsi <- ggplot(chnk_curves, aes(x = x_values, y = y_value)) +
   geom_line(color = "royalblue3", size = 1.5) +
   coord_cartesian(xlim = c(0,2)) +
   theme_bw() +
-  facet_grid(variable ~ life_stage) +
+  facet_wrap(~curve) +
   labs(x = "Value (m | m/s)",
        y = "Suitability Index",
        title = "Chinook salmon")
@@ -238,13 +276,35 @@ chnk_hsi
 ```
 
 ```{r sthd-hsi, fig.height = 4, fig.cap = "Suitability indices at varying depths and velocities for juvenile rearing for steelhead from Maret et al. (2006)."}
-sthd_hsi = hsi_df %>%
-  filter(species == "Steelhead") %>%
-  ggplot(aes(x = value_m, y = si)) +
+#sthd_hsi = hsi_df %>%
+#  filter(species == "Steelhead") %>%
+#  ggplot(aes(x = value_m, y = si)) +
+#  geom_line(color = "royalblue3", size = 1.5) +
+#  coord_cartesian(xlim = c(0,2)) +
+#  theme_bw() +
+#  facet_grid( life_stage ~ variable) +
+#  labs(x = "Value (m | m/s)",
+#       y = "Suitability Index",
+#       title = "Steelhead")
+#sthd_hsi
+
+sthd_curves_df <-  data.frame (x_values,
+       `Steelhead Winter Juvenile Depth`    = sthd_win_d(x_values),
+       `Steelhead Winter Juvenile Velocity` = sthd_win_v(x_values),
+       `Steelhead Summer Juvenile Depth`    = sthd_juv_d(x_values),
+       `Steelhead Summer Juvenile Velocity` = sthd_juv_v(x_values),
+       `Steelhead Spring Spawning Depth`    = sthd_spw_d(x_values),
+       `Steelhead Spring Spawning Velocity` = sthd_spw_v(x_values))
+sthd_curves <- tidyr::gather(sthd_curves_df, key = "curve", value = "y_value", -x_values)
+sthd_curves$curve <- factor(sthd_curves$curve, levels = 
+ c( "Steelhead.Winter.Juvenile.Depth", "Steelhead.Summer.Juvenile.Depth",      "Steelhead.Spring.Spawning.Depth",     "Steelhead.Winter.Juvenile.Velocity",
+"Steelhead.Summer.Juvenile.Velocity",  "Steelhead.Spring.Spawning.Velocity"))
+# Plot the function using ggplot2
+sthd_hsi <- ggplot(sthd_curves, aes(x = x_values, y = y_value)) +
   geom_line(color = "royalblue3", size = 1.5) +
   coord_cartesian(xlim = c(0,2)) +
   theme_bw() +
-  facet_grid( life_stage ~ variable) +
+  facet_wrap(~curve) +
   labs(x = "Value (m | m/s)",
        y = "Suitability Index",
        title = "Steelhead")

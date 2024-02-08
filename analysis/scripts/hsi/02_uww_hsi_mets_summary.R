@@ -30,6 +30,9 @@ map_df(~read_rds(.))
 # Box plot metrics (composite, depth, velocity) by geo reach and year #
 ##################################
 # Chinook juvenile rearing 2019 #
+
+hsi_raw = readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/chnk_juv_2019_geo.rda")
+
 chnk_juv_2019_geo = hsi_raw %>%
   filter(year == "2019",
          scenario == "chnk_juv",
@@ -574,7 +577,7 @@ chnk_win_2019_geo = hsi_raw %>%
                                     "GR_02_SF",
                                     "GR_03_SF",
                                     "GR_04_SF",
-                                    "GR_05_SF"))) %>%
+                                    "GR_05_SF")))
   ggplot(aes(x = ID, y = value, fill = metric)) +
   geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
