@@ -238,30 +238,17 @@ x_values <- seq(0, 2, length.out = 100)
 Depth and velocity suitability curves for Chinook salmon and steelhead were derived from @Maret2006 (Figures \@ref(fig:chnk-hsi) and \@ref(fig:sthd-hsi)). These curves were used to calculate the depth or velocity suitability for each pixel within a given scenario. As an example, using juvenile Chinook salmon and depth, if a pixel has a depth of 0 m, that pixel is assigned a suitability of 0 whereas if the depth is greater than approximately 0.6 m it is assigned a suitability of 1. A depth of 0.5 m would be assigned a suitability of $\sim$ 0.7. The composite suitability for a pixel is then calculated as the geometric mean of the depth and velocity suitability values.
 
 ```{r chnk-hsi, fig.height = 4, fig.cap = "Suitability indices at varying depths and velocities for juvenile rearing and adult spawning for Chinook salmon from Maret et al. (2006)."}
-# chinook hsi curves
-#chnk_hsi = hsi_df %>%
-#  filter(species == "Chinook") %>%
-#  ggplot(aes(x = value_m, y = si)) +
-#  geom_line(color = "royalblue3", size = 1.5) +
-#  coord_cartesian(xlim = c(0,2)) +
-#  theme_bw() +
-#  facet_grid(variable ~ life_stage) +
-#  labs(x = "Value (m | m/s)",
-#       y = "Suitability Index",
-#       title = "Chinook salmon")
-#chnk_hsi
 
-
-chnk_curves_df <- data.frame (x_values,
-                             `Chinook Winter Juvenile Depth`    = chnk_win_d(x_values),
-                             `Chinook Winter Juvenile Velocity` = chnk_win_v(x_values),
-                             `Chinook Summer Juvenile Depth`    = chnk_juv_d(x_values),
-                             `Chinook Summer Juvenile Velocity` = chnk_juv_v(x_values),
-                             `Chinook Spawning Depth`    = chnk_spw_d(x_values),
-                             `Chinook Spawning Velocity` = chnk_spw_v(x_values))
-chnk_curves <- tidyr::gather(chnk_curves_df, key = "curve", value = "y_value", -x_values)
-chnk_curves$curve <- factor(chnk_curves$curve, levels = c( "Chinook.Winter.Juvenile.Depth",    "Chinook.Summer.Juvenile.Depth",    "Chinook.Spawning.Depth",
-                                                           "Chinook.Winter.Juvenile.Velocity", "Chinook.Summer.Juvenile.Velocity", "Chinook.Spawning.Velocity"))
+chnk_curves_df <- tibble (x_values,
+                          `Chinook Winter Juvenile Depth`    = chnk_win_d(x_values),
+                          `Chinook Winter Juvenile Velocity` = chnk_win_v(x_values),
+                          `Chinook Summer Juvenile Depth`    = chnk_juv_d(x_values),
+                          `Chinook Summer Juvenile Velocity` = chnk_juv_v(x_values),
+                          `Chinook Spawning Depth`    = chnk_spw_d(x_values),
+                          `Chinook Spawning Velocity` = chnk_spw_v(x_values))
+chnk_curves <- tidyr::gather(chnk_curves_df, key = "curve", value = "y_value", -x_values, convert = TRUE)
+chnk_curves$curve <- factor(chnk_curves$curve, levels = c( "Chinook Winter Juvenile Depth",    "Chinook Summer Juvenile Depth",    "Chinook Spawning Depth",
+                                                           "Chinook Winter Juvenile Velocity", "Chinook Summer Juvenile Velocity", "Chinook Spawning Velocity"))
 
 # Plot the function using ggplot2
 chnk_hsi <- ggplot(chnk_curves, aes(x = x_values, y = y_value)) +
@@ -277,29 +264,18 @@ chnk_hsi
 ```
 
 ```{r sthd-hsi, fig.height = 4, fig.cap = "Suitability indices at varying depths and velocities for juvenile rearing for steelhead from Maret et al. (2006)."}
-#sthd_hsi = hsi_df %>%
-#  filter(species == "Steelhead") %>%
-#  ggplot(aes(x = value_m, y = si)) +
-#  geom_line(color = "royalblue3", size = 1.5) +
-#  coord_cartesian(xlim = c(0,2)) +
-#  theme_bw() +
-#  facet_grid( life_stage ~ variable) +
-#  labs(x = "Value (m | m/s)",
-#       y = "Suitability Index",
-#       title = "Steelhead")
-#sthd_hsi
 
-sthd_curves_df <-  data.frame (x_values,
+sthd_curves_df <-  tibble (x_values,
        `Steelhead Winter Juvenile Depth`    = sthd_win_d(x_values),
        `Steelhead Winter Juvenile Velocity` = sthd_win_v(x_values),
        `Steelhead Summer Juvenile Depth`    = sthd_juv_d(x_values),
        `Steelhead Summer Juvenile Velocity` = sthd_juv_v(x_values),
        `Steelhead Spawning Depth`    = sthd_spw_d(x_values),
        `Steelhead Spawning Velocity` = sthd_spw_v(x_values))
-sthd_curves <- tidyr::gather(sthd_curves_df, key = "curve", value = "y_value", -x_values)
-sthd_curves$curve <- factor(sthd_curves$curve, levels = 
- c( "Steelhead.Winter.Juvenile.Depth", "Steelhead.Summer.Juvenile.Depth",      "Steelhead.Spawning.Depth",     "Steelhead.Winter.Juvenile.Velocity",
-"Steelhead.Summer.Juvenile.Velocity",  "Steelhead.Spawning.Velocity"))
+
+sthd_curves <- tidyr::gather(sthd_curves_df, key = "curve", value = "y_value", -x_values, convert = TRUE)
+
+sthd_curves$curve <- factor(sthd_curves$curve, levels =  c( "Steelhead Winter Juvenile Depth",    "Steelhead Summer Juvenile Depth",      "Steelhead Spawning Depth",                                                                            "Steelhead Winter Juvenile Velocity", "Steelhead Summer Juvenile Velocity",   "Steelhead Spawning Velocity"))
 # Plot the function using ggplot2
 sthd_hsi <- ggplot(sthd_curves, aes(x = x_values, y = y_value)) +
   geom_line(color = "royalblue3", size = 1.5) +
@@ -836,7 +812,7 @@ chnk_win_hhs_p
 
 ## Steelhead Juvenile Rearing Summer
 
-Composite suitability for steelhead juvenile rearing is moderate to high in both the mainstem and South Fork watersheds (Figure \@ref(fig:uww-sthd-juv-plot)). ydraulic habitat conditions are less suitable (moderate) in the North Fork, largely due to lower suitability of available depths (Figures \@ref(fig:uww-sthd-juv-plot) and \@ref(fig:sthd-juv-map)). The distribution of velocity suitabilities across all three watershed are consistently higher. Figure \@ref(fig:sthd-juv-hhs) also shows that HHS among all three watersheds is moderate to high for steelhead juvenile rearing. Again, there is little difference in the average suitability by river kilometer from 2019 to 2021 for steelhead juvenile rearing (Figure \@ref(fig:sthd-juv-hhs)).
+Composite suitability for steelhead juvenile rearing is moderate to high in both the mainstem and South Fork watersheds (Figure \@ref(fig:uww-sthd-juv-plot)). hydraulic habitat conditions are less suitable (moderate) in the North Fork, largely due to lower suitability of available depths (Figures \@ref(fig:uww-sthd-juv-plot) and \@ref(fig:sthd-juv-map)). The distribution of velocity suitabilities across all three watershed are consistently higher. Figure \@ref(fig:sthd-juv-hhs) also shows that HHS among all three watersheds is moderate to high for steelhead juvenile rearing. Again, there is little difference in the average suitability by river kilometer from 2019 to 2021 for steelhead juvenile rearing (Figure \@ref(fig:sthd-juv-hhs)).
 
 ```{r uww-sthd-juv-plot, fig.height = 7, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile summer rearing** across geomorphic reaches in the Upper Walla Walla watershed in 2021."}
 # steelhead juvenile rearing, 2021
