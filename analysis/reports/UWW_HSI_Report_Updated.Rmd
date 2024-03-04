@@ -91,6 +91,12 @@ library(ggplot2)
 
 theme_set(theme_pubr(x.text.angle = 45,
                      base_size = 8))
+
+doc.type<-'docx'
+if(doc.type == 'docx') {
+  options(knitr.table.format = "pandoc") 
+  }
+  
 ```
 
 # Background
@@ -240,15 +246,15 @@ Depth and velocity suitability curves for Chinook salmon and steelhead were deri
 ```{r chnk-hsi, fig.height = 4, fig.cap = "Suitability indices at varying depths and velocities for juvenile rearing and adult spawning for Chinook salmon from Maret et al. (2006)."}
 
 chnk_curves_df <- tibble (x_values,
-                          `Chinook Winter Juvenile Depth`    = chnk_win_d(x_values),
-                          `Chinook Winter Juvenile Velocity` = chnk_win_v(x_values),
-                          `Chinook Summer Juvenile Depth`    = chnk_juv_d(x_values),
-                          `Chinook Summer Juvenile Velocity` = chnk_juv_v(x_values),
-                          `Chinook Spawning Depth`    = chnk_spw_d(x_values),
-                          `Chinook Spawning Velocity` = chnk_spw_v(x_values))
+                          `Winter Juvenile Depth`    = chnk_win_d(x_values),
+                          `Winter Juvenile Velocity` = chnk_win_v(x_values),
+                          `Summer Juvenile Depth`    = chnk_juv_d(x_values),
+                          `Summer Juvenile Velocity` = chnk_juv_v(x_values),
+                          `Spawning Depth`    = chnk_spw_d(x_values),
+                          `Spawning Velocity` = chnk_spw_v(x_values))
 chnk_curves <- tidyr::gather(chnk_curves_df, key = "curve", value = "y_value", -x_values, convert = TRUE)
-chnk_curves$curve <- factor(chnk_curves$curve, levels = c( "Chinook Winter Juvenile Depth",    "Chinook Summer Juvenile Depth",    "Chinook Spawning Depth",
-                                                           "Chinook Winter Juvenile Velocity", "Chinook Summer Juvenile Velocity", "Chinook Spawning Velocity"))
+chnk_curves$curve <- factor(chnk_curves$curve, levels = c( "Winter Juvenile Depth",    "Summer Juvenile Depth",    "Spawning Depth",
+                                                           "Winter Juvenile Velocity", "Summer Juvenile Velocity", "Spawning Velocity"))
 
 # Plot the function using ggplot2
 chnk_hsi <- ggplot(chnk_curves, aes(x = x_values, y = y_value)) +
@@ -266,16 +272,16 @@ chnk_hsi
 ```{r sthd-hsi, fig.height = 4, fig.cap = "Suitability indices at varying depths and velocities for juvenile rearing for steelhead from Maret et al. (2006)."}
 
 sthd_curves_df <-  tibble (x_values,
-       `Steelhead Winter Juvenile Depth`    = sthd_win_d(x_values),
-       `Steelhead Winter Juvenile Velocity` = sthd_win_v(x_values),
-       `Steelhead Summer Juvenile Depth`    = sthd_juv_d(x_values),
-       `Steelhead Summer Juvenile Velocity` = sthd_juv_v(x_values),
-       `Steelhead Spawning Depth`    = sthd_spw_d(x_values),
-       `Steelhead Spawning Velocity` = sthd_spw_v(x_values))
+       `Winter Juvenile Depth`    = sthd_win_d(x_values),
+       `Winter Juvenile Velocity` = sthd_win_v(x_values),
+       `Summer Juvenile Depth`    = sthd_juv_d(x_values),
+       `Summer Juvenile Velocity` = sthd_juv_v(x_values),
+       `Spawning Depth`    = sthd_spw_d(x_values),
+       `Spawning Velocity` = sthd_spw_v(x_values))
 
 sthd_curves <- tidyr::gather(sthd_curves_df, key = "curve", value = "y_value", -x_values, convert = TRUE)
 
-sthd_curves$curve <- factor(sthd_curves$curve, levels =  c( "Steelhead Winter Juvenile Depth",    "Steelhead Summer Juvenile Depth",      "Steelhead Spawning Depth",                                                                            "Steelhead Winter Juvenile Velocity", "Steelhead Summer Juvenile Velocity",   "Steelhead Spawning Velocity"))
+sthd_curves$curve <- factor(sthd_curves$curve, levels =  c( "Winter Juvenile Depth",    "Summer Juvenile Depth",      "Spawning Depth",                                                                                                          "Winter Juvenile Velocity", "Summer Juvenile Velocity",   "Spawning Velocity"))
 # Plot the function using ggplot2
 sthd_hsi <- ggplot(sthd_curves, aes(x = x_values, y = y_value)) +
   geom_line(color = "royalblue3", size = 1.5) +
@@ -363,17 +369,21 @@ The composite hydraulic suitability for spawning is highly variable across the t
 chnk_spw_2021_geo <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/chnk_spw_2021_geo.rda")
 
 chnk_spw_2021_geo = chnk_spw_2021_geo %>%
+  mutate(Watershed = case_when(
+    grepl("MS", ID) ~ "Mainstem",
+    grepl("NF", ID) ~ "North Fork",
+    grepl("SF", ID) ~ "South Fork")) %>%
   mutate(ID = factor(ID, levels = geo_order)) %>%
   ggplot(aes(x = ID, 
              y = value, 
-             fill = metric)) +
+             fill = Watershed)) +
   geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
   theme_classic() +
   labs(x = "Geomorphic Reach",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 chnk_spw_2021_geo
@@ -476,17 +486,21 @@ The composite suitability within the mainstem of the Walla Walla exhibits variab
 sthd_spw_2021_geo <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/sthd_spw_2021_geo.rda")
 
 sthd_spw_2021_geo = sthd_spw_2021_geo %>%
+    mutate(Watershed = case_when(
+    grepl("MS", ID) ~ "Mainstem",
+    grepl("NF", ID) ~ "North Fork",
+    grepl("SF", ID) ~ "South Fork")) %>%
   mutate(ID = factor(ID, levels = geo_order)) %>%
   ggplot(aes(x = ID, 
              y = value, 
-             fill = metric)) +
+             fill = Watershed)) +
   geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
   theme_classic() +
   labs(x = "Geomorphic Reach",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 sthd_spw_2021_geo
@@ -589,20 +603,21 @@ Among species and life stages, composite hydraulic suitability is lowest for Chi
 chnk_juv_2021_geo = readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/chnk_juv_2021_geo.rda")
 
 chnk_juv_2021_geo = chnk_juv_2021_geo %>%
-#  filter(year == "2021",
- #        scenario == "chnk_juv",
-#         str_starts(ID, "GR")) %>%
+  mutate(Watershed = case_when(
+    grepl("MS", ID) ~ "Mainstem",
+    grepl("NF", ID) ~ "North Fork",
+    grepl("SF", ID) ~ "South Fork")) %>%
   mutate(ID = factor(ID, levels = geo_order)) %>%
   ggplot(aes(x = ID,
              y = value,
-             fill = metric)) +
+             fill = Watershed)) +
   geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
   theme_classic() +
   labs(x = "Geomorphic Reach",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 chnk_juv_2021_geo
@@ -701,23 +716,24 @@ The composite suitability for winter juvenile Chinook appears relatively consist
 chnk_win_2021_geo = readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/chnk_win_2021_geo.rda")
 
 chnk_win_2021_geo = chnk_win_2021_geo %>%
-
+   mutate(Watershed = case_when(
+    grepl("MS", ID) ~ "Mainstem",
+    grepl("NF", ID) ~ "North Fork",
+    grepl("SF", ID) ~ "South Fork")) %>%
   mutate(ID = factor(ID, levels = geo_order)) %>%
   ggplot(aes(x = ID,
              y = value,
-             fill = metric)) +
+             fill = Watershed)) +
   geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
   theme_classic() +
   labs(x = "Geomorphic Reach",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 chnk_win_2021_geo
-
-
 
 ```
 
@@ -820,16 +836,20 @@ sthd_juv_2021_geo = readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/sthd_
 
 sthd_juv_2021_geo = sthd_juv_2021_geo %>%
   mutate(ID = factor(ID, levels = geo_order)) %>%
+    mutate(Watershed = case_when(
+    grepl("MS", ID) ~ "Mainstem",
+    grepl("NF", ID) ~ "North Fork",
+    grepl("SF", ID) ~ "South Fork")) %>%
   ggplot(aes(x = ID, 
              y = value, 
-             fill = metric)) +
+             fill = Watershed)) +
   geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
   theme_classic() +
   labs(x = "Geomorphic Reach",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 sthd_juv_2021_geo
@@ -928,17 +948,21 @@ The watershed has consistently moderate to low composite suitability, with the m
 sthd_win_2021_geo = readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/sthd_win_2021_geo.rda")
 
 sthd_win_2021_geo = sthd_win_2021_geo %>%
+    mutate(Watershed = case_when(
+    grepl("MS", ID) ~ "Mainstem",
+    grepl("NF", ID) ~ "North Fork",
+    grepl("SF", ID) ~ "South Fork")) %>%
   mutate(ID = factor(ID, levels = geo_order)) %>%
   ggplot(aes(x = ID, 
              y = value, 
-             fill = metric)) +
+             fill = Watershed)) +
   geom_boxplot() +
   facet_wrap(~ metric, nrow = 3) +
   theme_classic() +
   labs(x = "Geomorphic Reach",
        y = "Suitability Index") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)))
 sthd_win_2021_geo
@@ -1102,17 +1126,21 @@ hhs_tbl
 
 ## Suitability Distributions, 2019 versus 2021
 
-```{r chnk-spw-box-p, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across geomorphic reaches in the Upper Walla Walla watershed, 2019 and 2021."}
+```{r chnk-spw-box-p, fig.width = 10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across geomorphic reaches in the Upper Walla Walla watershed, 2019 and 2021."}
 
 chnk_spw_box_19 <-readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/chnk_spw_2019_geo.rda")
 chnk_spw_box_21 <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/chnk_spw_2021_geo.rda")
 chnk_spw_box_p <- rbind(chnk_spw_box_19,chnk_spw_box_21)
 
 chnk_spw_box_p = chnk_spw_box_p %>%
+    mutate(Watershed = case_when(
+    grepl("MS", ID) ~ "Mainstem",
+    grepl("NF", ID) ~ "North Fork",
+    grepl("SF", ID) ~ "South Fork")) %>%
   mutate(ID = factor(ID, levels = geo_order)) %>%
   ggplot(aes(x = ID, 
              y = value, 
-             fill = metric)) +
+             fill = Watershed)) +
   geom_boxplot() +
   facet_grid(metric ~ year) +
   theme_bw() +
@@ -1127,17 +1155,21 @@ chnk_spw_box_p
 
 ```
 
-```{r chnk-juv-box-p, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across geomorphic reaches in the Upper Walla Walla watershed, 2019 and 2021."}
+```{r chnk-juv-box-p, fig.width = 10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across geomorphic reaches in the Upper Walla Walla watershed, 2019 and 2021."}
 
 chnk_juv_box_19 <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/chnk_juv_2019_geo.rda")
 chnk_juv_box_21 <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/chnk_juv_2021_geo.rda")
 chnk_juv_box_p  <- rbind(chnk_juv_box_21,chnk_juv_box_19)
 
 chnk_juv_box_p = chnk_juv_box_p %>%
+    mutate(Watershed = case_when(
+    grepl("MS", ID) ~ "Mainstem",
+    grepl("NF", ID) ~ "North Fork",
+    grepl("SF", ID) ~ "South Fork")) %>%
   mutate(ID = factor(ID, levels = geo_order)) %>%
   ggplot(aes(x = ID, 
              y = value, 
-             fill = metric)) +
+             fill = Watershed)) +
   geom_boxplot() +
   facet_grid(metric ~ year) +
   theme_bw() +
@@ -1152,17 +1184,21 @@ chnk_juv_box_p
 
 ```
 
-```{r chnk-win-box-p, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile winter rearing** across geomorphic reaches in the Upper Walla Walla watershed, 2019 and 2021."}
+```{r chnk-win-box-p, fig.width = 10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile winter rearing** across geomorphic reaches in the Upper Walla Walla watershed, 2019 and 2021."}
 
 chnk_win_box_19 <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/chnk_win_2019_geo.rda")
 chnk_win_box_21 <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/chnk_win_2021_geo.rda")
 chnk_win_box_p  <- rbind(chnk_win_box_21,chnk_win_box_19)
 
 chnk_win_box_p = chnk_win_box_p %>%
+    mutate(Watershed = case_when(
+    grepl("MS", ID) ~ "Mainstem",
+    grepl("NF", ID) ~ "North Fork",
+    grepl("SF", ID) ~ "South Fork")) %>%
   mutate(ID = factor(ID, levels = geo_order)) %>%
   ggplot(aes(x = ID, 
              y = value, 
-             fill = metric)) +
+             fill = Watershed)) +
   geom_boxplot() +
   facet_grid(metric ~ year) +
   theme_bw() +
@@ -1177,17 +1213,21 @@ chnk_win_box_p
 
 ```
 
-```{r sthd-spw-box-p, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Steelhead spawning** across geomorphic reaches in the Upper Walla Walla watershed, 2019 and 2021."}
+```{r sthd-spw-box-p, fig.width = 10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Steelhead spawning** across geomorphic reaches in the Upper Walla Walla watershed, 2019 and 2021."}
 
 sthd_spw_box_19 <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/sthd_spw_2019_geo.rda")
 sthd_spw_box_21 <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/sthd_spw_2021_geo.rda")
 sthd_spw_box_p  <- rbind(sthd_spw_box_19,sthd_spw_box_21)
 
 sthd_spw_box_p = sthd_spw_box_p %>%
+    mutate(Watershed = case_when(
+    grepl("MS", ID) ~ "Mainstem",
+    grepl("NF", ID) ~ "North Fork",
+    grepl("SF", ID) ~ "South Fork")) %>%
   mutate(ID = factor(ID, levels = geo_order)) %>%
   ggplot(aes(x = ID, 
              y = value, 
-             fill = metric)) +
+             fill = Watershed)) +
   geom_boxplot() +
   facet_grid(metric ~ year) +
   theme_bw() +
@@ -1202,17 +1242,21 @@ sthd_spw_box_p
 
 ```
 
-```{r sthd-juv-box-p, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across geomorphic reaches in the Upper Walla Walla watershed, 2019 and 2021."}
+```{r sthd-juv-box-p, fig.width = 10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across geomorphic reaches in the Upper Walla Walla watershed, 2019 and 2021."}
 
 sthd_juv_box_19 <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/sthd_juv_2019_geo.rda")
 sthd_juv_box_21 <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/sthd_juv_2021_geo.rda")
 sthd_juv_box_p  <- rbind(sthd_juv_box_19,sthd_juv_box_21)
 
 sthd_juv_box_p = sthd_juv_box_p %>%
+    mutate(Watershed = case_when(
+    grepl("MS", ID) ~ "Mainstem",
+    grepl("NF", ID) ~ "North Fork",
+    grepl("SF", ID) ~ "South Fork")) %>%
   mutate(ID = factor(ID, levels = geo_order)) %>%
   ggplot(aes(x = ID, 
              y = value, 
-             fill = metric)) +
+             fill = Watershed)) +
   geom_boxplot() +
   facet_grid(metric ~ year) +
   theme_bw() +
@@ -1227,7 +1271,7 @@ sthd_juv_box_p
 
 ```
 
-```{r sthd-win-box-p, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile winter rearing** across geomorphic reaches in the Upper Walla Walla watershed, 2019 and 2021."}
+```{r sthd-win-box-p, fig.width = 10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile winter rearing** across geomorphic reaches in the Upper Walla Walla watershed, 2019 and 2021."}
 
 sthd_win_box_19 <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/sthd_win_2019_geo.rda")
 sthd_win_box_21 <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/sthd_win_2021_geo.rda")
@@ -1235,10 +1279,14 @@ sthd_win_box_p  <- rbind(sthd_win_box_19,sthd_win_box_21)
 
 
 sthd_win_box_p = sthd_win_box_p%>%
+    mutate(Watershed = case_when(
+    grepl("MS", ID) ~ "Mainstem",
+    grepl("NF", ID) ~ "North Fork",
+    grepl("SF", ID) ~ "South Fork")) %>%
   mutate(ID = factor(ID, levels = geo_order)) %>%
   ggplot(aes(x = ID, 
              y = value, 
-             fill = metric)) +
+             fill = Watershed)) +
   geom_boxplot() +
   facet_grid(metric ~ year) +
   theme_bw() +
@@ -1258,13 +1306,12 @@ sthd_win_box_p
 ### Chinook Salmon Spawning, 2021
 
 ```{r}
-
 #Load Chinook Spawning 2021 rda
 chnk_spw_2021_rkm <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/chnk_spw_2021_rkm.rda")
 
 ```
 
-```{r chnk-spw-box-rkm-ms, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across river kilometers in the **mainstem** Upper Walla Walla River, 2021."}
+```{r chnk-spw-box-rkm-ms, fig.width = 10,fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across river kilometers in the **mainstem** Upper Walla Walla River, 2021."}
 # Box-plot by rkm, Chinook spawning, mainstem
 
 chnk_spw_2021_rkm_ms = chnk_spw_2021_rkm %>%
@@ -1280,12 +1327,15 @@ chnk_spw_2021_rkm_ms = chnk_spw_2021_rkm %>%
   theme(plot.title = element_text(hjust = 0.5), legend.position = "top",
         axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)))
+        axis.title.y = element_text(margin = margin(r = 10))) 
+
 chnk_spw_2021_rkm_ms
+
+#ggsave("../output/figures/my_plot.png", plot = chnk_spw_2021_rkm_ms, width = 12, height = 6, units = "in")
 
 ```
 
-```{r chnk-spw-box-rkm-nf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across river kilometers in the **North Fork** Walla Walla River, 2021."}
+```{r chnk-spw-box-rkm-nf, fig.width=10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across river kilometers in the **North Fork** Walla Walla River, 2021."}
 # Box-plot by rkm, Chinook spawning, North Fork
 chnk_spw_2021_rkm_nf = chnk_spw_2021_rkm %>%
   filter(str_ends(ID, "NF")) %>%
@@ -1305,7 +1355,7 @@ chnk_spw_2021_rkm_nf
 
 ```
 
-```{r chnk-spw-box-rkm-sf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across river kilometers in the **South Fork** Walla Walla River, 2021."}
+```{r chnk-spw-box-rkm-sf, fig.width = 10,  fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon spawning** across river kilometers in the **South Fork** Walla Walla River, 2021."}
 # Box-plot by rkm, Chinook spawning, South Fork
 chnk_spw_2021_rkm_sf = chnk_spw_2021_rkm %>%
   filter(str_ends(ID, "SF")) %>%
@@ -1334,7 +1384,7 @@ chnk_juv_2021_rkm <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/chnk
 
 ```
 
-```{r chnk-juv-box-rkm-ms, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across river kilometers in the **mainstem** Upper Walla Walla River, 2021."}
+```{r chnk-juv-box-rkm-ms, fig.width=10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across river kilometers in the **mainstem** Upper Walla Walla River, 2021."}
 # Box-plot by rkm, Chinook juvenile rearing, Mainstem
 chnk_juv_2021_rkm_ms = chnk_juv_2021_rkm  %>%
   filter(str_ends(ID, "MS")) %>%
@@ -1354,7 +1404,7 @@ chnk_juv_2021_rkm_ms
 
 ```
 
-```{r chnk-juv-box-rkm-nf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across river kilometers in the **North Fork** Walla Walla River, 2021."}
+```{r chnk-juv-box-rkm-nf, fig.width=10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across river kilometers in the **North Fork** Walla Walla River, 2021."}
 # Box-plot by rkm, Chinook spawning, North Fork
 chnk_juv_2021_rkm_nf = chnk_juv_2021_rkm %>%
   filter(str_ends(ID, "NF")) %>%
@@ -1374,7 +1424,7 @@ chnk_juv_2021_rkm_nf
 
 ```
 
-```{r chnk-juv-box-rkm-sf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across river kilometers in the **South Fork** Walla Walla River, 2021."}
+```{r chnk-juv-box-rkm-sf, fig.width=10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile rearing** across river kilometers in the **South Fork** Walla Walla River, 2021."}
 # Box-plot by rkm, Chinook spawning, South Fork
 chnk_juv_2021_rkm_sf = chnk_juv_2021_rkm %>%
   filter(str_ends(ID, "SF")) %>%
@@ -1403,7 +1453,7 @@ chnk_win_2021_rkm <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/chnk
 
 ```
 
-```{r chnk-win-box-rkm-ms, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile Winter rearing** across river kilometers in the **mainstem** Upper Walla Walla River, 2021."}
+```{r chnk-win-box-rkm-ms, fig.width=10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile Winter rearing** across river kilometers in the **mainstem** Upper Walla Walla River, 2021."}
 # Box-plot by rkm, winter Chinook juvenile rearing, Mainstem
 chnk_win_2021_rkm_ms = chnk_win_2021_rkm  %>%
   filter(str_ends(ID, "MS")) %>%
@@ -1423,7 +1473,7 @@ chnk_win_2021_rkm_ms
 
 ```
 
-```{r chnk-win-box-rkm-nf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile winter rearing** across river kilometers in the **North Fork** Walla Walla River, 2021."}
+```{r chnk-win-box-rkm-nf, fig.width=10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile winter rearing** across river kilometers in the **North Fork** Walla Walla River, 2021."}
 # Box-plot by rkm, winter Chinook spawning, North Fork
 chnk_win_2021_rkm_nf = chnk_win_2021_rkm %>%
   filter(str_ends(ID, "NF")) %>%
@@ -1443,7 +1493,7 @@ chnk_win_2021_rkm_nf
 
 ```
 
-```{r chnk-win-box-rkm-sf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile winter rearing** across river kilometers in the **South Fork** Walla Walla River, 2021."}
+```{r chnk-win-box-rkm-sf,fig.width=10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Chinook salmon juvenile winter rearing** across river kilometers in the **South Fork** Walla Walla River, 2021."}
 # Box-plot by rkm, winter Chinook spawning, South Fork
 chnk_win_2021_rkm_sf = chnk_win_2021_rkm %>%
   filter(str_ends(ID, "SF")) %>%
@@ -1472,7 +1522,7 @@ sthd_spw_2021_rkm <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/sthd
 
 ```
 
-```{r sthd-spw-box-rkm-ms, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead spawning** across river kilometers in the **mainstem** Upper Walla Walla River, 2021."}
+```{r sthd-spw-box-rkm-ms,fig.width=10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead spawning** across river kilometers in the **mainstem** Upper Walla Walla River, 2021."}
 # Box-plot by rkm, steelhead spawning, Mainstem
 sthd_spw_2021_rkm_ms = sthd_spw_2021_rkm  %>%
   filter(str_ends(ID, "MS")) %>%
@@ -1492,7 +1542,7 @@ sthd_spw_2021_rkm_ms
 
 ```
 
-```{r sthd-spw-box-rkm-nf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Steelhead Spawning** across river kilometers in the **North Fork** Walla Walla River, 2021."}
+```{r sthd-spw-box-rkm-nf, fig.width=10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **Steelhead Spawning** across river kilometers in the **North Fork** Walla Walla River, 2021."}
 # Box-plot by rkm, Steelhead Spawning, North Fork
 sthd_spw_2021_rkm_nf = sthd_spw_2021_rkm %>%
   filter(str_ends(ID, "NF")) %>%
@@ -1512,7 +1562,7 @@ sthd_spw_2021_rkm_nf
 
 ```
 
-```{r sthd-spw-box-rkm-sf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead spawning** across river kilometers in the **South Fork** Walla Walla River, 2021."}
+```{r sthd-spw-box-rkm-sf, fig.width=10,  fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead spawning** across river kilometers in the **South Fork** Walla Walla River, 2021."}
 # Box-plot by rkm, Steelhead spawning, South Fork
 sthd_spw_2021_rkm_sf = sthd_spw_2021_rkm %>%
   filter(str_ends(ID, "SF")) %>%
@@ -1541,7 +1591,7 @@ sthd_juv_2021_rkm <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/sthd
 
 ```
 
-```{r sthd-juv-box-rkm-ms, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across river kilometers in the **mainstem** Upper Walla Walla River, 2021."}
+```{r sthd-juv-box-rkm-ms, fig.width=10,  fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across river kilometers in the **mainstem** Upper Walla Walla River, 2021."}
 # Box-plot by rkm, steelhead juvenile rearing, Mainstem
 sthd_juv_2021_rkm_ms = sthd_juv_2021_rkm %>%
   filter(str_ends(ID, "MS")) %>%
@@ -1561,7 +1611,7 @@ sthd_juv_2021_rkm_ms
 
 ```
 
-```{r sthd-juv-box-rkm-nf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across river kilometers in the **North Fork** Walla Walla River, 2021."}
+```{r sthd-juv-box-rkm-nf,fig.width=10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across river kilometers in the **North Fork** Walla Walla River, 2021."}
 # Box-plot by rkm, steelhead juvenile rearing, North Fork
 sthd_juv_2021_rkm_nf = sthd_juv_2021_rkm %>%
   filter(str_ends(ID, "NF")) %>%
@@ -1581,7 +1631,7 @@ sthd_juv_2021_rkm_nf
 
 ```
 
-```{r sthd-juv-box-rkm-sf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across river kilometers in the **South Fork** Walla Walla River, 2021."}
+```{r sthd-juv-box-rkm-sf, fig.width=10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile rearing** across river kilometers in the **South Fork** Walla Walla River, 2021."}
 # Box-plot by rkm, steelhead juvenile rearing, South Fork
 sthd_juv_2021_rkm_sf = sthd_juv_2021_rkm%>%
   filter(str_ends(ID, "SF")) %>%
@@ -1610,7 +1660,7 @@ sthd_win_2021_rkm <- readRDS("S:/main/data/habitat/HSI/UWW_hsi_results/rdas/sthd
 
 ```
 
-```{r sthd-win-box-rkm-ms, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile winter rearing** across river kilometers in the **mainstem** Upper Walla Walla River, 2021."}
+```{r sthd-win-box-rkm-ms, fig.width=10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile winter rearing** across river kilometers in the **mainstem** Upper Walla Walla River, 2021."}
 # Box-plot by rkm, steelhead juvenile winter rearing, Mainstem
 sthd_win_2021_rkm_ms = sthd_win_2021_rkm %>%
   filter(str_ends(ID, "MS")) %>%
@@ -1630,7 +1680,7 @@ sthd_win_2021_rkm_ms
 
 ```
 
-```{r sthd-win-box-rkm-nf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile winter rearing** across river kilometers in the **North Fork** Walla Walla River, 2021."}
+```{r sthd-win-box-rkm-nf, fig.width=10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile winter rearing** across river kilometers in the **North Fork** Walla Walla River, 2021."}
 # Box-plot by rkm, steelhead juvenile winter rearing, North Fork
 sthd_win_2021_rkm_nf = sthd_win_2021_rkm %>%
   filter(str_ends(ID, "NF")) %>%
@@ -1650,7 +1700,7 @@ sthd_win_2021_rkm_nf
 
 ```
 
-```{r sthd-win-box-rkm-sf, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile winter rearing** across river kilometers in the **South Fork** Walla Walla River, 2021."}
+```{r sthd-win-box-rkm-sf, fig.width=10, fig.cap = "Box plots showing the distribution of suitability values for composite, depth and velocity for **steelhead juvenile winter rearing** across river kilometers in the **South Fork** Walla Walla River, 2021."}
 # Box-plot by rkm, steelhead juvenile winter rearing, South Fork
 sthd_win_2021_rkm_sf = sthd_win_2021_rkm%>%
   filter(str_ends(ID, "SF")) %>%
